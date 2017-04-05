@@ -121,18 +121,11 @@ void Sight::receiveMovement(void)
 		Y += temp.getY();
 		Z += temp.getZ();
 	}
-	update();
 }
 
 short Sight::getDominatorIndex(void)
 {
 	return(dominatorIndex);
-}
-
-void Sight::moveSight(void)
-{
-	update();
-	updateGL();
 }
 
 void Sight::initializeGL(void)
@@ -263,13 +256,13 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			break;
 		}
 */
-/*
-		case ' ' : {
+
+		case 16777220 : {
 			timeCall();
 			break;
 		}
-*/
-/*
+
+
 		case '@' : {
 			possessFlag++;
 			switch(possessFlag){
@@ -342,7 +335,7 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			}
 			break;
 		}
-*/
+
 /*
 		case 16777220 : {//enter
 			break;

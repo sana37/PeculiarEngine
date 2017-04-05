@@ -45,22 +45,30 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = Field.cpp \
+SOURCES       = CrashEvent.cpp \
+		Event.cpp \
+		Field.cpp \
 		Gunner.cpp \
 		main.cpp \
+		MoveEvent.cpp \
 		NumberBox.cpp \
 		Object.cpp \
 		Player.cpp \
 		Sight.cpp \
+		SightMoveEvent.cpp \
 		Vector.cpp moc_Field.cpp \
 		moc_Sight.cpp
-OBJECTS       = Field.o \
+OBJECTS       = CrashEvent.o \
+		Event.o \
+		Field.o \
 		Gunner.o \
 		main.o \
+		MoveEvent.o \
 		NumberBox.o \
 		Object.o \
 		Player.o \
 		Sight.o \
+		SightMoveEvent.o \
 		Vector.o \
 		moc_Field.o \
 		moc_Sight.o
@@ -171,13 +179,17 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/exceptions.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/lex.prf \
-		PrimeNumberGame.pro Field.cpp \
+		PrimeNumberGame.pro CrashEvent.cpp \
+		Event.cpp \
+		Field.cpp \
 		Gunner.cpp \
 		main.cpp \
+		MoveEvent.cpp \
 		NumberBox.cpp \
 		Object.cpp \
 		Player.cpp \
 		Sight.cpp \
+		SightMoveEvent.cpp \
 		Vector.cpp
 QMAKE_TARGET  = PrimeNumberGame
 DESTDIR       = #avoid trailing-slash linebreak
@@ -443,7 +455,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/PrimeNumberGame1.0.0 || mkdir -p .tmp/PrimeNumberGame1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents Field.h Gunner.h NumberBox.h Object.h Player.h Sight.h Vector.h .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents Field.cpp Gunner.cpp main.cpp NumberBox.cpp Object.cpp Player.cpp Sight.cpp Vector.cpp .tmp/PrimeNumberGame1.0.0/ && (cd `dirname .tmp/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname .tmp/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/PrimeNumberGame1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents CrashEvent.h Event.h Field.h Gunner.h MoveEvent.h NumberBox.h Object.h Player.h Sight.h SightMoveEvent.h Vector.h .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents CrashEvent.cpp Event.cpp Field.cpp Gunner.cpp main.cpp MoveEvent.cpp NumberBox.cpp Object.cpp Player.cpp Sight.cpp SightMoveEvent.cpp Vector.cpp .tmp/PrimeNumberGame1.0.0/ && (cd `dirname .tmp/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname .tmp/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/PrimeNumberGame1.0.0
 
 
 clean:compiler_clean 
@@ -651,6 +663,112 @@ compiler_clean: compiler_moc_header_clean
 
 ####### Compile
 
+CrashEvent.o: CrashEvent.cpp CrashEvent.h \
+		Field.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv7.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv6.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv5.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_ia64.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_mips.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_x86.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_gcc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_unix.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CrashEvent.o CrashEvent.cpp
+
+Event.o: Event.cpp Event.h \
+		Field.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv7.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv6.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv5.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_ia64.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_mips.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_x86.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_gcc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_unix.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Event.o Event.cpp
+
 Field.o: Field.cpp Field.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QObject \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject.h \
@@ -772,6 +890,10 @@ Field.o: Field.cpp Field.h \
 		Player.h \
 		NumberBox.h \
 		Gunner.h \
+		MoveEvent.h \
+		Event.h \
+		SightMoveEvent.h \
+		CrashEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QTimer \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qtimer.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qbasictimer.h
@@ -892,6 +1014,60 @@ main.o: main.cpp /opt/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
 		Field.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QObject
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
+
+MoveEvent.o: MoveEvent.cpp MoveEvent.h \
+		Event.h \
+		Field.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv7.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv6.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv5.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_ia64.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_mips.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_x86.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_gcc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_unix.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MoveEvent.o MoveEvent.cpp
 
 NumberBox.o: NumberBox.cpp NumberBox.h \
 		Object.h \
@@ -1027,6 +1203,59 @@ Sight.o: Sight.cpp Sight.h \
 		Player.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QKeyEvent
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Sight.o Sight.cpp
+
+SightMoveEvent.o: SightMoveEvent.cpp SightMoveEvent.h \
+		Field.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv7.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv6.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv5.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_ia64.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_mips.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_x86.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_gcc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_unix.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o SightMoveEvent.o SightMoveEvent.cpp
 
 Vector.o: Vector.cpp Vector.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Vector.o Vector.cpp

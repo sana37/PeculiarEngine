@@ -20,8 +20,6 @@ public:
 	void updateObject(Object** , short);
 	void receiveMovement(void);
 	short getDominatorIndex(void);
-public slots:
-	void moveSight(void);
 signals:
 	void timeCall(void);
 private:

@@ -3,11 +3,16 @@
 
 #include <QObject>
 
+#define OBJECT_NUM	7
+#define EVENT_NUM	3
+#define TIME_UNIT	10
+#define WORLD		80
+
 class Sight;
 class Object;
 class QTimer;
 
-class Field : public QObject//time loss?
+class Field : public QObject
 {
 	Q_OBJECT
 public:
@@ -17,26 +22,28 @@ public:
 signals:
 	void reportScore(short);
 public slots:
+	void execTimeEvent(void);
 	void timeControl(void);
-	void update(void);
 	void autoGenerate(void);
 private:
 	void objectGenerate(Object*);
-	bool interference(short , short);
-	char judgeCrash(short , short);
-	void reflect(short , short);
-	bool cubicEquation(float* , float* , float* , float* , float*);
-	bool calculate1(float* , float* , float*);
+
+	class Event;
+	class MoveEvent;
+	class SightMoveEvent;
+	class CrashEvent;
+//singleton object field
 
 	Sight* sight;
 	QTimer* time;
-	QTimer* dominatorTime;
 	QTimer* autoGeneration;
 	Object** object;
+	Event** event;
 
 	short objectNum;
 	char** stateCrash;
 	short** indexCrash;
+	short eventNum;
 
 	short deadObjectIndex[100];
 	short deadObjectNum;
