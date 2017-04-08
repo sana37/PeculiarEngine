@@ -1,5 +1,4 @@
 #include "Sight.h"
-#include "Vector.h"
 #include "Object.h"
 #include "Gunner.h"
 #include <QKeyEvent>
@@ -9,7 +8,10 @@
 #define DOMAIN_MAX 29.85
 #define OMEGA 0.8
 
-Sight::Sight(Object** originalObject , short originalObjectNum , short originalDominatorIndex)
+Sight::Sight(Object** originalObject , short originalObjectNum , short originalDominatorIndex) :
+	lookAt(Vector(0 , 0 , -1)) ,
+	lookAtN(Vector(1 , 0 , 0)) ,
+	velocity(Vector(0 , 0 , 0))
 {
 	gbFlag = 0;
 	Vector temp(0 , 30 , 25);
@@ -17,12 +19,9 @@ Sight::Sight(Object** originalObject , short originalObjectNum , short originalD
 	X = temp.getX();
 	Y = temp.getY();
 	Z = temp.getZ();
-	velocity = new Vector(0 , 0 , 0);
 
 	omegaYaw = 0;
 	omegaPitch = 0;
-	lookAt = new Vector(0 , 0 , -1);
-	lookAtN = new Vector(1 , 0 , 0);
 
 	objectNum = originalObjectNum;
 	dominatorIndex = originalDominatorIndex;
@@ -45,24 +44,24 @@ void Sight::update(void)
 {
 	Vector zero(0 , 0 , 0);
 
-	if((-DOMAIN_MAX < X  &&  velocity->getX() < 0)  ||  (X < DOMAIN_MAX  &&  velocity->getX() > 0))
-		X += velocity->getX();
-	if((0.15 < Y  &&  velocity->getY() < 0)  ||  (Y < 2 * DOMAIN_MAX  &&  velocity->getY() > 0))
-		Y += velocity->getY();
-	if((-DOMAIN_MAX < Z  &&  velocity->getZ() < 0)  ||  (Z < DOMAIN_MAX  &&  velocity->getZ() > 0))
-		Z += velocity->getZ();
+	if((-DOMAIN_MAX < X  &&  velocity.getX() < 0)  ||  (X < DOMAIN_MAX  &&  velocity.getX() > 0))
+		X += velocity.getX();
+	if((0.15 < Y  &&  velocity.getY() < 0)  ||  (Y < 2 * DOMAIN_MAX  &&  velocity.getY() > 0))
+		Y += velocity.getY();
+	if((-DOMAIN_MAX < Z  &&  velocity.getZ() < 0)  ||  (Z < DOMAIN_MAX  &&  velocity.getZ() > 0))
+		Z += velocity.getZ();
 
 	if(possessFlag == 1){
-		dominatorSightPoint[dominatorIndex].addVector(velocity);
+		dominatorSightPoint[dominatorIndex] += velocity;
 	}
 
-	if(lookAt->getY() > 0.97  &&  omegaPitch > 0)
+	if(lookAt.getY() > 0.97  &&  omegaPitch > 0)
 		omegaPitch = 0;
-	if(lookAt->getY() < -0.97  &&  omegaPitch < 0)
+	if(lookAt.getY() < -0.97  &&  omegaPitch < 0)
 		omegaPitch = 0;
 
-	rotate(lookAt , &zero , omegaYaw , omegaPitch);
-	rotate(lookAtN , &zero , omegaYaw , 0);
+	rotate(&lookAt , &zero , omegaYaw , omegaPitch);
+	rotate(&lookAtN , &zero , omegaYaw , 0);
 
 	if(possessFlag == 2){
 		Vector basePoint(X , Y , Z);
@@ -86,7 +85,7 @@ void Sight::update(void)
 
 			rotate(&dominatorSightPoint[dominatorIndex] , &zero , omegaYaw , omegaPitch);
 			if(gbFlag != 0)
-				*velocity = *lookAt * SPEED * gbFlag;
+				velocity = lookAt * SPEED * gbFlag;
 		}
 	}
 }
@@ -150,7 +149,7 @@ void Sight::paintGL(void)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(X , Y , Z , X + lookAt->getX() , Y + lookAt->getY() , Z + lookAt->getZ() , 0 , 1 , 0);
+	gluLookAt(X , Y , Z , X + lookAt.getX() , Y + lookAt.getY() , Z + lookAt.getZ() , 0 , 1 , 0);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -161,10 +160,10 @@ void Sight::paintGL(void)
 
 	glBegin(GL_LINES);
 	glColor3d(0.8 , 0 , 0);
-	glVertex3d(X + lookAt->getX() + (lookAtN->getX() / 10) , Y + lookAt->getY() + (lookAtN->getY() / 10) , Z + lookAt->getZ() + (lookAtN->getZ() / 10));
-	glVertex3d(X + lookAt->getX() + (lookAtN->getX() / 50) , Y + lookAt->getY() + (lookAtN->getY() / 50) , Z + lookAt->getZ() + (lookAtN->getZ() / 50));
-	glVertex3d(X + lookAt->getX() - (lookAtN->getX() / 10) , Y + lookAt->getY() - (lookAtN->getY() / 10) , Z + lookAt->getZ() - (lookAtN->getZ() / 10));
-	glVertex3d(X + lookAt->getX() - (lookAtN->getX() / 50) , Y + lookAt->getY() - (lookAtN->getY() / 50) , Z + lookAt->getZ() - (lookAtN->getZ() / 50));
+	glVertex3d(X + lookAt.getX() + (lookAtN.getX() / 10) , Y + lookAt.getY() + (lookAtN.getY() / 10) , Z + lookAt.getZ() + (lookAtN.getZ() / 10));
+	glVertex3d(X + lookAt.getX() + (lookAtN.getX() / 50) , Y + lookAt.getY() + (lookAtN.getY() / 50) , Z + lookAt.getZ() + (lookAtN.getZ() / 50));
+	glVertex3d(X + lookAt.getX() - (lookAtN.getX() / 10) , Y + lookAt.getY() - (lookAtN.getY() / 10) , Z + lookAt.getZ() - (lookAtN.getZ() / 10));
+	glVertex3d(X + lookAt.getX() - (lookAtN.getX() / 50) , Y + lookAt.getY() - (lookAtN.getY() / 50) , Z + lookAt.getZ() - (lookAtN.getZ() / 50));
 
 	glColor3d(0 , 0 , 0);
 	glVertex3d( DOMAIN_MAX ,  0 ,  DOMAIN_MAX);
@@ -235,23 +234,23 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 		}
 
 		case 'W' : {//go
-			*velocity = *lookAt * SPEED;
+			velocity = lookAt * SPEED;
 			gbFlag = 1;
 			break;
 		}
 		case 'S' : {//back
-			*velocity = *lookAt * -SPEED;
+			velocity = lookAt * -SPEED;
 			gbFlag = -1;
 			break;
 		}
 
 /*
 		case 'I' : {//up
-			velocity->setVector(0 , SPEED , 0);
+			velocity.setVector(0 , SPEED , 0);
 			break;
 		}
 		case 'K' : {
-			velocity->setVector(0 , -SPEED , 0);
+			velocity.setVector(0 , -SPEED , 0);
 			break;
 		}
 */
@@ -366,7 +365,7 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 */
 		case 'W' ://go
 		case 'S' : {//back
-			velocity->setVector(0 , 0 , 0);
+			velocity.setVector(0 , 0 , 0);
 			gbFlag = 0;
 			break;
 		}
@@ -378,10 +377,10 @@ void Sight::rotate(Vector* vertex , Vector* basePoint , float degYaw , float deg
 {
 	Vector shaft(0 , 1 , 0);
 
-	vertex->subtractVector(basePoint);
+	*vertex -= *basePoint;
 	spin(vertex , &shaft , degYaw);
-	spin(vertex , lookAtN , degPitch);
-	vertex->addVector(basePoint);
+	spin(vertex , &lookAtN , degPitch);
+	*vertex += *basePoint;
 }
 
 void Sight::spin(Vector* vertex , Vector* shaft , float deg)

@@ -3,13 +3,13 @@
 
 #include <GL/glu.h>
 #include <QGLWidget>
+#include "Vector.h"
 
 #define PI 3.141592
 #define SPEED 0.15
 
 class Object;
 class QKeyEvent;
-class Vector;
 
 class Sight : public QGLWidget
 {
@@ -41,10 +41,10 @@ private:
 	short dominatorIndex;
 	short possessFlag;
 	Object** object;
-	Vector* lookAt;
-	Vector* lookAtN;
+	Vector lookAt;
+	Vector lookAtN;
+	Vector velocity;
 	Vector* dominatorSightPoint;
-	Vector* velocity;
 
 	short gbFlag;
 };

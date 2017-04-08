@@ -66,8 +66,8 @@ Object Gunner::fire(void)
 	return(Object(*modelBullet));
 }
 
-void Gunner::trigger(Vector* lookAt)
+void Gunner::trigger(Vector lookAt)
 {
-	gunsight = *lookAt;
+	gunsight = lookAt;
 	bulletCount = 200;
 }
