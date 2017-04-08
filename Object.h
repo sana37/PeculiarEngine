@@ -19,27 +19,19 @@ public:
 	short getPolygonNum(void) const;
 	short getLineNum(void) const;
 
-	void getVertex(short , Vector*) const;
 	const Vector& getVertex(short) const;
 
-	void getGravityCenter(Vector*) const;
 	const Vector& getGravityCenter(void) const;
 
-	void getPolygon1Vertex(short , Vector*) const;
-	void getPolygon2Vertex(short , Vector*) const;
-	void getPolygon3Vertex(short , Vector*) const;
 	const Vector& getPolygon1Vertex(short) const;
 	const Vector& getPolygon2Vertex(short) const;
 	const Vector& getPolygon3Vertex(short) const;
 
-	void getLineLVertex(short , Vector*) const;
-	void getLineRVertex(short , Vector*) const;
 	const Vector& getLineLVertex(short) const;
 	const Vector& getLineRVertex(short) const;
 
 	float getRadius(void) const;
 
-	void getVelocity(Vector*) const;
 	const Vector& getVelocity(void) const;
 
 	short getPolygonR(short) const;
@@ -53,23 +45,28 @@ public:
 	bool isPolygonEmbody(short) const;
 
 
-	void setVertex(short , Vector*);
-	void setGravityCenter(Vector*);
-	void setVelocity(Vector*);
+	void setVertex(short , const Vector&);
+	void setVertex(short , float , float , float);
+	void setGravityCenter(const Vector&);
+	void setGravityCenter(float , float , float);
+	void setVelocity(const Vector&);
+	void setVelocity(float , float , float);
 
 	void setDomination(bool);
 	bool update(void);
-	void move(void);
+	void run(void);
 	void back(void);
 	void stop(void);
-	void transport(Vector*);
-	void teleport(Vector*);
+	void moveRelative(const Vector&);
+	void moveRelative(float , float , float);
+	void moveAbsolute(const Vector&);
+	void moveAbsolute(float , float , float);
 	void enblack(short);
 
 
 protected:
 	char classCode;
-	Vector* velocity;
+	Vector velocity;
 	bool isDominated;
 
 private:
@@ -77,8 +74,8 @@ private:
 	short polygonNum;
 	short lineNum;
 
-	Vector** vertex;
-	Vector* gravityCenter;
+	Vector* vertex;
+	Vector gravityCenter;
 
 	float radius;
 	bool* vertexEmbodyFlag;

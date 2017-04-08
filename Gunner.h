@@ -17,7 +17,7 @@ public:
 
 private:
 	Object* modelBullet;
-	Vector* gunsight;
+	Vector gunsight;
 	short bulletIndex;
 	int bulletCount;
 };

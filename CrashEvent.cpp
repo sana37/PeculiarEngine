@@ -307,7 +307,7 @@ void Field::CrashEvent::reflect(short formerNum , short latterNum)
 			case 1 : index = latterNum;	break;
 		}
 
-		field->object[index]->getVelocity(&temp);
+		temp = field->object[index]->getVelocity();
 		temp.getVector(V);
 
 		if(cubicEquation(P , Q , n , V , coefficient)){
@@ -316,7 +316,7 @@ void Field::CrashEvent::reflect(short formerNum , short latterNum)
 			V[2] -= 2.0 * coefficient[2] * n[2];
 
 			temp.setVector(V);
-			field->object[index]->setVelocity(&temp);
+			field->object[index]->setVelocity(temp);
 		}
 	}
 }

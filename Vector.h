@@ -36,7 +36,10 @@ public:
 	Vector operator+(const Vector&) const;
 	Vector operator-(const Vector&) const;
 	Vector operator*(float) const;
-	Vector operator=(const Vector&);
+	const Vector& operator=(const Vector&);
+	const Vector& operator+=(const Vector&);
+	const Vector& operator-=(const Vector&);
+	const Vector& operator*=(float);
 
 private:
 	float X;

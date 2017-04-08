@@ -2,13 +2,12 @@
 #include "Object.h"
 //#include <iostream>
 
-Gunner::Gunner(const char* fileName , const char* bulletFileName) : Player::Player(fileName)
+Gunner::Gunner(const char* fileName , const char* bulletFileName) : Player::Player(fileName) , gunsight(Vector(0 , -1 , 0))
 {
 	classCode = 'G';
 	bulletIndex = 0;
 	bulletCount = 0;
 	modelBullet = new Object(bulletFileName);
-	gunsight = new Vector(0 , -1 , 0);
 }
 
 Gunner::Gunner(const Gunner& originalGunner) : Player::Player(originalGunner)
@@ -17,7 +16,7 @@ Gunner::Gunner(const Gunner& originalGunner) : Player::Player(originalGunner)
 		Object* originalModelBullet;
 		originalGunner.inheritGunner(&bulletIndex , &bulletCount , &originalModelBullet);
 		modelBullet = new Object(*originalModelBullet);
-		gunsight = new Vector(0 , -1 , 0);
+		gunsight.setVector(0 , -1 , 0);
 	}else{
 		bulletIndex = 0;
 		bulletCount = 0;
@@ -36,7 +35,7 @@ bool Gunner::updateGunner(void)
 	this->decelerate();
 	if(isDominated == false)
 		this->autoMove();
-	this->move();
+	this->run();
 
 	if(isDominated == false)
 		bulletCount++;
@@ -53,22 +52,22 @@ Object Gunner::fire(void)
 {
 //	bulletIndex++;
 
-	Vector temp = this->getGravityCenter() + (*gunsight * 2);
+	Vector temp = this->getGravityCenter() + (gunsight * 2);
 //	Vector temp = this->getGravityCenter();
 //	temp.addVector(0 , -2 , 0);
 
-	modelBullet->teleport(&temp);
+	modelBullet->moveAbsolute(temp);
 
-	temp = *gunsight;
+	temp = gunsight;
 	temp = temp * 3;
 //	temp.setVector(0 , -1 , 0);
-	modelBullet->setVelocity(&temp);
+	modelBullet->setVelocity(temp);
 
 	return(Object(*modelBullet));
 }
 
 void Gunner::trigger(Vector* lookAt)
 {
-	gunsight->setVector(lookAt);
+	gunsight = *lookAt;
 	bulletCount = 200;
 }

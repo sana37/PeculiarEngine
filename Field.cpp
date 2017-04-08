@@ -54,27 +54,17 @@ Field::Field(void)
 	QObject::connect(sight , SIGNAL(timeCall()) , this , SLOT(timeControl()));
 	QObject::connect(autoGeneration , SIGNAL(timeout()) , this , SLOT(autoGenerate()));
 
-	Vector temp;
+	object[3]->moveAbsolute(8 , 2 , 0);
+	object[3]->setVelocity(0.03 , 0.05 , 0);
 
-	temp.setVector(8 , 2 , 0);
-	object[3]->teleport(&temp);
-	temp.setVector(0.03 , 0.05 , 0);
-	object[3]->setVelocity(&temp);
+	object[4]->moveAbsolute(6 , 6 , 6);
+	object[4]->setVelocity(-0.03 , 0.03 , 0.08);
 
-	temp.setVector(6 , 6 , 6);
-	object[4]->teleport(&temp);
-	temp.setVector(-0.03 , 0.03 , 0.08);
-	object[4]->setVelocity(&temp);
+	object[5]->moveAbsolute(3 , 3 , 3);
+	object[5]->setVelocity(0 , -0.05 , 0.03);
 
-	temp.setVector(3 , 3 , 3);
-	object[5]->teleport(&temp);
-	temp.setVector(0 , -0.05 , 0.03);
-	object[5]->setVelocity(&temp);
-
-	temp.setVector(0 , 5 , 0);
-	object[6]->teleport(&temp);
-	temp.setVector(0.04 , 0.1 , 0);
-	object[6]->setVelocity(&temp);
+	object[6]->moveAbsolute(0 , 5 , 0);
+	object[6]->setVelocity(0.04 , 0.1 , 0);
 
 	deadObjectNum = 0;
 	autoGenerationIndex = 0;
@@ -191,7 +181,7 @@ void Field::autoGenerate(void)
 			break;
 		}
 	}
-	temp->teleport(&vector);
+	temp->moveAbsolute(vector);
 
 	switch(autoGenerationIndex % 3){
 		case 0 : {
@@ -207,7 +197,7 @@ void Field::autoGenerate(void)
 			break;
 		}
 	}
-	temp->setVelocity(&vector);
+	temp->setVelocity(vector);
 
 	objectGenerate(temp);
 	autoGenerationIndex++;

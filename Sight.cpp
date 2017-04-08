@@ -29,7 +29,7 @@ Sight::Sight(Object** originalObject , short originalObjectNum , short originalD
 
 	object = originalObject;
 	dominatorSightPoint = new Vector[objectNum];
-	object[dominatorIndex]->teleport(&temp);
+	object[dominatorIndex]->moveAbsolute(temp);
 //////////////////////////////////////////////////////////////////////////////// koudaisai only
 	object[dominatorIndex]->stop();
 	dominatorSightPoint[originalDominatorIndex].setVector(0 , 0.1 , -0.1);
@@ -69,7 +69,7 @@ void Sight::update(void)
 		Vector vertex;
 
 		vertex = basePoint - dominatorSightPoint[dominatorIndex];
-		object[dominatorIndex]->teleport(&vertex);
+		object[dominatorIndex]->moveAbsolute(vertex);
 
 		if(omegaYaw != 0  ||  omegaPitch != 0){
 			short vertexNum;
@@ -78,11 +78,11 @@ void Sight::update(void)
 			for(short i = 0  ;  i < vertexNum  ;  i++){
 				vertex = object[dominatorIndex]->getVertex(i);
 				rotate(&vertex , &basePoint , omegaYaw , omegaPitch);
-				object[dominatorIndex]->setVertex(i , &vertex);
+				object[dominatorIndex]->setVertex(i , vertex);
 			}
 			vertex = object[dominatorIndex]->getGravityCenter();
 			rotate(&vertex , &basePoint , omegaYaw , omegaPitch);
-			object[dominatorIndex]->setGravityCenter(&vertex);
+			object[dominatorIndex]->setGravityCenter(vertex);
 
 			rotate(&dominatorSightPoint[dominatorIndex] , &zero , omegaYaw , omegaPitch);
 			if(gbFlag != 0)
@@ -114,8 +114,7 @@ void Sight::updateObject(Object** originalObject , short originalObjectNum)
 void Sight::receiveMovement(void)
 {
 	if(possessFlag > 0){
-		Vector temp;
-		object[dominatorIndex]->getVelocity(&temp);
+		Vector temp = object[dominatorIndex]->getVelocity();
 
 		X += temp.getX();
 		Y += temp.getY();
@@ -189,11 +188,11 @@ void Sight::paintObject(Object* modelObject)
 
 		glColor3s(modelObject->getPolygonR(i) , modelObject->getPolygonG(i) , modelObject->getPolygonB(i));
 
-		modelObject->getPolygon1Vertex(i , &temp);
+		temp = modelObject->getPolygon1Vertex(i);
 		glVertex3d(temp.getX() , temp.getY() , temp.getZ());
-		modelObject->getPolygon2Vertex(i , &temp);
+		temp = modelObject->getPolygon2Vertex(i);
 		glVertex3d(temp.getX() , temp.getY() , temp.getZ());
-		modelObject->getPolygon3Vertex(i , &temp);
+		temp = modelObject->getPolygon3Vertex(i);
 		glVertex3d(temp.getX() , temp.getY() , temp.getZ());
 	}
 	glEnd();
@@ -267,10 +266,7 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			possessFlag++;
 			switch(possessFlag){
 				case 1 : {
-					Vector temp;
-
-					object[dominatorIndex]->getGravityCenter(&temp);
-					temp.addVector(&dominatorSightPoint[dominatorIndex]);
+					Vector temp = object[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
 
 					X = temp.getX();
 					Y = temp.getY();

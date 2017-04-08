@@ -184,10 +184,34 @@ Vector Vector::operator*(float k) const
 	return(Vector(X * k , Y * k , Z * k));
 }
 
-Vector Vector::operator=(const Vector& originalVector)
+const Vector& Vector::operator=(const Vector& originalVector)
 {
 	X = originalVector.getX();
 	Y = originalVector.getY();
 	Z = originalVector.getZ();
-	return(Vector(this));
+	return(*this);
+}
+
+const Vector& Vector::operator+=(const Vector& vector)
+{
+	X += vector.getX();
+	Y += vector.getY();
+	Z += vector.getZ();
+	return(*this);
+}
+
+const Vector& Vector::operator-=(const Vector& vector)
+{
+	X -= vector.getX();
+	Y -= vector.getY();
+	Z -= vector.getZ();
+	return(*this);
+}
+
+const Vector& Vector::operator*=(float k)
+{
+	X *= k;
+	Y *= k;
+	Z *= k;
+	return(*this);
 }

@@ -11,15 +11,14 @@ NumberBox::NumberBox(short num) : Object::Object("cube")
 
 NumberBox::NumberBox(const NumberBox& originalNumberBox) : Object::Object(originalNumberBox)
 {
-	Vector point(this->getGravityCenter());
-	Vector temp(0 , 0 , 0);
+	Vector temp = this->getGravityCenter();
 
-	this->teleport(&temp);
+	this->moveAbsolute(0 , 0 , 0);
 
 	number = originalNumberBox.getNum();
 	this->setup(number);
 
-	this->teleport(&point);
+	this->moveAbsolute(temp);
 }
 
 void NumberBox::setup(short num)
@@ -151,10 +150,10 @@ bool NumberBox::decompose(NumberBox** operatedNumberBox , Object** operatedObjec
 	replica1 = new NumberBox(replicaNumber1);
 	replica2 = new NumberBox(replicaNumber2);
 
-	replica1->teleport(&replica1Point);
-	replica2->teleport(&replica2Point);
-	replica1->setVelocity(&replica1Velocity);
-	replica2->setVelocity(&replica2Velocity);
+	replica1->moveAbsolute(replica1Point);
+	replica2->moveAbsolute(replica2Point);
+	replica1->setVelocity(replica1Velocity);
+	replica2->setVelocity(replica2Velocity);
 
 	delete *operatedNumberBox;
 	delete *operatedObject;
