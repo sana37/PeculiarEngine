@@ -6,7 +6,7 @@
 class Field::MoveEvent : public Field::Event
 {
 public:
-	MoveEvent(Field*);
+	MoveEvent(void);
 
 	void exec(void);
 };

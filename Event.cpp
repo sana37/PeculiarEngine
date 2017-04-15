@@ -1,8 +1,7 @@
 #include "Event.h"
 
-Field::Event::Event(Field* _field)
+Field::Event::Event(void)
 {
-	field = _field;
 	execFlag = true;
 }
 

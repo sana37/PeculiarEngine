@@ -1,7 +1,7 @@
 #include "SightMoveEvent.h"
 #include "Sight.h"
 
-Field::SightMoveEvent::SightMoveEvent(Field* _field) : Field::Event::Event(_field)
+Field::SightMoveEvent::SightMoveEvent(void) : Field::Event::Event()
 {
 }
 

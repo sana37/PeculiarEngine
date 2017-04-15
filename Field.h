@@ -15,9 +15,18 @@ class QTimer;
 class Field : public QObject
 {
 	Q_OBJECT
-public:
+private:
+//singleton object field
+	static Field* field;
+
 	Field(void);
+	Field(const Field&);
 	~Field(void);
+public:
+	static Field* getInstance(void);
+	static void deleteInstance(void);
+
+public:
 	void open(void);
 signals:
 	void reportScore(short);
@@ -32,7 +41,6 @@ private:
 	class MoveEvent;
 	class SightMoveEvent;
 	class CrashEvent;
-//singleton object field
 
 	Sight* sight;
 	QTimer* time;

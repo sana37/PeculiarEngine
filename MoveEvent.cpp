@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "Gunner.h"
 
-Field::MoveEvent::MoveEvent(Field* _field) : Field::Event::Event(_field)
+Field::MoveEvent::MoveEvent(void) : Field::Event::Event()
 {
 }
 

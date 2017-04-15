@@ -5,10 +5,12 @@ int main(int argc , char** argv)
 {
 	QApplication app(argc , argv);
 
-	Field field;
-	field.open();
+	Field* field = Field::getInstance();
+	field->open();
 
 	app.exec();
 
-	return(0);
+	Field::deleteInstance();
+
+	return 0;
 }

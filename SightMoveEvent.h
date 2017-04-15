@@ -6,7 +6,7 @@
 class Field::SightMoveEvent : public Field::Event
 {
 public:
-	SightMoveEvent(Field*);
+	SightMoveEvent(void);
 
 	void exec(void);
 };

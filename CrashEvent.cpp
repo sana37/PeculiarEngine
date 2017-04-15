@@ -4,7 +4,7 @@
 #include <iostream>
 #include <math.h>
 
-Field::CrashEvent::CrashEvent(Field* _field) : Field::Event::Event(_field)
+Field::CrashEvent::CrashEvent(void) : Field::Event::Event()
 {
 }
 

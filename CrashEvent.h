@@ -6,7 +6,7 @@
 class Field::CrashEvent : public Field::Event
 {
 public:
-	CrashEvent(Field*);
+	CrashEvent(void);
 
 	void exec(void);
 

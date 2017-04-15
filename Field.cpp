@@ -32,9 +32,9 @@ Field::Field(void)
 	sight = new Sight(object , objectNum , 2);
 
 	event = new Event*[eventNum];
-	event[0] = new MoveEvent(this);
-	event[1] = new SightMoveEvent(this);
-	event[2] = new CrashEvent(this);
+	event[0] = new MoveEvent();
+	event[1] = new SightMoveEvent();
+	event[2] = new CrashEvent();
 
 	stateCrash = new char*[objectNum];
 	indexCrash = new short*[objectNum];
@@ -69,10 +69,29 @@ Field::Field(void)
 	deadObjectNum = 0;
 	autoGenerationIndex = 0;
 }
-
+/*
+Field::Field(const Field& _field) : QObject::QObject()
+{
+//do nothing because this class make singleton object
+}
+*/
 Field::~Field(void)
 {
 	sight->close();
+}
+
+Field* Field::getInstance(void)
+{
+	if (field == NULL)
+		field = new Field();
+	return(field);
+}
+
+void Field::deleteInstance(void)
+{
+	if (field != NULL)
+		delete field;
+	field = NULL;
 }
 
 void Field::open(void)
@@ -271,3 +290,5 @@ void Field::objectGenerate(Object* newObject)
 
 	sight->updateObject(object , objectNum);
 }
+
+Field* Field::field = NULL;

@@ -9,7 +9,6 @@ public:
 	Object(const char*);
 	Object(const Object&);//copy constructer
 	~Object(void);
-	void inherit(bool* , short* , short* , short* , short* , short*) const;
 	Object operator=(const Object&);
 	void copyObject(const Object&);
 	void composeObject(Object*);
@@ -71,26 +70,26 @@ protected:
 
 private:
 	short vertexNum;
-	short polygonNum;
 	short lineNum;
+	short polygonNum;
 
 	Vector* vertex;
 	Vector gravityCenter;
 
-	float radius;
-	bool* vertexEmbodyFlag;
-	bool* polygonEmbodyFlag;
+	short* lineLVertexIndex;
+	short* lineRVertexIndex;
 
 	short* polygon1VertexIndex;
 	short* polygon2VertexIndex;
 	short* polygon3VertexIndex;
 
-	short* lineLVertexIndex;
-	short* lineRVertexIndex;
-
 	short* polygonR;
 	short* polygonG;
 	short* polygonB;
+
+	float radius;
+	bool* vertexEmbodyFlag;
+	bool* polygonEmbodyFlag;
 
 };
 

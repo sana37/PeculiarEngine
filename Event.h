@@ -6,15 +6,12 @@
 class Field::Event
 {
 public:
-	Event(Field*);
+	Event(void);
 
 	virtual void exec(void) = 0;
 	void enable(void);
 	void disable(void);
 	bool isEnabled(void);
-
-protected:
-	Field* field;
 
 private:
 	bool execFlag;
