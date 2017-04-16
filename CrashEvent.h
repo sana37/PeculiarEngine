@@ -15,7 +15,6 @@ private:
 	char judgeCrash(short , short);
 	void reflect(short , short);
 	bool calculate1(float* , float* , float*);
-	bool cubicEquation(float* , float* , float* , float* , float*);
 
 };
 

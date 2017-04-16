@@ -1,12 +1,10 @@
 #include "Sight.h"
 #include "Object.h"
 #include "Gunner.h"
+#include "Calculater.h"
 #include <QKeyEvent>
 #include <iostream>
-#include <math.h>
 
-#define DOMAIN_MAX 29.85
-#define OMEGA 0.8
 
 Sight::Sight(Object** originalObject , short originalObjectNum , short originalDominatorIndex) :
 	lookAt(Vector(0 , 0 , -1)) ,
@@ -60,8 +58,8 @@ void Sight::update(void)
 	if(lookAt.getY() < -0.97  &&  omegaPitch < 0)
 		omegaPitch = 0;
 
-	rotate(&lookAt , &zero , omegaYaw , omegaPitch);
-	rotate(&lookAtN , &zero , omegaYaw , 0);
+	rotateSelf(&lookAt , &zero , omegaYaw , omegaPitch);
+	rotateSelf(&lookAtN , &zero , omegaYaw , 0);
 
 	if(possessFlag == 2){
 		Vector basePoint(X , Y , Z);
@@ -76,14 +74,14 @@ void Sight::update(void)
 			vertexNum = object[dominatorIndex]->getVertexNum();
 			for(short i = 0  ;  i < vertexNum  ;  i++){
 				vertex = object[dominatorIndex]->getVertex(i);
-				rotate(&vertex , &basePoint , omegaYaw , omegaPitch);
+				rotateSelf(&vertex , &basePoint , omegaYaw , omegaPitch);
 				object[dominatorIndex]->setVertex(i , vertex);
 			}
 			vertex = object[dominatorIndex]->getGravityCenter();
-			rotate(&vertex , &basePoint , omegaYaw , omegaPitch);
+			rotateSelf(&vertex , &basePoint , omegaYaw , omegaPitch);
 			object[dominatorIndex]->setGravityCenter(vertex);
 
-			rotate(&dominatorSightPoint[dominatorIndex] , &zero , omegaYaw , omegaPitch);
+			rotateSelf(&dominatorSightPoint[dominatorIndex] , &zero , omegaYaw , omegaPitch);
 			if(gbFlag != 0)
 				velocity = lookAt * SPEED * gbFlag;
 		}
@@ -373,49 +371,12 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 	}
 }
 
-void Sight::rotate(Vector* vertex , Vector* basePoint , float degYaw , float degPitch)
+void Sight::rotateSelf(Vector* vertex , Vector* basePoint , float degYaw , float degPitch)
 {
 	Vector shaft(0 , 1 , 0);
 
 	*vertex -= *basePoint;
-	spin(vertex , &shaft , degYaw);
-	spin(vertex , &lookAtN , degPitch);
+	Calculater::rotate(vertex , &shaft , degYaw);
+	Calculater::rotate(vertex , &lookAtN , degPitch);
 	*vertex += *basePoint;
-}
-
-void Sight::spin(Vector* vertex , Vector* shaft , float deg)
-{
-	float temp[3];
-	float sx = shaft->getX();
-	float sy = shaft->getY();
-	float sz = shaft->getZ();
-	float vx = vertex->getX();
-	float vy = vertex->getY();
-	float vz = vertex->getZ();
-//	float r = shaft->getMagnitude();//sqrt(sx*sx + sy*sy + sz*sz);
-
-	if(deg == 0)
-		return;
-
-	deg *= PI / 180;
-/*
-	sx /= r;
-	sy /= r;
-	sz /= r;
-*/
-	temp[0] = matrix1(sx , deg)*vx + matrix2(sx , sy , -sz , deg)*vy + matrix2(sx , sz , sy , deg)*vz;
-	temp[1] = matrix2(sx , sy , sz , deg)*vx + matrix1(sy , deg)*vy + matrix2(sy , sz , -sx , deg)*vz;
-	temp[2] = matrix2(sx , sz , -sy , deg)*vx + matrix2(sy , sz , sx , deg)*vy + matrix1(sz , deg)*vz;
-
-	vertex->setVector(temp);
-}
-
-float Sight::matrix1(float m , float deg)
-{
-	return(m*m + (1 - m*m)*cos(deg));
-}
-
-float Sight::matrix2(float l , float m , float n , float deg)
-{
-	return(l*m*(1 - cos(deg)) + n*sin(deg));
 }

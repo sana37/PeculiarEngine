@@ -5,8 +5,10 @@
 #include <QGLWidget>
 #include "Vector.h"
 
-#define PI 3.141592
 #define SPEED 0.15
+#define DOMAIN_MAX 29.85
+#define OMEGA 0.8
+
 
 class Object;
 class QKeyEvent;
@@ -29,10 +31,7 @@ private:
 	void paintObject(Object*);
 	void keyPressEvent(QKeyEvent*);
 	void keyReleaseEvent(QKeyEvent*);
-	void rotate(Vector* , Vector* , float , float);
-	void spin(Vector* , Vector* , float);
-	float matrix1(float , float);
-	float matrix2(float , float , float , float);
+	void rotateSelf(Vector* , Vector* , float , float);
 
 	short objectNum;
 	float X , Y , Z;

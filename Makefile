@@ -45,7 +45,8 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = CrashEvent.cpp \
+SOURCES       = Calculater.cpp \
+		CrashEvent.cpp \
 		Event.cpp \
 		Field.cpp \
 		Gunner.cpp \
@@ -58,7 +59,8 @@ SOURCES       = CrashEvent.cpp \
 		SightMoveEvent.cpp \
 		Vector.cpp moc_Field.cpp \
 		moc_Sight.cpp
-OBJECTS       = CrashEvent.o \
+OBJECTS       = Calculater.o \
+		CrashEvent.o \
 		Event.o \
 		Field.o \
 		Gunner.o \
@@ -179,7 +181,8 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/exceptions.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/lex.prf \
-		PrimeNumberGame.pro CrashEvent.cpp \
+		PrimeNumberGame.pro Calculater.cpp \
+		CrashEvent.cpp \
 		Event.cpp \
 		Field.cpp \
 		Gunner.cpp \
@@ -455,7 +458,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/PrimeNumberGame1.0.0 || mkdir -p .tmp/PrimeNumberGame1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents CrashEvent.h Event.h Field.h Gunner.h MoveEvent.h NumberBox.h Object.h Player.h Sight.h SightMoveEvent.h Vector.h .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents CrashEvent.cpp Event.cpp Field.cpp Gunner.cpp main.cpp MoveEvent.cpp NumberBox.cpp Object.cpp Player.cpp Sight.cpp SightMoveEvent.cpp Vector.cpp .tmp/PrimeNumberGame1.0.0/ && (cd `dirname .tmp/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname .tmp/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/PrimeNumberGame1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents Calculater.h CrashEvent.h Event.h Field.h Gunner.h MoveEvent.h NumberBox.h Object.h Player.h Sight.h SightMoveEvent.h Vector.h .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents Calculater.cpp CrashEvent.cpp Event.cpp Field.cpp Gunner.cpp main.cpp MoveEvent.cpp NumberBox.cpp Object.cpp Player.cpp Sight.cpp SightMoveEvent.cpp Vector.cpp .tmp/PrimeNumberGame1.0.0/ && (cd `dirname .tmp/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname .tmp/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/PrimeNumberGame1.0.0
 
 
 clean:compiler_clean 
@@ -646,6 +649,7 @@ moc_Sight.cpp: /opt/Qt/5.3/gcc_64/include/QtOpenGL/QGLWidget \
 		/opt/Qt/5.3/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
+		Vector.h \
 		Sight.h
 	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtOpenGL -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore Sight.h -o moc_Sight.cpp
 
@@ -662,6 +666,9 @@ compiler_lex_clean:
 compiler_clean: compiler_moc_header_clean 
 
 ####### Compile
+
+Calculater.o: Calculater.cpp Calculater.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Calculater.o Calculater.cpp
 
 CrashEvent.o: CrashEvent.cpp CrashEvent.h \
 		Event.h \
@@ -717,7 +724,8 @@ CrashEvent.o: CrashEvent.cpp CrashEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
 		Object.h \
 		Vector.h \
-		NumberBox.h
+		NumberBox.h \
+		Calculater.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CrashEvent.o CrashEvent.cpp
 
 Event.o: Event.cpp Event.h \
@@ -889,8 +897,8 @@ Field.o: Field.cpp Field.h \
 		/opt/Qt/5.3/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
-		Object.h \
 		Vector.h \
+		Object.h \
 		Player.h \
 		NumberBox.h \
 		Gunner.h \
@@ -1137,8 +1145,8 @@ MoveEvent.o: MoveEvent.cpp MoveEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
-		Object.h \
 		Vector.h \
+		Object.h \
 		Player.h \
 		Gunner.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MoveEvent.o MoveEvent.cpp
@@ -1395,7 +1403,8 @@ SightMoveEvent.o: SightMoveEvent.cpp SightMoveEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtOpenGL/qglcolormap.h \
 		/opt/Qt/5.3/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
-		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h
+		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
+		Vector.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o SightMoveEvent.o SightMoveEvent.cpp
 
 Vector.o: Vector.cpp Vector.h
