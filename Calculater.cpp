@@ -21,6 +21,9 @@ bool Calculater::solveCubicEquation(float* a, float* b, float* c, float* k, floa
 
 void Calculater::rotate(Vector* vertex_p, Vector offset, Vector shaft, float deg)
 {
+	if (deg == 0)
+		return;
+
 	*vertex_p -= offset;
 
 	float temp[3];
@@ -31,11 +34,6 @@ void Calculater::rotate(Vector* vertex_p, Vector offset, Vector shaft, float deg
 	float vy = vertex_p->getY();
 	float vz = vertex_p->getZ();
 //	float r = shaft.getMagnitude();//sqrt(sx*sx + sy*sy + sz*sz);
-
-	if (deg == 0) {
-		*vertex_p += offset;
-		return;
-	}
 
 	deg *= PI / 180;
 /*

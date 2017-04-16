@@ -16,7 +16,7 @@ Vector::Vector(float* factor)
 	Z = factor[2];
 }
 
-Vector::Vector(float x , float y , float z)
+Vector::Vector(float x, float y, float z)
 {
 	X = x;
 	Y = y;
@@ -44,22 +44,22 @@ Vector::~Vector(void)
 
 float Vector::getX(void) const
 {
-	return(X);
+	return X;
 }
 
 float Vector::getY(void) const
 {
-	return(Y);
+	return Y;
 }
 
 float Vector::getZ(void) const
 {
-	return(Z);
+	return Z;
 }
 
 float Vector::getMagnitude(void) const
 {
-	return(sqrt(X*X + Y*Y + Z*Z));
+	return sqrt(X*X + Y*Y + Z*Z);
 }
 
 void Vector::getVector(float* factor)
@@ -91,7 +91,7 @@ void Vector::setVector(float* factor)
 	Z = factor[2];
 }
 
-void Vector::setVector(float x , float y , float z)
+void Vector::setVector(float x, float y, float z)
 {
 	X = x;
 	Y = y;
@@ -112,7 +112,7 @@ void Vector::addVector(float* factor)
 	Z += factor[2];
 }
 
-void Vector::addVector(float x , float y , float z)
+void Vector::addVector(float x, float y, float z)
 {
 	X += x;
 	Y += y;
@@ -133,7 +133,7 @@ void Vector::subtractVector(float* factor)
 	Z -= factor[2];
 }
 
-void Vector::subtractVector(float x , float y , float z)
+void Vector::subtractVector(float x, float y, float z)
 {
 	X -= x;
 	Y -= y;
@@ -154,14 +154,14 @@ void Vector::multiply(float k)
 	Z *= k;
 }
 
-void Vector::addVector(const Vector* vector1 , const Vector* vector2 , Vector* vectorAns)
+void Vector::addVector(const Vector* vector1, const Vector* vector2, Vector* vectorAns)
 {
 	vectorAns->setX(vector1->getX() + vector2->getX());
 	vectorAns->setY(vector1->getY() + vector2->getY());
 	vectorAns->setZ(vector1->getZ() + vector2->getZ());
 }
 
-void Vector::subtractVector(const Vector* vector1 , const Vector* vector2 , Vector* vectorAns)
+void Vector::subtractVector(const Vector* vector1, const Vector* vector2, Vector* vectorAns)
 {
 	vectorAns->setX(vector1->getX() - vector2->getX());
 	vectorAns->setY(vector1->getY() - vector2->getY());
@@ -171,17 +171,22 @@ void Vector::subtractVector(const Vector* vector1 , const Vector* vector2 , Vect
 
 Vector Vector::operator+(const Vector& addedVector) const
 {
-	return(Vector(X + addedVector.getX() , Y + addedVector.getY() , Z + addedVector.getZ()));
+	return Vector(X + addedVector.getX(), Y + addedVector.getY(), Z + addedVector.getZ());
 }
 
 Vector Vector::operator-(const Vector& subtractedVector) const
 {
-	return(Vector(X - subtractedVector.getX() , Y - subtractedVector.getY() , Z - subtractedVector.getZ()));
+	return Vector(X - subtractedVector.getX(), Y - subtractedVector.getY(), Z - subtractedVector.getZ());
 }
 
 Vector Vector::operator*(float k) const
 {
-	return(Vector(X * k , Y * k , Z * k));
+	return Vector(X * k, Y * k, Z * k);
+}
+
+Vector Vector::operator/(float k) const
+{
+	return Vector(X / k, Y / k, Z / k);
 }
 
 const Vector& Vector::operator=(const Vector& originalVector)
@@ -189,7 +194,7 @@ const Vector& Vector::operator=(const Vector& originalVector)
 	X = originalVector.getX();
 	Y = originalVector.getY();
 	Z = originalVector.getZ();
-	return(*this);
+	return *this;
 }
 
 const Vector& Vector::operator+=(const Vector& vector)
@@ -197,7 +202,7 @@ const Vector& Vector::operator+=(const Vector& vector)
 	X += vector.getX();
 	Y += vector.getY();
 	Z += vector.getZ();
-	return(*this);
+	return *this;
 }
 
 const Vector& Vector::operator-=(const Vector& vector)
@@ -205,7 +210,7 @@ const Vector& Vector::operator-=(const Vector& vector)
 	X -= vector.getX();
 	Y -= vector.getY();
 	Z -= vector.getZ();
-	return(*this);
+	return *this;
 }
 
 const Vector& Vector::operator*=(float k)
@@ -213,5 +218,13 @@ const Vector& Vector::operator*=(float k)
 	X *= k;
 	Y *= k;
 	Z *= k;
-	return(*this);
+	return *this;
+}
+
+const Vector& Vector::operator/=(float k)
+{
+	X /= k;
+	Y /= k;
+	Z /= k;
+	return *this;
 }

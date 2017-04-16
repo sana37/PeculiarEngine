@@ -30,6 +30,7 @@ public:
 	float getRadius(void) const;
 
 	const Vector& getVelocity(void) const;
+	Vector getOmega(void) const;
 
 	short getPolygonR(short) const;
 	short getPolygonG(short) const;
@@ -42,12 +43,14 @@ public:
 	bool isPolygonEmbody(short) const;
 
 
-	void setVertex(short , const Vector&);
-	void setVertex(short , float , float , float);
+	void setVertex(short, const Vector&);
+	void setVertex(short, float, float, float);
 	void setGravityCenter(const Vector&);
-	void setGravityCenter(float , float , float);
+	void setGravityCenter(float, float, float);
 	void setVelocity(const Vector&);
-	void setVelocity(float , float , float);
+	void setVelocity(float, float, float);
+	void setOmega(const Vector&);
+	void setOmega(float, float, float);
 
 	void setDomination(bool);
 	bool update(void);
@@ -56,11 +59,11 @@ public:
 	void back(void);
 	void stop(void);
 	void moveRelative(const Vector&);
-	void moveRelative(float , float , float);
+	void moveRelative(float, float, float);
 	void moveAbsolute(const Vector&);
-	void moveAbsolute(float , float , float);
+	void moveAbsolute(float, float, float);
 
-//	void rotate(
+	void rotate(void);
 
 	void enblack(short);
 
@@ -68,6 +71,8 @@ public:
 protected:
 	char classCode;
 	Vector velocity;
+	Vector omegaVector;
+	float omega;
 	bool isDominated;
 
 private:

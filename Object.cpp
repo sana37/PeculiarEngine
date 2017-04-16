@@ -4,18 +4,20 @@
 #include <math.h>
 
 Object::Object(const char* fileName) :
-	velocity(Vector()) ,
+	velocity(Vector()),
+	omegaVector(Vector(0, 1, 0)),
+	omega(0),
 	gravityCenter(Vector())
 {
 	classCode = 'O';
 	radius = 0;
 	isDominated = false;
 
-	FILE* fp = fopen(fileName , "r");
+	FILE* fp = fopen(fileName, "r");
 
 	if (fp != NULL) {
 		while (fgetc(fp) != ':') ;
-		if (fscanf(fp , "%hd" , &vertexNum) == EOF)
+		if (fscanf(fp, "%hd", &vertexNum) == EOF)
 			printf("ERROR\n");
 
 		while (fgetc(fp) != '+') ;
@@ -24,7 +26,7 @@ Object::Object(const char* fileName) :
 		for (short i = 0  ;  i < vertexNum  ;  i++) {
 			float temp[3];
 
-			if (fscanf(fp , "%f%f%f" , &temp[0] , &temp[1] , &temp[2]) == EOF) {
+			if (fscanf(fp, "%f%f%f", &temp[0], &temp[1], &temp[2]) == EOF) {
 				printf("ERROR\n");
 				break;
 			}
@@ -45,7 +47,7 @@ Object::Object(const char* fileName) :
 			if (vertexEmbodyFlag[i] == true)
 				gravityCenter.addVector(temp);
 		}
-		gravityCenter *= (1.0 / (float)vertexNum);
+		gravityCenter /= vertexNum;
 
 
 
@@ -53,7 +55,7 @@ Object::Object(const char* fileName) :
 
 
 		while (fgetc(fp) != ':') ;
-		if (fscanf(fp , "%hd" , &lineNum) == EOF)
+		if (fscanf(fp, "%hd", &lineNum) == EOF)
 			printf("ERROR\n");
 
 		lineLVertexIndex = new short[lineNum];
@@ -61,7 +63,7 @@ Object::Object(const char* fileName) :
 
 		while (fgetc(fp) != '+') ;
 		for (short i = 0  ;  i < lineNum  ;  i++) {
-			if (fscanf(fp , "%hd%hd" , &lineLVertexIndex[i] , &lineRVertexIndex[i]) == EOF) break;
+			if (fscanf(fp, "%hd%hd", &lineLVertexIndex[i], &lineRVertexIndex[i]) == EOF) break;
 			lineLVertexIndex[i]--;
 			lineRVertexIndex[i]--;
 
@@ -74,7 +76,7 @@ Object::Object(const char* fileName) :
 
 
 		while (fgetc(fp) != ':') ;
-		if (fscanf(fp , "%hd" , &polygonNum) == EOF)
+		if (fscanf(fp, "%hd", &polygonNum) == EOF)
 			printf("ERROR\n");
 
 		polygon1VertexIndex = new short[polygonNum];
@@ -87,16 +89,16 @@ Object::Object(const char* fileName) :
 
 		while (fgetc(fp) != '+') ;
 		for (short i = 0  ;  i < polygonNum  ;  i++) {
-			float colorR , colorG , colorB;
+			float colorR, colorG, colorB;
 
-			if (fscanf(fp , "%hd%hd%hd" , &polygon1VertexIndex[i] , &polygon2VertexIndex[i] , &polygon3VertexIndex[i]) == EOF) break;
+			if (fscanf(fp, "%hd%hd%hd", &polygon1VertexIndex[i], &polygon2VertexIndex[i], &polygon3VertexIndex[i]) == EOF) break;
 			polygon1VertexIndex[i]--;
 			polygon2VertexIndex[i]--;
 			polygon3VertexIndex[i]--;
 
 			while (fgetc(fp) != '|') ;
 
-			if (fscanf(fp , "%f%f%f" , &colorR , &colorG , &colorB) == EOF) break;
+			if (fscanf(fp, "%f%f%f", &colorR, &colorG, &colorB) == EOF) break;
 			polygonR[i] = 32767 * colorR;
 			polygonG[i] = 32767 * colorG;
 			polygonB[i] = 32767 * colorB;
@@ -118,8 +120,8 @@ Object::Object(const char* fileName) :
 
 		if (fgetc(fp) == 'v') {
 			float temp[3];
-			if (fscanf(fp , "%f%f%f" , &temp[0] , &temp[1] , &temp[2]) == EOF) {
-				velocity.setVector(0 , 0 , 0);
+			if (fscanf(fp, "%f%f%f", &temp[0], &temp[1], &temp[2]) == EOF) {
+				velocity.setVector(0, 0, 0);
 			} else {
 				velocity.setVector(temp);
 			}
@@ -188,6 +190,8 @@ Object::Object(const Object& _object)
 
 
 	velocity = _object.velocity;
+	omegaVector = _object.omegaVector;
+	omega = _object.omega;
 	radius = _object.radius;
 
 	classCode = _object.classCode;
@@ -197,7 +201,7 @@ Object::Object(const Object& _object)
 Object::~Object(void)
 {
 //	printf("destructer object\n");
-//	printf("classCode : %c\n" , classCode);
+//	printf("classCode : %c\n", classCode);
 	delete[] vertex;
 	delete[] lineLVertexIndex;
 	delete[] lineRVertexIndex;
@@ -338,6 +342,11 @@ const Vector& Object::getVelocity(void) const
 	return(velocity);
 }
 
+Vector Object::getOmega(void) const
+{
+	return omegaVector * omega;
+}
+
 
 short Object::getPolygonR(short num) const
 {
@@ -377,14 +386,14 @@ bool Object::isPolygonEmbody(short polygonIndex) const
 
 
 
-void Object::setVertex(short num , const Vector& vector)
+void Object::setVertex(short num, const Vector& vector)
 {
 	vertex[num] = vector;
 }
 
-void Object::setVertex(short num , float x , float y , float z)
+void Object::setVertex(short num, float x, float y, float z)
 {
-	vertex[num].setVector(x , y , z);
+	vertex[num].setVector(x, y, z);
 }
 
 void Object::setGravityCenter(const Vector& vector)
@@ -392,9 +401,9 @@ void Object::setGravityCenter(const Vector& vector)
 	gravityCenter = vector;
 }
 
-void Object::setGravityCenter(float x , float y , float z)
+void Object::setGravityCenter(float x, float y, float z)
 {
-	gravityCenter.setVector(x , y , z);
+	gravityCenter.setVector(x, y, z);
 }
 
 void Object::setVelocity(const Vector& vector)
@@ -402,9 +411,22 @@ void Object::setVelocity(const Vector& vector)
 	velocity = vector;
 }
 
-void Object::setVelocity(float x , float y , float z)
+void Object::setVelocity(float x, float y, float z)
 {
-	velocity.setVector(x , y , z);
+	velocity.setVector(x, y, z);
+}
+
+void Object::setOmega(const Vector& vector)
+{
+	omega = vector.getMagnitude();
+	if (omega != 0)
+		omegaVector = vector / omega;
+}
+
+void Object::setOmega(float x, float y, float z)
+{
+	Vector vector(x, y, z);
+	setOmega(vector);
 }
 
 void Object::setDomination(bool originalIsDominated)
@@ -415,6 +437,7 @@ void Object::setDomination(bool originalIsDominated)
 bool Object::update(void)
 {
 	this->run();
+	this->rotate();
 	return(false);//whether velocity changes or not
 }
 
@@ -436,7 +459,7 @@ void Object::back(void)
 
 void Object::stop(void)
 {
-	velocity.setVector(0 , 0 , 0);
+	velocity.setVector(0, 0, 0);
 }
 
 void Object::moveRelative(const Vector& vector)
@@ -447,9 +470,9 @@ void Object::moveRelative(const Vector& vector)
 	gravityCenter += vector;
 }
 
-void Object::moveRelative(float x , float y , float z)
+void Object::moveRelative(float x, float y, float z)
 {
-	Vector vector(x , y , z);
+	Vector vector(x, y, z);
 	this->moveRelative(vector);
 }
 
@@ -459,10 +482,17 @@ void Object::moveAbsolute(const Vector& vector)
 	this->moveRelative(temp);
 }
 
-void Object::moveAbsolute(float x , float y , float z)
+void Object::moveAbsolute(float x, float y, float z)
 {
-	Vector vector(x , y , z);
+	Vector vector(x, y, z);
 	this->moveAbsolute(vector);
+}
+
+void Object::rotate(void)
+{
+	for (short i = 0  ;  i < vertexNum  ;  i++) {
+		Calculater::rotate(&vertex[i], gravityCenter, omegaVector, omega);
+	}
 }
 
 void Object::enblack(short num)

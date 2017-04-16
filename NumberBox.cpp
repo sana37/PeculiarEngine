@@ -6,6 +6,7 @@ NumberBox::NumberBox(short num) : Object::Object("cube")
 {
 	classCode = 'N';
 	number = num;
+	setOmega(3, 1, 0);
 	this->setup(number);
 }
 

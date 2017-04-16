@@ -14,21 +14,21 @@ void Field::MoveEvent::exec(void)
 	bool signal;
 
 //stateCrash nado wo initialize
-	for(short i = 0  ;  i < field->objectNum  ;  i++){
-/*		if(velocityChangeFlag[i]){
-			for(short j = 0  ;  j < OBJECT_NUM  ;  j++){
-				if(j < i)
+	for (short i = 0  ;  i < field->objectNum  ;  i++) {
+/*		if (velocityChangeFlag[i]) {
+			for (short j = 0  ;  j < OBJECT_NUM  ;  j++) {
+				if (j < i)
 					stateCrash[j][i] = '\0';
-				else if(i < j)
+				else if (i < j)
 					stateCrash[i][j] = '\0';
 			}
 		}*/
-		switch(field->object[i]->whichClass()){
+		switch (field->object[i]->whichClass()) {
 			case 'G' : {
 				Gunner* gunner = (Gunner*)field->object[i];
 
 				signal = gunner->updateGunner();
-				if(signal){
+				if (signal) {
 					Object bullet(gunner->fire());
 					field->objectGenerate(&bullet);
 				}
@@ -49,10 +49,10 @@ void Field::MoveEvent::exec(void)
 				break;
 			}
 		}
-		if(i >= 2){
-			if((field->object[i]->getGravityCenter()).getMagnitude() > WORLD){
+		if (i >= 2) {
+			if ((field->object[i]->getGravityCenter()).getMagnitude() > WORLD) {
 //				std::cerr << "deleted\n";
-				if(field->deadObjectNum < 100){
+				if (field->deadObjectNum < 100) {
 					field->deadObjectIndex[field->deadObjectNum] = i;
 					field->deadObjectNum++;
 				}

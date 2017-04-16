@@ -6,7 +6,7 @@ class Vector
 public:
 	Vector(void);
 	Vector(float*);
-	Vector(float , float , float);
+	Vector(float, float, float);
 	Vector(Vector*);
 	Vector(const Vector&);//copy constructer
 	~Vector(void);
@@ -20,26 +20,28 @@ public:
 	void setY(float);
 	void setZ(float);
 	void setVector(float*);
-	void setVector(float , float , float);
+	void setVector(float, float, float);
 	void setVector(Vector*);
 	void addVector(float*);
-	void addVector(float , float , float);
+	void addVector(float, float, float);
 	void addVector(Vector*);
 	void subtractVector(float*);
-	void subtractVector(float , float , float);
+	void subtractVector(float, float, float);
 	void subtractVector(Vector*);
 	void multiply(float);
 
-	static void addVector(const Vector* , const Vector* , Vector*);
-	static void subtractVector(const Vector* , const Vector* , Vector*);
+	static void addVector(const Vector*, const Vector*, Vector*);
+	static void subtractVector(const Vector*, const Vector*, Vector*);
 
 	Vector operator+(const Vector&) const;
 	Vector operator-(const Vector&) const;
 	Vector operator*(float) const;
+	Vector operator/(float) const;
 	const Vector& operator=(const Vector&);
 	const Vector& operator+=(const Vector&);
 	const Vector& operator-=(const Vector&);
 	const Vector& operator*=(float);
+	const Vector& operator/=(float);
 
 private:
 	float X;
