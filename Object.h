@@ -9,8 +9,6 @@ public:
 	Object(const char*);
 	Object(const Object&);//copy constructer
 	~Object(void);
-	Object operator=(const Object&);
-	void copyObject(const Object&);
 	void composeObject(Object*);
 
 
@@ -53,6 +51,7 @@ public:
 
 	void setDomination(bool);
 	bool update(void);
+
 	void run(void);
 	void back(void);
 	void stop(void);
@@ -60,6 +59,9 @@ public:
 	void moveRelative(float , float , float);
 	void moveAbsolute(const Vector&);
 	void moveAbsolute(float , float , float);
+
+//	void rotate(
+
 	void enblack(short);
 
 

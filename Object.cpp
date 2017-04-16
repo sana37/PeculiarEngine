@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "Calculater.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -144,35 +145,7 @@ Object::Object(const char* fileName) :
 Object::Object(const Object& _object)
 {
 //	printf("copy constructer object\n");
-	copyObject(_object);
-}
 
-Object::~Object(void)
-{
-//	printf("destructer object\n");
-//	printf("classCode : %c\n" , classCode);
-	delete[] vertex;
-	delete[] lineLVertexIndex;
-	delete[] lineRVertexIndex;
-	delete[] polygon1VertexIndex;
-	delete[] polygon2VertexIndex;
-	delete[] polygon3VertexIndex;
-	delete[] polygonR;
-	delete[] polygonG;
-	delete[] polygonB;
-	delete[] vertexEmbodyFlag;
-	delete[] polygonEmbodyFlag;
-}
-
-Object Object::operator=(const Object& _object)
-{
-	printf("mazuidesuyo! because not delete\n");
-	this->copyObject(_object);
-	return(Object(_object));
-}
-
-void Object::copyObject(const Object& _object)
-{
 	vertexNum = _object.vertexNum;
 	lineNum = _object.lineNum;
 	polygonNum = _object.polygonNum;
@@ -219,6 +192,23 @@ void Object::copyObject(const Object& _object)
 
 	classCode = _object.classCode;
 	isDominated = _object.isDominated;
+}
+
+Object::~Object(void)
+{
+//	printf("destructer object\n");
+//	printf("classCode : %c\n" , classCode);
+	delete[] vertex;
+	delete[] lineLVertexIndex;
+	delete[] lineRVertexIndex;
+	delete[] polygon1VertexIndex;
+	delete[] polygon2VertexIndex;
+	delete[] polygon3VertexIndex;
+	delete[] polygonR;
+	delete[] polygonG;
+	delete[] polygonB;
+	delete[] vertexEmbodyFlag;
+	delete[] polygonEmbodyFlag;
 }
 
 void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga dokuritusitamama unndouno eikyouwo tomoni ukeru sikumini sitai

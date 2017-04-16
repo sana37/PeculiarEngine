@@ -17,24 +17,24 @@ class Sight : public QGLWidget
 {
 	Q_OBJECT
 public:
-	Sight(Object** , short , short);
+	Sight(Object**, short, short);
 	void update(void);
-	void updateObject(Object** , short);
+	void updateObject(Object**, short);
 	void receiveMovement(void);
 	short getDominatorIndex(void);
 signals:
 	void timeCall(void);
 private:
 	void initializeGL(void);
-	void resizeGL(int , int);
+	void resizeGL(int, int);
 	void paintGL(void);
 	void paintObject(Object*);
 	void keyPressEvent(QKeyEvent*);
 	void keyReleaseEvent(QKeyEvent*);
-	void rotateSelf(Vector* , Vector* , float , float);
+	void rotateSelf(Vector*, Vector, float, float);
 
 	short objectNum;
-	float X , Y , Z;
+	float X, Y, Z;
 	float omegaYaw;
 	float omegaPitch;
 	short dominatorIndex;
