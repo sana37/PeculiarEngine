@@ -15,6 +15,13 @@ class QTimer;
 class Field : public QObject
 {
 	Q_OBJECT
+public:
+	class Event;
+	class MoveEvent;
+	class SightMoveEvent;
+	class CrashEvent;
+
+
 private:
 //singleton object field
 	static Field* field;
@@ -36,11 +43,6 @@ public slots:
 	void autoGenerate(void);
 private:
 	void objectGenerate(Object*);
-
-	class Event;
-	class MoveEvent;
-	class SightMoveEvent;
-	class CrashEvent;
 
 	Sight* sight;
 	QTimer* time;
