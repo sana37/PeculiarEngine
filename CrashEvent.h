@@ -3,6 +3,7 @@
 
 #include "Event.h"
 
+class Vector;
 class Object;
 
 class Field::CrashEvent : public Field::Event
@@ -16,7 +17,11 @@ public:
 	void exec(void);
 
 private:
-	bool interference(Object*, Object*);
+	bool canCrashObjSphere(Object*, Object*);
+	bool canCrashObjSphereAndVrtx(Object*, Vector);
+	bool judgeCrashNeo(Object*, Object*, char*, short*, short*);//hikisuu ha futatudake ga iina
+	bool judgePlgnAndVrtxNeo(Object*, Object*, short*, short*);
+	bool judgeLineAndLineNeo(Object*, Object*, short*, short*);
 	void judgeCrash(Object*, Object*, char*, short*, short*);
 	CrashResult judgePlgnAndVrtx(Object*, Object*, short*, short*, bool);
 	CrashResult judgeLineAndLine(Object*, Object*, short*, short*, bool);

@@ -19,14 +19,7 @@ void Field::CrashEvent::exec(void)
 	for (short i = 0  ;  i < (field->objectNum - 1)  ;  i++) {
 		for (short j = i + 1  ;  j < field->objectNum  ;  j++) {
 			if (field->object[i]->isActive() | field->object[j]->isActive()) {
-				if (interference(field->object[i], field->object[j])) {
-/*
-					field->object[i]->back();
-					field->object[j]->back();
-					distMin = judgeCrash();
-					relativevelocity = obj[i]->velocity - obj[j]->velocity;
-					
-*/
+				if (canCrashObjSphere(field->object[i], field->object[j])) {
 /*
 					if (field->stateCrash[i][j] == '\0') {
 						field->object[i]->back();
@@ -40,6 +33,7 @@ void Field::CrashEvent::exec(void)
 						field->object[i]->run();
 					}
 */
+/*
 					judgeCrash(
 						field->object[i],
 						field->object[j],
@@ -47,10 +41,17 @@ void Field::CrashEvent::exec(void)
 						&(field->indexCrash[i][j]),
 						&(field->indexCrash[j][i])
 					);
+*/
 
-					if ('A' <= field->stateCrash[i][j]  &&  field->stateCrash[i][j] <= 'Z') {//syokiiti ga kantsu!!! notoki through
+
+					char state;
+					short idx1, idx2;
+//					if ('A' <= field->stateCrash[i][j]  &&  field->stateCrash[i][j] <= 'Z') {//syokiiti ga kantsu!!! notoki through
+					if (judgeCrashNeo(field->object[i], field->object[j], &state, &idx1, &idx2)) {
 						short result = -1;
 
+//						std::cerr << i << " " << j << " reflect\n";
+/*
 						reflect(
 							field->object[i],
 							field->object[j],
@@ -58,6 +59,8 @@ void Field::CrashEvent::exec(void)
 							field->indexCrash[i][j],
 							field->indexCrash[j][i]
 						);
+*/
+						reflect(field->object[i], field->object[j], state, idx1, idx2);
 						if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
 							std::cerr << j << '\n';
 							NumberBox* numberBox = (NumberBox*)field->object[i];
@@ -74,6 +77,9 @@ void Field::CrashEvent::exec(void)
 							std::cerr << "change end\n";
 							field->reportScore(result);
 						}
+
+						field->object[i]->run();//oukyuu syoti
+						field->object[j]->run();//honntoha yokunai
 
 						for (short k = 0  ;  k < field->objectNum  ;  k++) {
 							if (k < i)
@@ -95,12 +101,130 @@ void Field::CrashEvent::exec(void)
 	}
 }
 
-bool Field::CrashEvent::interference(Object* object1, Object* object2)
+bool Field::CrashEvent::canCrashObjSphere(Object* obj1, Object* obj2)
 {
-	Vector dist = object1->getGravityCenter() - object2->getGravityCenter();
-	Vector relativeVelocity = object1->getVelocity() - object2->getVelocity();
+	Vector dist = obj1->getGravityCenter() - obj2->getGravityCenter();
+	Vector relativeVelocity = obj1->getVelocity() - obj2->getVelocity();
 
-	return dist.getMagnitude() <= (object1->getRadius() + object2->getRadius() + relativeVelocity.getMagnitude());
+	return dist.getMagnitude() <= (obj1->getRadius() + obj2->getRadius() + relativeVelocity.getMagnitude());
+//	return dist.getMagnitude() <= (obj1->getRadius() + obj2->getRadius());
+/*judging whether through or not in which using two judgeCrash needs relativeVelocity in this function.  otherwise doesnt need*/
+}
+
+bool Field::CrashEvent::canCrashObjSphereAndVrtx(Object* obj, Vector vrtx)
+{
+	Vector dist = obj->getGravityCenter() - vrtx;
+
+	return dist.getMagnitude() <= obj->getRadius();
+}
+
+bool Field::CrashEvent::judgeCrashNeo(Object* obj1, Object* obj2, char* state, short* idx1, short* idx2)
+{
+	if (judgePlgnAndVrtxNeo(obj1, obj2, idx1, idx2)) {
+		*state = 'A';
+		return true;
+	}
+
+	if (judgePlgnAndVrtxNeo(obj2, obj1, idx2, idx1)) {
+		*state = 'B';
+		return true;
+	}
+
+	if (judgeLineAndLineNeo(obj1, obj2, idx1, idx2)) {
+		*state = 'C';
+		return true;
+	}
+
+	*idx1 = -1;
+	*idx2 = -1;
+	return false;
+}
+
+bool Field::CrashEvent::judgePlgnAndVrtxNeo(Object* objPlgn, Object* objVrtx, short* idxP, short* idxV)
+{
+	short plgnNum = objPlgn->getPolygonNum();
+	short vrtxNum = objVrtx->getVertexNum();
+
+	Vector relativeVelocity = objPlgn->getVelocity() - objVrtx->getVelocity();
+	float A[3], B[3], V[3], P[3], S[3];
+
+
+	relativeVelocity.getVector(V);
+
+	for (short j = 0  ;  j < vrtxNum  ;  j++) {
+
+		if (objVrtx->isVertexEmbody(j) == false) continue;
+		if (canCrashObjSphereAndVrtx(objPlgn, objVrtx->getVertex(j)) == false) continue;
+
+		for (short i = 0  ;  i < plgnNum  ;  i++) {
+
+			if (objPlgn->isPolygonEmbody(i) == false) continue;
+
+			(objPlgn->getPolygon2Vertex(i) - objPlgn->getPolygon1Vertex(i)).getVector(A);
+			(objPlgn->getPolygon3Vertex(i) - objPlgn->getPolygon1Vertex(i)).getVector(B);
+
+			(objVrtx->getVertex(j) - objPlgn->getPolygon1Vertex(i)).getVector(P);
+
+			if (Calculater::solveCubicEquation(A, B, V, P, S)) {
+				if (0 <= S[0]  &&  0 <= S[1]  &&  S[0] + S[1] <= 1) {
+					if (-1 < S[2]  &&  S[2] <= 0) {
+//						return objVrtx->gerVertex(j);
+						*idxP = i;
+						*idxV = j;
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	*idxP = -1;
+	*idxV = -1;
+	return false;
+}
+
+bool Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, short* idx1, short* idx2)
+{
+	short lineNum1 = obj1->getLineNum();
+	short lineNum2 = obj2->getLineNum();
+
+	Vector relativeVelocity = obj1->getVelocity() - obj2->getVelocity();
+	float V[3], P[3], Q[3], R[3], S[3];
+
+
+	relativeVelocity.getVector(V);
+
+	for (short i = 0  ;  i < lineNum1  ;  i++) {
+
+		if (!canCrashObjSphereAndVrtx(obj2, obj1->getLineLVertex(i))  &&  !canCrashObjSphereAndVrtx(obj2, obj1->getLineRVertex(i)))
+			continue;
+
+		(obj1->getLineLVertex(i) - obj1->getLineRVertex(i)).getVector(P);
+
+		for (short j = 0  ;  j < lineNum2  ;  j++) {
+
+			if (!canCrashObjSphereAndVrtx(obj1, obj2->getLineLVertex(j))  &&  !canCrashObjSphereAndVrtx(obj1, obj2->getLineRVertex(j)))
+				continue;
+
+			(obj2->getLineRVertex(j) - obj2->getLineLVertex(j)).getVector(Q);
+			(obj2->getLineRVertex(j) - obj1->getLineRVertex(i)).getVector(R);////////////////////////////
+
+			if (Calculater::solveCubicEquation(V, P, Q, R, S)) {
+				if ((0 <= S[1]  &&  S[1] <= 1)  &&  (0 <= S[2]  &&  S[2] <= 1)) {
+					if (-1 < S[0]  &&  S[0] <= 0) {
+						*idx1 = i;
+						*idx2 = j;
+						return true;
+					}
+				}
+
+			}
+		}
+	}
+
+	*idx1 = -1;
+	*idx2 = -1;
+	return false;
 }
 
 void Field::CrashEvent::judgeCrash(Object* object1, Object* object2, char* state_p, short* index1_p, short* index2_p)

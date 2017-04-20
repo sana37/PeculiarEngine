@@ -10,7 +10,6 @@ class Player : public Object
 public:
 	Player(const char*);
 	Player(const Player&);
-	void inheritPlayer(short* , short* , Vector**) const;
 	bool updatePlayer(void);
 
 protected:

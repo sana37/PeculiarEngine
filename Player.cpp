@@ -5,27 +5,27 @@
 Player::Player(const char* fileName) : Object::Object(fileName)
 {
 	classCode = 'P';
-	FILE* fp = fopen(fileName , "r");
+	FILE* fp = fopen(fileName, "r");
 
-	if(fp != NULL){
+	if (fp != NULL) {
 		char ch;
-		while(1){
+		while (1) {
 			ch = fgetc(fp);
-			if(ch == '@'  ||  ch == EOF)
+			if (ch == '@'  ||  ch == EOF)
 				break;
 		}
 
-		if(ch != EOF){
-			while(fgetc(fp) != ':');
-			if(fscanf(fp , "%hd" , &routeNum) == EOF)
+		if (ch != EOF) {
+			while (fgetc(fp) != ':') ;
+			if (fscanf(fp, "%hd", &routeNum) == EOF)
 				printf("ERROR\n");
 
-			while(fgetc(fp) != '+');
+			while (fgetc(fp) != '+') ;
 			route = new Vector[routeNum];
-			for(short i = 0  ;  i < routeNum  ;  i++){
+			for (short i = 0  ;  i < routeNum  ;  i++) {
 				float temp[3];
 
-				if(fscanf(fp , "%f%f%f" , &temp[0] , &temp[1] , &temp[2]) == EOF){
+				if (fscanf(fp, "%f%f%f", &temp[0], &temp[1], &temp[2]) == EOF) {
 					printf("ERROR\n");
 					break;
 				}
@@ -33,7 +33,7 @@ Player::Player(const char* fileName) : Object::Object(fileName)
 				route[i].setVector(temp);
 			}
 			routeIndex = 0;
-		}else{
+		} else {
 			routeNum = 0;
 			routeIndex = 0;
 			printf("route does not exist.\n");
@@ -44,45 +44,38 @@ Player::Player(const char* fileName) : Object::Object(fileName)
 	}
 }
 
-Player::Player(const Player& originalPlayer) : Object::Object(originalPlayer)
+Player::Player(const Player& player) : Object::Object(player)
 {
 //	classCode = 'P';
-	if(originalPlayer.whichClass() != 'O'){
-		Vector* originalRoute;
-
-		originalPlayer.inheritPlayer(&routeNum , &routeIndex , &originalRoute);
+	if (player.whichClass() != 'O') {
+		routeNum = player.routeNum;
+		routeIndex = player.routeIndex;
 		route = new Vector[routeNum];
-		for(short i = 0  ;  i < routeNum  ;  i++)
-			route[i] = originalRoute[i];
-	}else{
+		for (short i = 0  ;  i < routeNum  ;  i++)
+			route[i] = player.route[i];
+
+	} else {
 		printf("copy Object -> Player or more\n");
 		routeNum = 0;
 		routeIndex = 0;
 	}
 }
 
-void Player::inheritPlayer(short* replicaRouteNum , short* replicaRouteIndex , Vector** replicaRoute) const//!!
-{
-	*replicaRouteNum = routeNum;
-	*replicaRouteIndex = routeIndex;
-	*replicaRoute = route;//!!
-}
-
 bool Player::updatePlayer(void)
 {
 	this->decelerate();
-	if(isDominated == false)
+	if (isDominated == false)
 		this->autoMove();
 	this->run();
-	return(true);
+
+	return true;
 }
 
 void Player::decelerate(void)
 {
 	velocity *= 0.98;
-	if(velocity.getMagnitude() < 0.001){
+	if (velocity.getMagnitude() < 0.001)
 		this->stop();
-	}
 }
 
 void Player::autoMove(void)
@@ -90,12 +83,12 @@ void Player::autoMove(void)
 	Vector temp;
 
 	temp = route[routeIndex] - this->getGravityCenter();
-	if(temp.getMagnitude() < 0.5){
-		temp.setVector(0 , 0 , 0);
+	if (temp.getMagnitude() < 0.5) {
+		temp.setVector(0, 0, 0);
 		routeIndex++;
-		if(routeIndex >= routeNum)
+		if (routeIndex >= routeNum)
 			routeIndex = 0;
-	}else{
+	} else {
 		temp *= (0.05 / temp.getMagnitude());
 	}
 	velocity += temp;

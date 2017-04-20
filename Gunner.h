@@ -8,9 +8,9 @@ class Object;
 class Gunner : public Player
 {
 public:
-	Gunner(const char* , const char*);
+	Gunner(const char*, const char*);
 	Gunner(const Gunner&);
-	void inheritGunner(short* , int* , Object**) const;
+	void inheritGunner(short*, int*, Object**) const;
 	bool updateGunner(void);
 	Object fire(void);
 	void trigger(Vector);

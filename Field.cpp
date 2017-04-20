@@ -25,10 +25,17 @@ Field::Field(void)
 	object[0] = new Object("ground0");
 	object[1] = new Object("sky1");
 	object[2] = new Gunner("player" , "bullet");
+/*
+	object[3] = new Object("object0");
+	object[4] = new Object("object1");
+	object[5] = new Object("object2");
+	object[6] = new Object("object0");
+*/
 	object[3] = new NumberBox(54);
 	object[4] = new NumberBox(50);
 	object[5] = new NumberBox(91);
 	object[6] = new NumberBox(72);
+
 	sight = new Sight(object , objectNum , 2);
 
 	event = new Event*[eventNum];
@@ -56,15 +63,19 @@ Field::Field(void)
 
 	object[3]->moveAbsolute(8 , 2 , 0);
 	object[3]->setVelocity(0.03 , 0.05 , 0);
+//	object[3]->setVelocity(0 , 0 , 0);
 
 	object[4]->moveAbsolute(6 , 6 , 6);
 	object[4]->setVelocity(-0.03 , 0.03 , 0.08);
+//	object[4]->setVelocity(0 , 0 , 0);
 
 	object[5]->moveAbsolute(3 , 3 , 3);
 	object[5]->setVelocity(0 , -0.05 , 0.03);
+//	object[5]->setVelocity(0 , 0 , 0);
 
 	object[6]->moveAbsolute(0 , 5 , 0);
 	object[6]->setVelocity(0.04 , 0.1 , 0);
+//	object[6]->setVelocity(0 , 0 , 0);
 
 	deadObjectNum = 0;
 	autoGenerationIndex = 0;
