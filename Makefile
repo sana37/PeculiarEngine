@@ -50,6 +50,8 @@ SOURCES       = Calculater.cpp \
 		CrashResult.cpp \
 		Event.cpp \
 		Field.cpp \
+		Force.cpp \
+		ForceEvent.cpp \
 		Gunner.cpp \
 		main.cpp \
 		MoveEvent.cpp \
@@ -65,6 +67,8 @@ OBJECTS       = Calculater.o \
 		CrashResult.o \
 		Event.o \
 		Field.o \
+		Force.o \
+		ForceEvent.o \
 		Gunner.o \
 		main.o \
 		MoveEvent.o \
@@ -188,6 +192,8 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		CrashResult.cpp \
 		Event.cpp \
 		Field.cpp \
+		Force.cpp \
+		ForceEvent.cpp \
 		Gunner.cpp \
 		main.cpp \
 		MoveEvent.cpp \
@@ -461,7 +467,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/PrimeNumberGame1.0.0 || mkdir -p .tmp/PrimeNumberGame1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents Calculater.h CrashEvent.h CrashResult.h Event.h Field.h Gunner.h MoveEvent.h NumberBox.h Object.h Player.h Sight.h SightMoveEvent.h Vector.h .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents Calculater.cpp CrashEvent.cpp CrashResult.cpp Event.cpp Field.cpp Gunner.cpp main.cpp MoveEvent.cpp NumberBox.cpp Object.cpp Player.cpp Sight.cpp SightMoveEvent.cpp Vector.cpp .tmp/PrimeNumberGame1.0.0/ && (cd `dirname .tmp/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname .tmp/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/PrimeNumberGame1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents Calculater.h CrashEvent.h CrashResult.h Event.h Field.h Force.h ForceEvent.h Gunner.h MoveEvent.h NumberBox.h Object.h Player.h Sight.h SightMoveEvent.h Vector.h .tmp/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents Calculater.cpp CrashEvent.cpp CrashResult.cpp Event.cpp Field.cpp Force.cpp ForceEvent.cpp Gunner.cpp main.cpp MoveEvent.cpp NumberBox.cpp Object.cpp Player.cpp Sight.cpp SightMoveEvent.cpp Vector.cpp .tmp/PrimeNumberGame1.0.0/ && (cd `dirname .tmp/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname .tmp/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/PrimeNumberGame1.0.0
 
 
 clean:compiler_clean 
@@ -728,6 +734,7 @@ CrashEvent.o: CrashEvent.cpp CrashEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
 		Object.h \
 		Vector.h \
+		Force.h \
 		NumberBox.h \
 		Calculater.h \
 		CrashResult.h
@@ -967,10 +974,68 @@ Field.o: Field.cpp Field.h \
 		Event.h \
 		SightMoveEvent.h \
 		CrashEvent.h \
+		ForceEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QTimer \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qtimer.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qbasictimer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Field.o Field.cpp
+
+Force.o: Force.cpp Force.h \
+		Vector.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Force.o Force.cpp
+
+ForceEvent.o: ForceEvent.cpp ForceEvent.h \
+		Field.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv7.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv6.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv5.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_ia64.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_mips.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_x86.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_gcc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_unix.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ForceEvent.o ForceEvent.cpp
 
 Gunner.o: Gunner.cpp Gunner.h \
 		Player.h \

@@ -13,11 +13,14 @@ public:
 	void inheritGunner(short*, int*, Object**) const;
 	bool updateGunner(void);
 	Object fire(void);
-	void trigger(Vector);
+	void trigger(Vector, Vector, float, float);
 
 private:
 	Object* modelBullet;
 	Vector gunsight;
+	Vector bulletShaft;
+	float bulletYaw;
+	float bulletPitch;
 	short bulletIndex;
 	int bulletCount;
 };

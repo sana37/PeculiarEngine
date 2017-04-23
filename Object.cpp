@@ -8,6 +8,7 @@ Object::Object(const char* fileName) :
 	omegaVector(Vector(0, 1, 0)),
 	omega(0),
 	gravityCenter(Vector())
+//	crashState(false)
 {
 	classCode = 'O';
 	radius = 0;
@@ -120,6 +121,12 @@ Object::Object(const char* fileName) :
 
 		while (fgetc(fp) != '*') ;
 
+		while (fgetc(fp) != ':') ;
+		if (fscanf(fp, "%f", &mass) == EOF)
+			printf("ERROR\n");
+
+
+		while (fgetc(fp) != '*') ;
 
 		if (fgetc(fp) == 'v') {
 			float temp[3];
@@ -144,6 +151,7 @@ Object::Object(const char* fileName) :
 		lineNum = -1;
 		polygonNum = -1;
 		//radius = 10000;
+		mass = 1;
 	}
 }
 
@@ -196,6 +204,8 @@ Object::Object(const Object& _object)
 	omegaVector = _object.omegaVector;
 	omega = _object.omega;
 	radius = _object.radius;
+	mass = _object.mass;
+//	crashState = _object.crashState;
 
 	classCode = _object.classCode;
 	isDominated = _object.isDominated;
@@ -285,64 +295,69 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 
 short Object::getVertexNum(void) const
 {
-	return(vertexNum);
+	return vertexNum;
 }
 
 short Object::getPolygonNum(void) const
 {
-	return(polygonNum);
+	return polygonNum;
 }
 
 short Object::getLineNum(void) const
 {
-	return(lineNum);
+	return lineNum;
 }
 
 
 const Vector& Object::getVertex(short vertexIndex) const
 {
-	return(vertex[vertexIndex]);
+	return vertex[vertexIndex];
 }
 
 const Vector& Object::getGravityCenter(void) const
 {
-	return(gravityCenter);
+	return gravityCenter;
 }
 
 const Vector& Object::getPolygon1Vertex(short polygonIndex) const
 {
-	return(this->getVertex(polygon1VertexIndex[polygonIndex]));
+	return this->getVertex(polygon1VertexIndex[polygonIndex]);
 }
 
 const Vector& Object::getPolygon2Vertex(short polygonIndex) const
 {
-	return(this->getVertex(polygon2VertexIndex[polygonIndex]));
+	return this->getVertex(polygon2VertexIndex[polygonIndex]);
 }
 
 const Vector& Object::getPolygon3Vertex(short polygonIndex) const
 {
-	return(this->getVertex(polygon3VertexIndex[polygonIndex]));
+	return this->getVertex(polygon3VertexIndex[polygonIndex]);
 }
 
 const Vector& Object::getLineLVertex(short lineIndex) const
 {
-	return(this->getVertex(lineLVertexIndex[lineIndex]));
+	return this->getVertex(lineLVertexIndex[lineIndex]);
 }
 
 const Vector& Object::getLineRVertex(short lineIndex) const
 {
-	return(this->getVertex(lineRVertexIndex[lineIndex]));
+	return this->getVertex(lineRVertexIndex[lineIndex]);
 }
 
 
 float Object::getRadius(void) const
 {
-	return(radius);
+	return radius;
+}
+
+float Object::getMass(void)
+{
+	return mass;
 }
 
 const Vector& Object::getVelocity(void) const
 {
-	return(velocity);
+	return velocity;
 }
 
 Vector Object::getOmega(void) const
@@ -353,37 +368,37 @@ Vector Object::getOmega(void) const
 
 short Object::getPolygonR(short num) const
 {
-	return(polygonR[num]);
+	return polygonR[num];
 }
 
 short Object::getPolygonG(short num) const
 {
-	return(polygonG[num]);
+	return polygonG[num];
 }
 
 short Object::getPolygonB(short num) const
 {
-	return(polygonB[num]);
+	return polygonB[num];
 }
 
 char Object::whichClass(void) const
 {
-	return(classCode);
+	return classCode;
 }
 
 bool Object::isActive(void)
 {
-	return(velocity.getMagnitude() != 0);
+	return (velocity.getMagnitude() != 0);
 }
 
 bool Object::isVertexEmbody(short vertexIndex) const
 {
-	return(vertexEmbodyFlag[vertexIndex]);
+	return vertexEmbodyFlag[vertexIndex];
 }
 
 bool Object::isPolygonEmbody(short polygonIndex) const
 {
-	return(polygonEmbodyFlag[polygonIndex]);
+	return polygonEmbodyFlag[polygonIndex];
 }
 
 
@@ -441,7 +456,7 @@ bool Object::update(void)
 {
 	this->run();
 	this->rotate();
-	return(false);//whether velocity changes or not
+	return false;//whether velocity changes or not
 }
 
 void Object::run(void)
@@ -498,6 +513,31 @@ void Object::rotate(void)
 	}
 }
 
+void Object::push(Vector vector)
+{
+	velocity += (vector / mass);
+}
+
+void Object::accelerate(Vector vector)
+{
+	velocity += vector;
+}
+/*
+bool Object::isCrashState(void)
+{
+	return crashState;
+}
+
+void Object::enCrash(void)
+{
+	crashState = true;
+}
+
+void Object::disCrash(void)
+{
+	crashState = false;
+}
+*/
 void Object::enblack(short num)
 {
 	polygonR[num] = 0;

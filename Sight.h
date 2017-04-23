@@ -35,6 +35,8 @@ private:
 
 	short objectNum;
 	float X, Y, Z;
+	float yaw;// atode kesu
+	float pitch;//
 	float omegaYaw;
 	float omegaPitch;
 	short dominatorIndex;

@@ -28,6 +28,7 @@ public:
 	const Vector& getLineRVertex(short) const;
 
 	float getRadius(void) const;
+	float getMass(void);
 
 	const Vector& getVelocity(void) const;
 	Vector getOmega(void) const;
@@ -65,6 +66,12 @@ public:
 
 	void rotate(void);
 
+	void push(Vector);
+	void accelerate(Vector);
+
+//	bool isCrashState(void);
+//	void enCrash(void);
+//	void disCrash(void);
 	void enblack(short);
 
 
@@ -95,8 +102,10 @@ private:
 	short* polygonB;
 
 	float radius;
+	float mass;
 	bool* vertexEmbodyFlag;
 	bool* polygonEmbodyFlag;
+//	bool crashState;
 
 };
 

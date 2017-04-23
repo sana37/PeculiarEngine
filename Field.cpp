@@ -1,6 +1,7 @@
 #include "Field.h"
 
 #include "Sight.h"
+#include "Force.h"
 
 #include "Object.h"
 #include "Player.h"
@@ -10,6 +11,7 @@
 #include "MoveEvent.h"
 #include "SightMoveEvent.h"
 #include "CrashEvent.h"
+#include "ForceEvent.h"
 
 #include <QTimer>
 #include <iostream>
@@ -19,12 +21,14 @@ Field::Field(void)
 	std::cerr << "Hello world\n";
 	objectNum = OBJECT_NUM;/////////
 	eventNum = EVENT_NUM;
+	forceNum = 0;
 	time = new QTimer;
 	autoGeneration = new QTimer;
+	force = NULL;
 	object = new Object*[objectNum];
 	object[0] = new Object("ground0");
 	object[1] = new Object("sky1");
-	object[2] = new Gunner("player" , "bullet");
+	object[2] = new Gunner("player", "bullet");
 
 	object[3] = new Object("object0");
 	object[4] = new Object("object1");
@@ -36,13 +40,14 @@ Field::Field(void)
 	object[5] = new NumberBox(91);
 	object[6] = new NumberBox(72);
 */
-	sight = new Sight(object , objectNum , 2);
+	sight = new Sight(object, objectNum, 2);
 
 	event = new Event*[eventNum];
 	event[0] = new MoveEvent();
 	event[1] = new SightMoveEvent();
 	event[2] = new CrashEvent();
-
+	event[3] = new ForceEvent();
+/*
 	stateCrash = new char*[objectNum];
 	indexCrash = new short*[objectNum];
 	for(short i = 0  ;  i < objectNum  ;  i++){
@@ -54,32 +59,32 @@ Field::Field(void)
 			indexCrash[i][j] = -1;
 		}
 	}
-
+*/
 	time->start(TIME_UNIT);
 	autoGeneration->start(5000);
-	connect(time , SIGNAL(timeout()) , this , SLOT(execTimeEvent()));
-	QObject::connect(sight , SIGNAL(timeCall()) , this , SLOT(timeControl()));
-//	QObject::connect(autoGeneration , SIGNAL(timeout()) , this , SLOT(autoGenerate()));
+	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
+	QObject::connect(sight, SIGNAL(timeCall()), this, SLOT(timeControl()));
+//	QObject::connect(autoGeneration, SIGNAL(timeout()), this, SLOT(autoGenerate()));
 
-	object[3]->moveAbsolute(8 , 2 , 0);
-//	object[3]->setVelocity(0.03 , 0.05 , 0);
-	object[3]->setVelocity(0 , 0 , 0);
+	object[3]->moveAbsolute(8, 2, 0);
+//	object[3]->setVelocity(0.03, 0.05, 0);
+	object[3]->setVelocity(0, 0, 0);
 	object[3]->setOmega(1, 1, 0);
 	for (short i = 0  ;  i < 10  ;  i++)
 		object[3]->rotate();
 	object[3]->setOmega(0, 0, 0);
 
-	object[4]->moveAbsolute(6 , 6 , 6);
-//	object[4]->setVelocity(-0.03 , 0.03 , 0.08);
-	object[4]->setVelocity(0 , 0 , 0);
+	object[4]->moveAbsolute(6, 6, 6);
+//	object[4]->setVelocity(-0.03, 0.03, 0.08);
+	object[4]->setVelocity(0, 0, 0);
 
-	object[5]->moveAbsolute(3 , 3 , 3);
-//	object[5]->setVelocity(0 , -0.05 , 0.03);
-	object[5]->setVelocity(0 , 0 , 0);
+	object[5]->moveAbsolute(3, 3, 3);
+//	object[5]->setVelocity(0, -0.05, 0.03);
+	object[5]->setVelocity(0, 0, 0);
 
-	object[6]->moveAbsolute(0 , 5 , 0);
-//	object[6]->setVelocity(0.04 , 0.1 , 0);
-	object[6]->setVelocity(0 , 0 , 0);
+	object[6]->moveAbsolute(0, 5, 0);
+//	object[6]->setVelocity(0.04, 0.1, 0);
+	object[6]->setVelocity(0, 0, 0);
 
 	deadObjectNum = 0;
 	autoGenerationIndex = 0;
@@ -111,8 +116,8 @@ void Field::deleteInstance(void)
 
 void Field::open(void)
 {
-	sight->resize(1000 , 700);
-	sight->move(400 , 0);
+	sight->resize(1000, 700);
+	sight->move(400, 0);
 //	sight->showMaximized();
 	sight->show();
 }
@@ -199,19 +204,19 @@ void Field::autoGenerate(void)
 
 	switch(autoGenerationIndex % 4){
 		case 0 : {
-			vector.setVector(25 , 45 , 25);
+			vector.setVector(25, 45, 25);
 			break;
 		}
 		case 1 : {
-			vector.setVector(25 , 45 , -25);
+			vector.setVector(25, 45, -25);
 			break;
 		}
 		case 2 : {
-			vector.setVector(-25 , 45 , -25);
+			vector.setVector(-25, 45, -25);
 			break;
 		}
 		case 3 : {
-			vector.setVector(-25 , 45 , 25);
+			vector.setVector(-25, 45, 25);
 			break;
 		}
 	}
@@ -219,15 +224,15 @@ void Field::autoGenerate(void)
 
 	switch(autoGenerationIndex % 3){
 		case 0 : {
-			vector.setVector(0.02 , 0.04 , 0);
+			vector.setVector(0.02, 0.04, 0);
 			break;
 		}
 		case 1 : {
-			vector.setVector(-0.01 , 0.01 , 0.04);
+			vector.setVector(-0.01, 0.01, 0.04);
 			break;
 		}
 		case 2 : {
-			vector.setVector(0 , -0.04 , 0.02);
+			vector.setVector(0, -0.04, 0.02);
 			break;
 		}
 	}
@@ -239,8 +244,8 @@ void Field::autoGenerate(void)
 
 void Field::objectGenerate(Object* newObject)
 {
-	char** tempStateCrash;
-	short** tempIndexCrash;
+//	char** tempStateCrash;
+//	short** tempIndexCrash;
 	Object** tempObject;
 /*
 	if(deadObjectNum > 0){
@@ -262,8 +267,8 @@ void Field::objectGenerate(Object* newObject)
 	objectNum++;
 
 	tempObject = new Object*[objectNum];
-	tempStateCrash = new char*[objectNum];
-	tempIndexCrash = new short*[objectNum];
+//	tempStateCrash = new char*[objectNum];
+//	tempIndexCrash = new short*[objectNum];
 	for(short i = 0  ;  i < objectNum  ;  i++){
 		if(i == objectNum - 1){
 			switch(newObject->whichClass()){
@@ -280,6 +285,7 @@ void Field::objectGenerate(Object* newObject)
 				case 'N' : tempObject[i] = new NumberBox(*((NumberBox*)object[i]));	break;
 			}
 		}
+/*
 		tempStateCrash[i] = new char[objectNum];
 		tempIndexCrash[i] = new short[objectNum];
 		for(short j = 0  ;  j < objectNum  ;  j++){
@@ -291,19 +297,48 @@ void Field::objectGenerate(Object* newObject)
 				tempIndexCrash[i][j] = indexCrash[i][j];
 			}
 		}
+*/
 	}
 
 	for(short i = 0  ;  i < objectNum - 1  ;  i++)
 		delete object[i];
 	delete[] object;
-	delete[] stateCrash;
-	delete[] indexCrash;
+//	delete[] stateCrash;
+//	delete[] indexCrash;
 
 	object = tempObject;
-	stateCrash = tempStateCrash;
-	indexCrash = tempIndexCrash;
+//	stateCrash = tempStateCrash;
+//	indexCrash = tempIndexCrash;
 
-	sight->updateObject(object , objectNum);
+	sight->updateObject(object, objectNum);
+}
+
+void Field::addForce(Force* force)
+{
+	forceNum++;
+	Force** tempForce = new Force*[forceNum];
+
+	for (short i = 0  ;  i < forceNum  ;  i++) {
+		if (i != forceNum - 1)
+			tempForce[i] = this->force[i];
+		else
+			tempForce[i] = force;
+	}
+
+	if (this->force != NULL)
+		delete[] this->force;
+
+	this->force = tempForce;
+}
+
+void Field::finishForce(short idx)
+{
+	forceNum--;
+	delete force[idx];
+
+	for (short i = idx  ;  i < forceNum  ;  i++) {
+		force[i] = force[i + 1];
+	}
 }
 
 Field* Field::field = NULL;

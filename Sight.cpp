@@ -7,8 +7,10 @@
 
 
 Sight::Sight(Object** originalObject, short originalObjectNum, short originalDominatorIndex) :
-	lookAt(Vector(0, 0, -1)) ,
-	lookAtN(Vector(1, 0, 0)) ,
+	yaw(0),
+	pitch(0),
+	lookAt(Vector(0, 0, -1)),
+	lookAtN(Vector(1, 0, 0)),
 	velocity(Vector(0, 0, 0))
 {
 	gbFlag = 0;
@@ -60,6 +62,8 @@ void Sight::update(void)
 
 	rotateSelf(&lookAt, zero, omegaYaw, omegaPitch);
 	rotateSelf(&lookAtN, zero, omegaYaw, 0);
+	yaw += omegaYaw;
+	pitch += omegaPitch;
 
 	if (possessFlag == 2) {
 		Vector basePoint(X, Y, Z);
@@ -226,8 +230,8 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 		}
 		case ' ' : {
 			if (possessFlag == 2  &&  object[dominatorIndex]->whichClass() == 'G') {
-				Gunner* gunner = (Gunner*)object[dominatorIndex];
-				gunner->trigger(lookAt);
+				Gunner* gunner = (Gunner*) object[dominatorIndex];
+				gunner->trigger(lookAt, lookAtN, yaw, pitch);
 			}
 			break;
 		}

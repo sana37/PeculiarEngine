@@ -4,12 +4,13 @@
 #include <QObject>
 
 #define OBJECT_NUM	7
-#define EVENT_NUM	3
+#define EVENT_NUM	4
 #define TIME_UNIT	10
 #define WORLD		80
 
 class Sight;
 class Object;
+class Force;
 class QTimer;
 
 class Field : public QObject
@@ -20,7 +21,7 @@ public:
 	class MoveEvent;
 	class SightMoveEvent;
 	class CrashEvent;
-
+	class ForceEvent;
 
 private:
 //singleton object field
@@ -29,30 +30,36 @@ private:
 	Field(void);
 	Field(const Field&);
 	~Field(void);
+
 public:
 	static Field* getInstance(void);
 	static void deleteInstance(void);
-
-public:
 	void open(void);
+
 signals:
 	void reportScore(short);
+
 public slots:
 	void execTimeEvent(void);
 	void timeControl(void);
 	void autoGenerate(void);
+
 private:
 	void objectGenerate(Object*);
+	void addForce(Force*);
+	void finishForce(short);
 
 	Sight* sight;
 	QTimer* time;
 	QTimer* autoGeneration;
 	Object** object;
+	Force** force;
 	Event** event;
 
 	short objectNum;
-	char** stateCrash;
-	short** indexCrash;
+	short forceNum;
+//	char** stateCrash;
+//	short** indexCrash;
 	short eventNum;
 
 	short deadObjectIndex[100];
