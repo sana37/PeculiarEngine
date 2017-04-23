@@ -785,7 +785,8 @@ CrashResult.o: CrashResult.cpp CrashResult.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
-		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
+		Vector.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CrashResult.o CrashResult.cpp
 
 Event.o: Event.cpp Event.h \

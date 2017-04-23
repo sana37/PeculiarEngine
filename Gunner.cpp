@@ -51,8 +51,8 @@ Object Gunner::fire(void)
 
 	modelBullet->moveAbsolute(temp);
 
-	temp = gunsight * 3;
-//	temp = gunsight * 0.5;
+//	temp = gunsight * 3;
+	temp = gunsight * 0.5;
 	modelBullet->setVelocity(temp);
 
 	return Object(*modelBullet);

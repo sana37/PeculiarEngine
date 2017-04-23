@@ -23,6 +23,7 @@ Object::Object(const char* fileName) :
 		while (fgetc(fp) != '+') ;
 		vertex = new Vector[vertexNum];
 		vertexEmbodyFlag = new bool[vertexNum];
+		short realVertexNum = 0;
 		for (short i = 0  ;  i < vertexNum  ;  i++) {
 			float temp[3];
 
@@ -44,10 +45,12 @@ Object::Object(const char* fileName) :
 					vertexEmbodyFlag[i] = false;
 			}
 
-			if (vertexEmbodyFlag[i] == true)
+			if (vertexEmbodyFlag[i] == true) {
 				gravityCenter.addVector(temp);
+				realVertexNum++;
+			}
 		}
-		gravityCenter /= vertexNum;
+		gravityCenter /= realVertexNum;
 
 
 
