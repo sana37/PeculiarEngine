@@ -118,19 +118,22 @@ bool Field::CrashEvent::canCrashObjSphereAndVrtx(Object* obj, Vector vrtx)
 	return dist.getMagnitude() <= obj->getRadius();
 }
 
-bool Field::CrashEvent::judgeCrashNeo(Object* obj1, Object* obj2, char* state, short* idx1, short* idx2)
+bool Field::CrashEvent::execReflection(Object* obj1, Object* obj2, char* state, short* idx1, short* idx2)
 {
 	if (judgePlgnAndVrtxNeo(obj1, obj2, idx1, idx2)) {
+		reflectPlgnAndVrtx(obj1, obj2);
 		*state = 'A';
 		return true;
 	}
 
 	if (judgePlgnAndVrtxNeo(obj2, obj1, idx2, idx1)) {
+		reflectPlgnAndVrtx(obj2, obj1);
 		*state = 'B';
 		return true;
 	}
 
 	if (judgeLineAndLineNeo(obj1, obj2, idx1, idx2)) {
+		reflectLineAndLine(obj1, obj2);
 		*state = 'C';
 		return true;
 	}
@@ -140,7 +143,7 @@ bool Field::CrashEvent::judgeCrashNeo(Object* obj1, Object* obj2, char* state, s
 	return false;
 }
 
-bool Field::CrashEvent::judgePlgnAndVrtxNeo(Object* objPlgn, Object* objVrtx, short* idxP, short* idxV)
+void Field::CrashEvent::judgePlgnAndVrtxNeo(Object* objPlgn, Object* objVrtx, CrashResult* result)
 {
 	short plgnNum = objPlgn->getPolygonNum();
 	short vrtxNum = objVrtx->getVertexNum();
@@ -154,7 +157,12 @@ bool Field::CrashEvent::judgePlgnAndVrtxNeo(Object* objPlgn, Object* objVrtx, sh
 	for (short j = 0  ;  j < vrtxNum  ;  j++) {
 
 		if (objVrtx->isVertexEmbody(j) == false) continue;
-		if (canCrashObjSphereAndVrtx(objPlgn, objVrtx->getVertex(j)) == false) continue;
+		if (canCrashObjSphereAndVrtx(objPlgn, objVrtx->getVertex(j)) == false) {
+			std::cerr << '.';
+			continue;
+		} else {
+			std::cerr << '_';
+		}
 
 		for (short i = 0  ;  i < plgnNum  ;  i++) {
 
@@ -168,19 +176,18 @@ bool Field::CrashEvent::judgePlgnAndVrtxNeo(Object* objPlgn, Object* objVrtx, sh
 			if (Calculater::solveCubicEquation(A, B, V, P, S)) {
 				if (0 <= S[0]  &&  0 <= S[1]  &&  S[0] + S[1] <= 1) {
 					if (-1 < S[2]  &&  S[2] <= 0) {
-//						return objVrtx->gerVertex(j);
-						*idxP = i;
-						*idxV = j;
-						return true;
+						result->setPlgnIdx(i);
+						result->setVrtxIdx(j);
+						result->setCrashSpot(objVrtx->getVertex(j));
+						result->setResult(true);
+						return;
 					}
 				}
 			}
 		}
 	}
 
-	*idxP = -1;
-	*idxV = -1;
-	return false;
+	result->setResult(false);
 }
 
 bool Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, short* idx1, short* idx2)
@@ -196,15 +203,23 @@ bool Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, short* i
 
 	for (short i = 0  ;  i < lineNum1  ;  i++) {
 
-		if (!canCrashObjSphereAndVrtx(obj2, obj1->getLineLVertex(i))  &&  !canCrashObjSphereAndVrtx(obj2, obj1->getLineRVertex(i)))
+		if (!canCrashObjSphereAndVrtx(obj2, obj1->getLineLVertex(i))  &&  !canCrashObjSphereAndVrtx(obj2, obj1->getLineRVertex(i))) {
+			std::cerr << '.';
 			continue;
+		} else {
+			std::cerr << '_';
+		}
 
 		(obj1->getLineLVertex(i) - obj1->getLineRVertex(i)).getVector(P);
 
 		for (short j = 0  ;  j < lineNum2  ;  j++) {
 
-			if (!canCrashObjSphereAndVrtx(obj1, obj2->getLineLVertex(j))  &&  !canCrashObjSphereAndVrtx(obj1, obj2->getLineRVertex(j)))
+			if (!canCrashObjSphereAndVrtx(obj1, obj2->getLineLVertex(j))  &&  !canCrashObjSphereAndVrtx(obj1, obj2->getLineRVertex(j))) {
+				std::cerr << '\'';
 				continue;
+			} else {
+				std::cerr << '\"';
+			}
 
 			(obj2->getLineRVertex(j) - obj2->getLineLVertex(j)).getVector(Q);
 			(obj2->getLineRVertex(j) - obj1->getLineRVertex(i)).getVector(R);////////////////////////////
@@ -226,7 +241,7 @@ bool Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, short* i
 	*idx2 = -1;
 	return false;
 }
-
+/*
 void Field::CrashEvent::judgeCrash(Object* object1, Object* object2, char* state_p, short* index1_p, short* index2_p)
 {
 	CrashResult result;
@@ -265,7 +280,7 @@ void Field::CrashEvent::judgeCrash(Object* object1, Object* object2, char* state
 
 	result = judgePlgnAndVrtx(object1, object2, index1_p, index2_p, false);
 
-	if (result.getResult() == SUCCESS/*  &&  (distMinFirstFlag  ||  result.getDistMin() < distMin)*/) {
+	if (result.getResult() == SUCCESS) {
 		distMin = result.getDistMin();
 		distMinFirstFlag = false;
 		*state_p = 'a';
@@ -414,7 +429,7 @@ Field::CrashEvent::CrashResult Field::CrashEvent::judgeLineAndLine(Object* obj1,
 	result.setDistMin(distMin);
 	return result;
 }
-
+*/
 void Field::CrashEvent::reflect(Object* obj1, Object* obj2, char state, short idx1, short idx2)
 {
 	float V[3], P[3], Q[3], n[3], coefficient[3];

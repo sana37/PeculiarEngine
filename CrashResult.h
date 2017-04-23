@@ -3,6 +3,8 @@
 
 #include "CrashEvent.h"
 
+class Vector;
+
 class Field::CrashEvent::CrashResult
 {
 public:
@@ -12,14 +14,29 @@ public:
 	const CrashResult& operator=(const CrashResult&);
 
 	void setResult(char);
-	void setDistMin(float);
+	void setPlgnIdx(short);
+	void setVrtxIdx(short);
+	void setLine1Idx(short);
+	void setLine2Idx(short);
+	void setCrashSpot(Vector);
+//	void setDistMin(float);
 
-	char getResult(void) const;
-	float getDistMin(void) const;
+	char getResult(void);
+	short getPlgnIdx(void);
+	short getVrtxIdx(void);
+	short getLine1Idx(void);
+	short getLine2Idx(void);
+	Vector getCrashSpot(void);
+//	float getDistMin(void);
 
 private:
 	char result;
-	float distMin;
+	short plgnIdx;
+	short vrtxIdx;
+	short line1Idx;
+	short line2Idx;
+	Vector crashSpot;
+//	float distMin;
 };
 
 #endif
