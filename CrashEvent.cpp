@@ -44,10 +44,8 @@ void Field::CrashEvent::exec(void)
 */
 
 
-					char state;
-					short idx1, idx2;
 //					if ('A' <= field->stateCrash[i][j]  &&  field->stateCrash[i][j] <= 'Z') {//syokiiti ga kantsu!!! notoki through
-					if (judgeCrashNeo(field->object[i], field->object[j], &state, &idx1, &idx2)) {
+					if (execReflection(field->object[i], field->object[j])) {
 						short result = -1;
 
 //						std::cerr << i << " " << j << " reflect\n";
@@ -60,7 +58,7 @@ void Field::CrashEvent::exec(void)
 							field->indexCrash[j][i]
 						);
 */
-						reflect(field->object[i], field->object[j], state, idx1, idx2);
+//						reflect(field->object[i], field->object[j], state, idx1, idx2);
 						if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
 							std::cerr << j << '\n';
 							NumberBox* numberBox = (NumberBox*)field->object[i];
@@ -118,28 +116,28 @@ bool Field::CrashEvent::canCrashObjSphereAndVrtx(Object* obj, Vector vrtx)
 	return dist.getMagnitude() <= obj->getRadius();
 }
 
-bool Field::CrashEvent::execReflection(Object* obj1, Object* obj2, char* state, short* idx1, short* idx2)
+bool Field::CrashEvent::execReflection(Object* obj1, Object* obj2)
 {
-	if (judgePlgnAndVrtxNeo(obj1, obj2, idx1, idx2)) {
-		reflectPlgnAndVrtx(obj1, obj2);
-		*state = 'A';
+	CrashResult result;
+
+	judgePlgnAndVrtxNeo(obj1, obj2, &result);
+	if (result.getResult() == true) {
+		reflectPlgnAndVrtx(obj1, obj2, &result);
 		return true;
 	}
 
-	if (judgePlgnAndVrtxNeo(obj2, obj1, idx2, idx1)) {
-		reflectPlgnAndVrtx(obj2, obj1);
-		*state = 'B';
+	judgePlgnAndVrtxNeo(obj2, obj1, &result);
+	if (result.getResult() == true) {
+		reflectPlgnAndVrtx(obj2, obj1, &result);
 		return true;
 	}
 
-	if (judgeLineAndLineNeo(obj1, obj2, idx1, idx2)) {
-		reflectLineAndLine(obj1, obj2);
-		*state = 'C';
+	judgeLineAndLineNeo(obj1, obj2, &result);
+	if (result.getResult() == true) {
+		reflectLineAndLine(obj1, obj2, &result);
 		return true;
 	}
 
-	*idx1 = -1;
-	*idx2 = -1;
 	return false;
 }
 
@@ -190,16 +188,15 @@ void Field::CrashEvent::judgePlgnAndVrtxNeo(Object* objPlgn, Object* objVrtx, Cr
 	result->setResult(false);
 }
 
-bool Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, short* idx1, short* idx2)
+void Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, CrashResult* result)//crashResult's name space ?
 {
 	short lineNum1 = obj1->getLineNum();
 	short lineNum2 = obj2->getLineNum();
 
-	Vector relativeVelocity = obj1->getVelocity() - obj2->getVelocity();
 	float V[3], P[3], Q[3], R[3], S[3];
 
 
-	relativeVelocity.getVector(V);
+	(obj1->getVelocity() - obj2->getVelocity()).getVector(V);
 
 	for (short i = 0  ;  i < lineNum1  ;  i++) {
 
@@ -222,14 +219,17 @@ bool Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, short* i
 			}
 
 			(obj2->getLineRVertex(j) - obj2->getLineLVertex(j)).getVector(Q);
-			(obj2->getLineRVertex(j) - obj1->getLineRVertex(i)).getVector(R);////////////////////////////
+			(obj2->getLineRVertex(j) - obj1->getLineRVertex(i)).getVector(R);
 
 			if (Calculater::solveCubicEquation(V, P, Q, R, S)) {
 				if ((0 <= S[1]  &&  S[1] <= 1)  &&  (0 <= S[2]  &&  S[2] <= 1)) {
 					if (-1 < S[0]  &&  S[0] <= 0) {
-						*idx1 = i;
-						*idx2 = j;
-						return true;
+						Vector crashSpot = (obj1->getLineRVertex(i) * (1 - S[1])) + (obj1->getLineLVertex(i) * S[1]);
+						result->setLine1Idx(i);
+						result->setLine2Idx(j);
+						result->setCrashSpot(crashSpot);
+						result->setResult(true);
+						return;
 					}
 				}
 
@@ -237,9 +237,7 @@ bool Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, short* i
 		}
 	}
 
-	*idx1 = -1;
-	*idx2 = -1;
-	return false;
+	result->setResult(false);
 }
 /*
 void Field::CrashEvent::judgeCrash(Object* object1, Object* object2, char* state_p, short* index1_p, short* index2_p)
@@ -430,6 +428,142 @@ Field::CrashEvent::CrashResult Field::CrashEvent::judgeLineAndLine(Object* obj1,
 	return result;
 }
 */
+void Field::CrashEvent::reflectPlgnAndVrtx(Object* objPlgn, Object* objVrtx, CrashResult* result)
+{
+	float V[3], P[3], Q[3], n[3], coefficient[3];
+	short plgnIdx = result->getPlgnIdx();
+
+	(objPlgn->getPolygon2Vertex(plgnIdx) - objPlgn->getPolygon1Vertex(plgnIdx)).getVector(P);
+	(objPlgn->getPolygon3Vertex(plgnIdx) - objPlgn->getPolygon1Vertex(plgnIdx)).getVector(Q);
+
+	if (calculate1(P, Q, n) == false) {
+		if (calculate1(Q, P, n) == false) {
+			n[0] = 2;
+			n[1] = 2;
+			n[2] = 2;
+
+			if (P[0] == 0  &&  P[1] == 0)
+				n[2] = 0;
+			if (P[0] == 0  &&  P[2] == 0)
+				n[1] = 0;
+			if (P[1] == 0  &&  P[2] == 0)
+				n[0] = 0;
+
+			if (Q[0] == 0  &&  Q[1] == 0)
+				n[2] = 0;
+			if (Q[0] == 0  &&  Q[2] == 0)
+				n[1] = 0;
+			if (Q[1] == 0  &&  Q[2] == 0)
+				n[0] = 0;
+
+			if (n[0] == 0  &&  n[1] == 0)
+				n[2] = 1;
+			if (n[0] == 0  &&  n[2] == 0)
+				n[1] = 1;
+			if (n[1] == 0  &&  n[2] == 0)
+				n[0] = 1;
+
+			if (n[0] + n[1] + n[2] >= 1.9) {
+				std::cerr << "reflection failed...   code:" << n[0] + n[1] + n[2] << '\n';
+				return;
+			} else {
+//				std::cerr << "reflection one chance\n";
+			}
+		}
+	}
+
+	for (short i = 0  ;  i < 2  ;  i++) {
+		Vector vector;
+
+		switch (i) {
+			case 0 : vector = objPlgn->getVelocity();	break;
+			case 1 : vector = objVrtx->getVelocity();	break;
+		}
+		vector.getVector(V);
+
+		if (Calculater::solveCubicEquation(P, Q, n, V, coefficient)) {
+			V[0] -= 2.0 * coefficient[2] * n[0];
+			V[1] -= 2.0 * coefficient[2] * n[1];
+			V[2] -= 2.0 * coefficient[2] * n[2];
+
+			vector.setVector(V);
+			switch (i) {
+				case 0 : objPlgn->setVelocity(vector);	break;
+				case 1 : objVrtx->setVelocity(vector);	break;
+			}
+		}
+	}
+}
+
+void Field::CrashEvent::reflectLineAndLine(Object* obj1, Object* obj2, CrashResult* result)
+{
+	float V[3], P[3], Q[3], n[3], coefficient[3];
+	short idx1 = result->getLine1Idx();
+	short idx2 = result->getLine2Idx();
+
+	(obj1->getLineLVertex(idx1) - obj1->getLineRVertex(idx1)).getVector(P);
+	(obj2->getLineLVertex(idx2) - obj2->getLineRVertex(idx2)).getVector(Q);
+
+	if (calculate1(P, Q, n) == false) {
+		if (calculate1(Q, P, n) == false) {
+			n[0] = 2;
+			n[1] = 2;
+			n[2] = 2;
+
+			if (P[0] == 0  &&  P[1] == 0)
+				n[2] = 0;
+			if (P[0] == 0  &&  P[2] == 0)
+				n[1] = 0;
+			if (P[1] == 0  &&  P[2] == 0)
+				n[0] = 0;
+
+			if (Q[0] == 0  &&  Q[1] == 0)
+				n[2] = 0;
+			if (Q[0] == 0  &&  Q[2] == 0)
+				n[1] = 0;
+			if (Q[1] == 0  &&  Q[2] == 0)
+				n[0] = 0;
+
+			if (n[0] == 0  &&  n[1] == 0)
+				n[2] = 1;
+			if (n[0] == 0  &&  n[2] == 0)
+				n[1] = 1;
+			if (n[1] == 0  &&  n[2] == 0)
+				n[0] = 1;
+
+			if (n[0] + n[1] + n[2] >= 1.9) {
+				std::cerr << "reflection failed...   code:" << n[0] + n[1] + n[2] << '\n';
+				return;
+			} else {
+//				std::cerr << "reflection one chance\n";
+			}
+		}
+	}
+
+	for (short i = 0  ;  i < 2  ;  i++) {
+		Vector vector;
+
+		switch (i) {
+			case 0 : vector = obj1->getVelocity();	break;
+			case 1 : vector = obj2->getVelocity();	break;
+		}
+		vector.getVector(V);
+
+		if (Calculater::solveCubicEquation(P, Q, n, V, coefficient)) {
+			V[0] -= 2.0 * coefficient[2] * n[0];
+			V[1] -= 2.0 * coefficient[2] * n[1];
+			V[2] -= 2.0 * coefficient[2] * n[2];
+
+			vector.setVector(V);
+			switch (i) {
+				case 0 : obj1->setVelocity(vector);	break;
+				case 1 : obj2->setVelocity(vector);	break;
+			}
+		}
+	}
+
+}
+/*
 void Field::CrashEvent::reflect(Object* obj1, Object* obj2, char state, short idx1, short idx2)
 {
 	float V[3], P[3], Q[3], n[3], coefficient[3];
@@ -514,7 +648,7 @@ void Field::CrashEvent::reflect(Object* obj1, Object* obj2, char state, short id
 	}
 
 }
-
+*/
 bool Field::CrashEvent::calculate1(float* a, float* b, float* ans)
 {
 	float temp1, temp2;

@@ -1,9 +1,7 @@
 #include "CrashResult.h"
-#include "Vector.h"
 
 Field::CrashEvent::CrashResult::CrashResult(void) : result(false), plgnIdx(-1), vrtxIdx(-1), line1Idx(-1), line2Idx(-1), crashSpot()
 {
-//	distMin = 0;
 }
 
 Field::CrashEvent::CrashResult::CrashResult(const Field::CrashEvent::CrashResult& crashResult)
@@ -14,7 +12,6 @@ Field::CrashEvent::CrashResult::CrashResult(const Field::CrashEvent::CrashResult
 	line1Idx = crashResult.line1Idx;
 	line2Idx = crashResult.line2Idx;
 	crashSpot = crashResult.crashSpot;
-//	distMin = crashResult.getDistMin();
 }
 
 const Field::CrashEvent::CrashResult& Field::CrashEvent::CrashResult::operator=(const Field::CrashEvent::CrashResult& crashResult)
@@ -25,7 +22,6 @@ const Field::CrashEvent::CrashResult& Field::CrashEvent::CrashResult::operator=(
 	line1Idx = crashResult.line1Idx;
 	line2Idx = crashResult.line2Idx;
 	crashSpot = crashResult.crashSpot;
-//	distMin = crashResult.getDistMin();
 
 	return *this;
 }
@@ -60,12 +56,6 @@ void Field::CrashEvent::CrashResult::setCrashSpot(Vector vector)
 	crashSpot = vector;
 }
 
-/*
-void Field::CrashEvent::CrashResult::setDistMin(float distMin)
-{
-	this->distMin = distMin;
-}
-*/
 
 char Field::CrashEvent::CrashResult::getResult(void)
 {
@@ -96,10 +86,3 @@ Vector Field::CrashEvent::CrashResult::getCrashSpot(void)
 {
 	return crashSpot;
 }
-
-/*
-float Field::CrashEvent::CrashResult::getDistMin(void)
-{
-	return distMin;
-}
-*/

@@ -2,8 +2,8 @@
 #define CRASHRESULT_H
 
 #include "CrashEvent.h"
+#include "Vector.h"
 
-class Vector;
 
 class Field::CrashEvent::CrashResult
 {
@@ -19,7 +19,6 @@ public:
 	void setLine1Idx(short);
 	void setLine2Idx(short);
 	void setCrashSpot(Vector);
-//	void setDistMin(float);
 
 	char getResult(void);
 	short getPlgnIdx(void);
@@ -27,7 +26,6 @@ public:
 	short getLine1Idx(void);
 	short getLine2Idx(void);
 	Vector getCrashSpot(void);
-//	float getDistMin(void);
 
 private:
 	char result;
@@ -36,7 +34,6 @@ private:
 	short line1Idx;
 	short line2Idx;
 	Vector crashSpot;
-//	float distMin;
 };
 
 #endif

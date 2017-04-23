@@ -19,13 +19,15 @@ public:
 private:
 	bool canCrashObjSphere(Object*, Object*);
 	bool canCrashObjSphereAndVrtx(Object*, Vector);
-	bool judgeCrashNeo(Object*, Object*, char*, short*, short*);//hikisuu ha futatudake ga iina
-	bool judgePlgnAndVrtxNeo(Object*, Object*, short*, short*);
-	bool judgeLineAndLineNeo(Object*, Object*, short*, short*);
+	bool execReflection(Object*, Object*);//hikisuu ha futatudake ga iina
+	void judgePlgnAndVrtxNeo(Object*, Object*, CrashResult*);
+	void judgeLineAndLineNeo(Object*, Object*, CrashResult*);
 //	void judgeCrash(Object*, Object*, char*, short*, short*);
 //	CrashResult judgePlgnAndVrtx(Object*, Object*, short*, short*, bool);
 //	CrashResult judgeLineAndLine(Object*, Object*, short*, short*, bool);
-	void reflect(Object*, Object*, char, short, short);
+	void reflectPlgnAndVrtx(Object*, Object*, CrashResult*);
+	void reflectLineAndLine(Object*, Object*, CrashResult*);
+//	void reflect(Object*, Object*, char, short, short);
 	bool calculate1(float*, float*, float*);
 
 	static const char OVER;
