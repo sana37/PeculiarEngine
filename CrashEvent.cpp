@@ -19,26 +19,13 @@ void Field::CrashEvent::exec(void)
 {
 	for (short i = 0  ;  i < (field->objectNum - 1)  ;  i++) {
 		for (short j = i + 1  ;  j < field->objectNum  ;  j++) {
+
 			if (field->object[i]->isActive() | field->object[j]->isActive()) {
 				if (canCrashObjSphere(field->object[i], field->object[j])) {
-/*
-					if (field->stateCrash[i][j] == '\0') {
-						field->object[i]->back();
-						judgeCrash(
-							field->object[i],
-							field->object[j],
-							&(field->stateCrash[i][j]),
-							&(field->indexCrash[i][j]),
-							&(field->indexCrash[j][i])
-						);
-						field->object[i]->run();
-					}
-*/
 
 					if (reflectIfCrash(field->object[i], field->object[j])) {
 						short result = -1;
 
-//						std::cerr << i << " " << j << " reflect\n";
 						if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
 							std::cerr << j << '\n';
 							NumberBox* numberBox = (NumberBox*)field->object[i];
@@ -56,26 +43,10 @@ void Field::CrashEvent::exec(void)
 							field->reportScore(result);
 						}
 
-						field->object[i]->run();//oukyuu syoti
-						field->object[j]->run();//honntoha yokunai
-/*
-						for (short k = 0  ;  k < field->objectNum  ;  k++) {
-							if (k < i)
-								field->stateCrash[k][i] = '\0';
-							else if (i < k)
-								field->stateCrash[i][k] = '\0';
-
-							if (k < j)
-								field->stateCrash[k][j] = '\0';
-							else if (j < k)
-								field->stateCrash[j][k] = '\0';
-						}
-*/
 					}
-				} else {
-//					field->stateCrash[i][j] = '\0';
 				}
 			}
+
 		}
 	}
 }
@@ -157,7 +128,8 @@ void Field::CrashEvent::judgePlgnAndVrtxNeo(Object* objPlgn, Object* objVrtx, Cr
 
 			if (Calculater::solveCubicEquation(A, B, V, P, S)) {
 				if (0 <= S[0]  &&  0 <= S[1]  &&  S[0] + S[1] <= 1) {
-					if (-1 < S[2]  &&  S[2] <= 0) {
+//					if (-1 < S[2]  &&  S[2] <= 0) {
+					if (0 <= S[2]  &&  S[2] < 1) {
 						result->setPlgnIdx(i);
 						result->setVrtxIdx(j);
 						result->setCrashSpot(objVrtx->getVertex(j));
@@ -207,7 +179,8 @@ void Field::CrashEvent::judgeLineAndLineNeo(Object* obj1, Object* obj2, CrashRes
 
 			if (Calculater::solveCubicEquation(V, P, Q, R, S)) {
 				if ((0 <= S[1]  &&  S[1] <= 1)  &&  (0 <= S[2]  &&  S[2] <= 1)) {
-					if (-1 < S[0]  &&  S[0] <= 0) {
+//					if (-1 < S[0]  &&  S[0] <= 0) {
+					if (0 <= S[0]  &&  S[0] < 1) {
 						Vector crashSpot = (obj1->getLineRVertex(i) * (1 - S[1])) + (obj1->getLineLVertex(i) * S[1]);
 						result->setLine1Idx(i);
 						result->setLine2Idx(j);

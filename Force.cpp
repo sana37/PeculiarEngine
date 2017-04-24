@@ -18,8 +18,4 @@ void Force::exec(void)
 {
 	obj1->push(*this);
 	obj2->push((*this) * -1);
-	for (short i = 0  ;  i < 3  ;  i++) {
-		obj1->update();
-		obj2->update();
-	}
 }

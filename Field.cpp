@@ -333,12 +333,20 @@ void Field::addForce(Force* force)
 
 void Field::finishForce(short idx)
 {
-	forceNum--;
 	delete force[idx];
 
-	for (short i = idx  ;  i < forceNum  ;  i++) {
-		force[i] = force[i + 1];
+	forceNum--;
+	Force** tempForce = new Force*[forceNum];
+
+	for (short i = 0  ;  i < forceNum  ;  i++) {
+		if (i < idx)
+			tempForce[i] = force[i];
+		else
+			tempForce[i] = force[i + 1];
 	}
+
+	delete[] force;
+	force = tempForce;
 }
 
 Field* Field::field = NULL;
