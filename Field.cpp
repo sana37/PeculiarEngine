@@ -128,6 +128,8 @@ void Field::execTimeEvent(void)
 		if (event[i]->isEnabled())
 			event[i]->exec();
 	}
+	object[0]->stop();
+	object[1]->stop();
 	sight->updateGL();
 }
 

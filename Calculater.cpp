@@ -1,10 +1,18 @@
 #include "Calculater.h"
 #include "Vector.h"
+#include <iostream>
 #include <math.h>
 
 
-bool Calculater::solveCubicEquation(float* a, float* b, float* c, float* k, float* ans)
+bool Calculater::solveCubicEquation(const Vector& A, const Vector& B, const Vector& C, const Vector& K, Vector* ans)
 {
+	float a[3], b[3], c[3], k[3];
+
+	A.getVector(a);
+	B.getVector(b);
+	C.getVector(c);
+	K.getVector(k);
+
 	float det = a[0]*b[1]*c[2] + a[1]*b[2]*c[0] + a[2]*b[0]*c[1] - a[2]*b[1]*c[0] - a[1]*b[0]*c[2] - a[0]*b[2]*c[1];
 
 	if (det == 0) {
@@ -12,14 +20,17 @@ bool Calculater::solveCubicEquation(float* a, float* b, float* c, float* k, floa
 		return false;
 	}
 
-	ans[0] = ((b[1]*c[2] - b[2]*c[1])*k[0] + (b[2]*c[0] - b[0]*c[2])*k[1] + (b[0]*c[1] - b[1]*c[0])*k[2]) / det;
-	ans[1] = ((c[1]*a[2] - c[2]*a[1])*k[0] + (c[2]*a[0] - c[0]*a[2])*k[1] + (c[0]*a[1] - c[1]*a[0])*k[2]) / det;
-	ans[2] = ((a[1]*b[2] - a[2]*b[1])*k[0] + (a[2]*b[0] - a[0]*b[2])*k[1] + (a[0]*b[1] - a[1]*b[0])*k[2]) / det;
+	ans->setX(
+		((b[1]*c[2] - b[2]*c[1])*k[0] + (b[2]*c[0] - b[0]*c[2])*k[1] + (b[0]*c[1] - b[1]*c[0])*k[2]) / det);
+	ans->setY(
+		((c[1]*a[2] - c[2]*a[1])*k[0] + (c[2]*a[0] - c[0]*a[2])*k[1] + (c[0]*a[1] - c[1]*a[0])*k[2]) / det);
+	ans->setZ(
+		((a[1]*b[2] - a[2]*b[1])*k[0] + (a[2]*b[0] - a[0]*b[2])*k[1] + (a[0]*b[1] - a[1]*b[0])*k[2]) / det);
 
 	return true;
 }
 
-void Calculater::rotate(Vector* vertex_p, Vector offset, Vector shaft, float deg)
+void Calculater::rotate(Vector* vertex_p, const Vector& offset, const Vector& shaft, float deg)
 {
 	if (deg == 0)
 		return;
@@ -35,7 +46,7 @@ void Calculater::rotate(Vector* vertex_p, Vector offset, Vector shaft, float deg
 	float vz = vertex_p->getZ();
 //	float r = shaft.getMagnitude();//sqrt(sx*sx + sy*sy + sz*sz);
 
-	deg *= PI / 180;
+	deg *= PI / 180.0;
 /*
 	sx /= r;
 	sy /= r;
@@ -57,4 +68,73 @@ float Calculater::matrix1(float m, float deg)
 float Calculater::matrix2(float l, float m, float n, float deg)
 {
 	return l*m*(1 - cos(deg)) + n*sin(deg);
+}
+
+bool Calculater::calculate1(const Vector& A, const Vector& B, Vector* ansVector)
+{
+	short s = 0;
+	short t = 1;
+	short u = 2;
+	float a[3], b[3];
+
+	A.getVector(a);
+	B.getVector(b);
+
+	for (short i = 0  ;  i < 6  ;  i++) {
+		switch (i) {
+			case 1 : {
+				s = 0;
+				t = 2;
+				u = 1;
+				break;
+			}
+			case 2 : {
+				s = 1;
+				t = 0;
+				u = 2;
+				break;
+			}
+			case 3 : {
+				s = 1;
+				t = 2;
+				u = 0;
+				break;
+			}
+			case 4 : {
+				s = 2;
+				t = 0;
+				u = 1;
+				break;
+			}
+			case 5 : {
+				s = 2;
+				t = 1;
+				u = 0;
+				break;
+			}
+		}
+		if (a[s] == 0  ||  a[t] == 0) {
+			if (i == 5) {
+				return false;
+			}
+		} else if ((b[s] - a[s]/a[t]*b[t]) == 0  ||  (b[t] - a[t]/a[s]*b[s]) == 0) {
+			if (i == 5) {
+				return false;
+			}
+		} else {
+//			std::cerr << "i:" << i << '\n';
+			break;
+		}
+	}
+
+	float temp1 = (a[u]/a[t]*b[t] - b[u]) / (b[s] - a[s]/a[t]*b[t]);
+	float temp2 = (a[u]/a[s]*b[s] - b[u]) / (b[t] - a[t]/a[s]*b[s]);
+	float ans[3];
+
+	ans[u] = sqrt(1 / (temp1*temp1 + temp2*temp2 + 1));
+	ans[s] = temp1 * ans[u];
+	ans[t] = temp2 * ans[u];
+
+	ansVector->setVector(ans);
+	return true;
 }

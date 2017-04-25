@@ -3,7 +3,7 @@
 //#include <iostream>
 
 Gunner::Gunner(const char* fileName, const char* bulletFileName) :
-	Player::Player(fileName), gunsight(Vector(0, -1, 0)), bulletShaft(Vector(1, 0, 0)), bulletYaw(0), bulletPitch(0)
+	Player::Player(fileName), gunsight(Vector(0, -1, 0))
 {
 	classCode = 'G';
 	bulletIndex = 0;
@@ -14,13 +14,10 @@ Gunner::Gunner(const char* fileName, const char* bulletFileName) :
 Gunner::Gunner(const Gunner& gunner) : Player::Player(gunner)
 {
 	if (gunner.whichClass() == 'G') {
-		bulletYaw = gunner.bulletYaw;
-		bulletPitch = gunner.bulletPitch;
 		bulletCount = gunner.bulletCount;
 		bulletIndex = gunner.bulletIndex;
 		modelBullet = new Object(*(gunner.modelBullet));
 		gunsight = gunner.gunsight;
-		bulletShaft = gunner.bulletShaft;
 	} else {
 		bulletIndex = 0;
 		bulletCount = 0;
@@ -50,15 +47,8 @@ Object Gunner::fire(void)
 //	bulletIndex++;
 
 	Vector temp = this->getGravityCenter() + (gunsight * 2);
-//	Vector temp = this->getGravityCenter();
-//	temp.addVector(0, -2, 0);
 
 	modelBullet->moveAbsolute(temp);
-	modelBullet->setOmega(0, bulletYaw, 0);
-	modelBullet->rotate();
-	modelBullet->setOmega(bulletShaft * bulletPitch);
-	modelBullet->rotate();
-	modelBullet->setOmega(0, 0, 0);
 
 //	temp = gunsight * 3;
 	temp = gunsight * 0.5;
@@ -67,11 +57,15 @@ Object Gunner::fire(void)
 	return Object(*modelBullet);
 }
 
-void Gunner::trigger(Vector lookAt, Vector lookAtN, float yaw, float pitch)
+void Gunner::trigger(Vector lookAt)
 {
 	gunsight = lookAt;
-	bulletShaft = lookAtN;
-	bulletYaw = yaw;
-	bulletPitch = pitch;
 	bulletCount = 200;
+}
+
+void Gunner::rotateBullet(Vector omega)
+{
+	modelBullet->setOmega(omega);
+	modelBullet->rotate();
+	modelBullet->setOmega(0, 0, 0);
 }

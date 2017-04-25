@@ -68,11 +68,11 @@ public:
 
 	void push(Vector);
 	void accelerate(Vector);
+	void applyTorque(Vector);
 
-//	bool isCrashState(void);
-//	void enCrash(void);
-//	void disCrash(void);
 	void enblack(short);
+
+//	void debug(void);
 
 
 protected:
@@ -105,7 +105,6 @@ private:
 	float mass;
 	bool* vertexEmbodyFlag;
 	bool* polygonEmbodyFlag;
-//	bool crashState;
 
 };
 

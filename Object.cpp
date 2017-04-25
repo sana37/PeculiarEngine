@@ -8,7 +8,6 @@ Object::Object(const char* fileName) :
 	omegaVector(Vector(0, 1, 0)),
 	omega(0),
 	gravityCenter(Vector())
-//	crashState(false)
 {
 	classCode = 'O';
 	radius = 0;
@@ -47,7 +46,8 @@ Object::Object(const char* fileName) :
 			}
 
 			if (vertexEmbodyFlag[i] == true) {
-				gravityCenter.addVector(temp);
+//				gravityCenter.addVector(temp);
+				gravityCenter += Vector(temp);
 				realVertexNum++;
 			}
 		}
@@ -205,7 +205,6 @@ Object::Object(const Object& _object)
 	omega = _object.omega;
 	radius = _object.radius;
 	mass = _object.mass;
-//	crashState = _object.crashState;
 
 	classCode = _object.classCode;
 	isDominated = _object.isDominated;
@@ -478,6 +477,7 @@ void Object::back(void)
 void Object::stop(void)
 {
 	velocity.setVector(0, 0, 0);
+	omega = 0;
 }
 
 void Object::moveRelative(const Vector& vector)
@@ -522,25 +522,25 @@ void Object::accelerate(Vector vector)
 {
 	velocity += vector;
 }
-/*
-bool Object::isCrashState(void)
+
+void Object::applyTorque(Vector torque)
 {
-	return crashState;
+	omegaVector *= omega;
+	omegaVector += (torque / (mass / 10.0));
+	omega = omegaVector.getMagnitude();
+	if (omega != 0)
+		omegaVector /= omega;
 }
 
-void Object::enCrash(void)
-{
-	crashState = true;
-}
-
-void Object::disCrash(void)
-{
-	crashState = false;
-}
-*/
 void Object::enblack(short num)
 {
 	polygonR[num] = 0;
 	polygonG[num] = 0;
 	polygonB[num] = 0;
 }
+/*
+void Object::debug(void)
+{
+	printf("%f : %f  %f  %f;\n", omega, omegaVector.getX(), omegaVector.getY(), omegaVector.getZ());
+}
+*/

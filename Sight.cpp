@@ -7,8 +7,6 @@
 
 
 Sight::Sight(Object** originalObject, short originalObjectNum, short originalDominatorIndex) :
-	yaw(0),
-	pitch(0),
 	lookAt(Vector(0, 0, -1)),
 	lookAtN(Vector(1, 0, 0)),
 	velocity(Vector(0, 0, 0))
@@ -62,8 +60,6 @@ void Sight::update(void)
 
 	rotateSelf(&lookAt, zero, omegaYaw, omegaPitch);
 	rotateSelf(&lookAtN, zero, omegaYaw, 0);
-	yaw += omegaYaw;
-	pitch += omegaPitch;
 
 	if (possessFlag == 2) {
 		Vector basePoint(X, Y, Z);
@@ -86,6 +82,16 @@ void Sight::update(void)
 			object[dominatorIndex]->setGravityCenter(vertex);
 
 			rotateSelf(&dominatorSightPoint[dominatorIndex], zero, omegaYaw, omegaPitch);
+
+			if (object[dominatorIndex]->whichClass() == 'G') {
+				Gunner* gunner = (Gunner*) object[dominatorIndex];
+
+				Vector omega(0, omegaYaw, 0);
+				gunner->rotateBullet(omega);
+				omega = lookAtN * omegaPitch;
+				gunner->rotateBullet(omega);
+			}
+
 			if (gbFlag != 0)
 				velocity = lookAt * SPEED * gbFlag;
 		}
@@ -231,7 +237,7 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 		case ' ' : {
 			if (possessFlag == 2  &&  object[dominatorIndex]->whichClass() == 'G') {
 				Gunner* gunner = (Gunner*) object[dominatorIndex];
-				gunner->trigger(lookAt, lookAtN, yaw, pitch);
+				gunner->trigger(lookAt/*, lookAtN, yaw, pitch*/);
 			}
 			break;
 		}

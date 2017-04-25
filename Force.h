@@ -10,14 +10,16 @@ class Object;
 class Force : public Vector
 {
 public:
-	Force(Vector, Object*, Object*);
+	Force(Vector, Vector, Object*, Object*);
 	~Force(void);
 
 	void exec(void);
+	void applyDecomposedForce(Object*);
 
 private:
 	Object* obj1;
 	Object* obj2;
+	Vector forcePoint;
 
 };
 
