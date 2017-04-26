@@ -22,9 +22,11 @@ Field::Field(void)
 	objectNum = OBJECT_NUM;/////////
 	eventNum = EVENT_NUM;
 	forceNum = 0;
+//	forceNum = OBJECT_NUM - 3;
+
 	time = new QTimer;
 	autoGeneration = new QTimer;
-	force = NULL;
+
 	object = new Object*[objectNum];
 	object[0] = new Object("ground0");
 	object[1] = new Object("sky1");
@@ -47,26 +49,30 @@ Field::Field(void)
 	event[1] = new SightMoveEvent();
 	event[2] = new CrashEvent();
 	event[3] = new ForceEvent();
-/*
-	stateCrash = new char*[objectNum];
-	indexCrash = new short*[objectNum];
-	for(short i = 0  ;  i < objectNum  ;  i++){
-		std::cerr << "classCode : " << object[i]->whichClass() << '\n';
-		stateCrash[i] = new char[objectNum];
-		indexCrash[i] = new short[objectNum];
-		for(short j = 0  ;  j < objectNum  ;  j++){
-			stateCrash[i][j] = '\0';
-			indexCrash[i][j] = -1;
-		}
+
+	force = NULL;
+//	force = new Force*[forceNum];
+
+	for (short i = 3  ;  i < 7  ;  i++) {
+//		force[i] = new Force(
+		Force* force = new Force(
+			Vector(0, -GRAVITY, 0) * object[i]->getMass(),
+			object[i]->getGravityCenter(),
+			object[i],
+			NULL
+		);
+//		force[i]->setPermanent(true);
+		force->setPermanent(true);
+		addForce(force);
 	}
-*/
+
 	time->start(TIME_UNIT);
 	autoGeneration->start(5000);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
 	QObject::connect(sight, SIGNAL(timeCall()), this, SLOT(timeControl()));
 //	QObject::connect(autoGeneration, SIGNAL(timeout()), this, SLOT(autoGenerate()));
 
-	object[3]->moveAbsolute(8, 2, 0);
+	object[3]->moveAbsolute(8, 12, 0);
 //	object[3]->setVelocity(0.03, 0.05, 0);
 	object[3]->setVelocity(0, 0, 0);
 	object[3]->setOmega(1, 1, 0);
@@ -74,15 +80,15 @@ Field::Field(void)
 		object[3]->rotate();
 	object[3]->setOmega(0, 0, 0);
 
-	object[4]->moveAbsolute(6, 6, 6);
+	object[4]->moveAbsolute(6, 16, 6);
 //	object[4]->setVelocity(-0.03, 0.03, 0.08);
 	object[4]->setVelocity(0, 0, 0);
 
-	object[5]->moveAbsolute(3, 3, 3);
+	object[5]->moveAbsolute(3, 13, 3);
 //	object[5]->setVelocity(0, -0.05, 0.03);
 	object[5]->setVelocity(0, 0, 0);
 
-	object[6]->moveAbsolute(0, 5, 0);
+	object[6]->moveAbsolute(0, 15, 0);
 //	object[6]->setVelocity(0.04, 0.1, 0);
 	object[6]->setVelocity(0, 0, 0);
 
@@ -150,7 +156,7 @@ void Field::autoGenerate(void)
 	Object* temp;
 	Vector vector;
 
-	switch(autoGenerationIndex){//atode random ni suru
+	switch (autoGenerationIndex) {//atode random ni suru
 		case 0 : {
 			temp = new NumberBox(94);
 			break;
@@ -204,7 +210,7 @@ void Field::autoGenerate(void)
 		}
 	}
 
-	switch(autoGenerationIndex % 4){
+	switch (autoGenerationIndex % 4) {
 		case 0 : {
 			vector.setVector(25, 45, 25);
 			break;
@@ -224,7 +230,7 @@ void Field::autoGenerate(void)
 	}
 	temp->moveAbsolute(vector);
 
-	switch(autoGenerationIndex % 3){
+	switch (autoGenerationIndex % 3) {
 		case 0 : {
 			vector.setVector(0.02, 0.04, 0);
 			break;
@@ -246,15 +252,12 @@ void Field::autoGenerate(void)
 
 void Field::objectGenerate(Object* newObject)
 {
-//	char** tempStateCrash;
-//	short** tempIndexCrash;
-	Object** tempObject;
 /*
-	if(deadObjectNum > 0){
+	if (deadObjectNum > 0) {
 		deadObjectNum--;
 		delete object[deadObjectIndex[deadObjectNum]];
 //		object[deadObjectIndex[deadObjectNum]] = newObject;
-		switch(newObject->whichClass()){
+		switch (newObject->whichClass()) {
 			case 'O' : object[deadObjectIndex[deadObjectNum]] = new Object(*newObject);	break;
 			case 'P' : object[deadObjectIndex[deadObjectNum]] = new Player(*((Player*)newObject));	break;
 			case 'G' : object[deadObjectIndex[deadObjectNum]] = new Gunner(*((Gunner*)newObject));	break;
@@ -265,52 +268,25 @@ void Field::objectGenerate(Object* newObject)
 	}
 */
 
-
 	objectNum++;
+	Object** tempObject = new Object*[objectNum];
 
-	tempObject = new Object*[objectNum];
-//	tempStateCrash = new char*[objectNum];
-//	tempIndexCrash = new short*[objectNum];
-	for(short i = 0  ;  i < objectNum  ;  i++){
-		if(i == objectNum - 1){
-			switch(newObject->whichClass()){
+	for (short i = 0  ;  i < objectNum  ;  i++) {
+		if (i == objectNum - 1) {
+			switch (newObject->whichClass()) {
 				case 'O' : tempObject[i] = new Object(*newObject);	break;
 				case 'P' : tempObject[i] = new Player(*((Player*)newObject));	break;
 				case 'G' : tempObject[i] = new Gunner(*((Gunner*)newObject));	break;
 				case 'N' : tempObject[i] = new NumberBox(*((NumberBox*)newObject));	break;
 			}
-		}else{
-			switch(object[i]->whichClass()){
-				case 'O' : tempObject[i] = new Object(*object[i]);	break;
-				case 'P' : tempObject[i] = new Player(*((Player*)object[i]));	break;
-				case 'G' : tempObject[i] = new Gunner(*((Gunner*)object[i]));	break;
-				case 'N' : tempObject[i] = new NumberBox(*((NumberBox*)object[i]));	break;
-			}
+		} else {
+			tempObject[i] = object[i];
 		}
-/*
-		tempStateCrash[i] = new char[objectNum];
-		tempIndexCrash[i] = new short[objectNum];
-		for(short j = 0  ;  j < objectNum  ;  j++){
-			if(i == objectNum - 1  ||  j == objectNum - 1){
-				tempStateCrash[i][j] = '\0';
-				tempIndexCrash[i][j] = -1;
-			}else{
-				tempStateCrash[i][j] = stateCrash[i][j];
-				tempIndexCrash[i][j] = indexCrash[i][j];
-			}
-		}
-*/
 	}
 
-	for(short i = 0  ;  i < objectNum - 1  ;  i++)
-		delete object[i];
 	delete[] object;
-//	delete[] stateCrash;
-//	delete[] indexCrash;
 
 	object = tempObject;
-//	stateCrash = tempStateCrash;
-//	indexCrash = tempIndexCrash;
 
 	sight->updateObject(object, objectNum);
 }
@@ -321,14 +297,15 @@ void Field::addForce(Force* force)
 	Force** tempForce = new Force*[forceNum];
 
 	for (short i = 0  ;  i < forceNum  ;  i++) {
-		if (i != forceNum - 1)
+		if (i != forceNum - 1) {
 			tempForce[i] = this->force[i];
-		else
+		} else {
 			tempForce[i] = force;
+		}
 	}
 
 	if (this->force != NULL)
-		delete[] this->force;
+		delete[] (this->force);
 
 	this->force = tempForce;
 }
@@ -341,10 +318,11 @@ void Field::finishForce(short idx)
 	Force** tempForce = new Force*[forceNum];
 
 	for (short i = 0  ;  i < forceNum  ;  i++) {
-		if (i < idx)
+		if (i < idx) {
 			tempForce[i] = force[i];
-		else
+		} else {
 			tempForce[i] = force[i + 1];
+		}
 	}
 
 	delete[] force;

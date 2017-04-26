@@ -7,6 +7,7 @@
 #define EVENT_NUM	4
 #define TIME_UNIT	10
 #define WORLD		80
+#define GRAVITY		0.00098
 
 class Sight;
 class Object;

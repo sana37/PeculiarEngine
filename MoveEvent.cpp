@@ -10,19 +10,9 @@ Field::MoveEvent::MoveEvent(void) : Field::Event::Event()
 
 void Field::MoveEvent::exec(void)
 {
-//	bool velocityChangeFlag[OBJECT_NUM];//
 	bool signal;
 
-//stateCrash nado wo initialize
 	for (short i = 0  ;  i < field->objectNum  ;  i++) {
-/*		if (velocityChangeFlag[i]) {
-			for (short j = 0  ;  j < OBJECT_NUM  ;  j++) {
-				if (j < i)
-					stateCrash[j][i] = '\0';
-				else if (i < j)
-					stateCrash[i][j] = '\0';
-			}
-		}*/
 		switch (field->object[i]->whichClass()) {
 			case 'G' : {
 				Gunner* gunner = (Gunner*)field->object[i];

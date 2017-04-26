@@ -966,6 +966,7 @@ Field.o: Field.cpp Field.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
 		Vector.h \
+		Force.h \
 		Object.h \
 		Player.h \
 		NumberBox.h \
@@ -981,10 +982,13 @@ Field.o: Field.cpp Field.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Field.o Field.cpp
 
 Force.o: Force.cpp Force.h \
-		Vector.h
+		Vector.h \
+		Object.h \
+		Calculater.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Force.o Force.cpp
 
 ForceEvent.o: ForceEvent.cpp ForceEvent.h \
+		Event.h \
 		Field.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QObject \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject.h \
@@ -1034,7 +1038,9 @@ ForceEvent.o: ForceEvent.cpp ForceEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
-		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
+		Force.h \
+		Vector.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ForceEvent.o ForceEvent.cpp
 
 Gunner.o: Gunner.cpp Gunner.h \

@@ -23,19 +23,19 @@ Vector::Vector(float x, float y, float z)
 	Z = z;
 }
 
-Vector::Vector(Vector* originalVector)
+Vector::Vector(Vector* vector)
 {
-	X = originalVector->getX();
-	Y = originalVector->getY();
-	Z = originalVector->getZ();
+	X = vector->getX();
+	Y = vector->getY();
+	Z = vector->getZ();
 }
 
-Vector::Vector(const Vector& originalVector)
+Vector::Vector(const Vector& vector)
 {
 //	std::cerr << "copy constructer\n";
-	X = originalVector.getX();
-	Y = originalVector.getY();
-	Z = originalVector.getZ();
+	X = vector.getX();
+	Y = vector.getY();
+	Z = vector.getZ();
 }
 
 Vector::~Vector(void)
@@ -98,11 +98,11 @@ void Vector::setVector(float x, float y, float z)
 	Z = z;
 }
 
-void Vector::setVector(Vector* originalVector)
+void Vector::setVector(Vector* vector)
 {
-	X = originalVector->getX();
-	Y = originalVector->getY();
-	Z = originalVector->getZ();
+	X = vector->getX();
+	Y = vector->getY();
+	Z = vector->getZ();
 }
 
 Vector Vector::operator+(const Vector& addedVector) const
@@ -130,11 +130,11 @@ float Vector::operator*(const Vector& vector) const
 	return (X * vector.X) + (Y * vector.Y) + (Z * vector.Z);
 }
 
-const Vector& Vector::operator=(const Vector& originalVector)
+const Vector& Vector::operator=(const Vector& vector)
 {
-	X = originalVector.getX();
-	Y = originalVector.getY();
-	Z = originalVector.getZ();
+	X = vector.getX();
+	Y = vector.getY();
+	Z = vector.getZ();
 	return *this;
 }
 

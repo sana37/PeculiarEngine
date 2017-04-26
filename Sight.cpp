@@ -156,12 +156,16 @@ void Sight::resizeGL(int width, int height)
 
 void Sight::paintGL(void)
 {
+//	std::cerr << "0\n";
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(X, Y, Z, X + lookAt.getX(), Y + lookAt.getY(), Z + lookAt.getZ(), 0, 1, 0);
+//	std::cerr << "1\n";
 
-	glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
+//	std::cerr << "2\n";
+	glClear(GL_COLOR_BUFFER_BIT);
+//	std::cerr << "3\n";
 
 	for (short i = 0  ;  i < objectNum  ;  i++) {
 		paintObject(object[i]);

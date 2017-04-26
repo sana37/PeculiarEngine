@@ -11,15 +11,19 @@ class Force : public Vector
 {
 public:
 	Force(Vector, Vector, Object*, Object*);
+	Force(const Force&);
 	~Force(void);
 
 	void exec(void);
 	void applyDecomposedForce(Object*);
+	void setPermanent(bool);
+	bool isPermanent(void);
 
 private:
 	Object* obj1;
 	Object* obj2;
 	Vector forcePoint;
+	bool permanent;
 
 };
 
