@@ -31,8 +31,8 @@ void Field::CrashEvent::exec(void)
 				short result = -1;
 
 				if (i == 5  ||  j == 5) {
-					Vector omega = field->object[5]->getOmega();
-					std::cout << omega.getX() << " : " << omega.getY() << " : " << omega.getZ() << "\n";
+					Vector vector = field->object[5]->getVelocity();
+					std::cout << vector.getX() << " : " << vector.getY() << " : " << vector.getZ() << "\n";
 				}
 
 				if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
@@ -276,7 +276,7 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 	if (Calculater::solveCubicEquation(p, q, n, v, &solution)) {
 		float m1 = obj1->getMass();
 		float m2 = obj2->getMass();
-		float e = 0.8;
+		float e = 0.7;
 
 		Vector vector = n * solution.getZ() * (1 + e) * (m1 * m2 / (m1 + m2));
 

@@ -83,6 +83,9 @@ Field::Field(void)
 	object[5]->moveAbsolute(3, 13, 3);
 //	object[5]->setVelocity(0, -0.05, 0.03);
 	object[5]->setVelocity(0, 0, 0);
+	object[5]->setOmega(0.1, 0.1, 0);
+	object[5]->rotate();
+	object[5]->setOmega(0, 0, 0);
 
 	object[6]->moveAbsolute(0, 15, 0);
 //	object[6]->setVelocity(0.04, 0.1, 0);

@@ -515,18 +515,28 @@ void Object::rotate(void)
 
 void Object::push(Vector vector)
 {
+	float preVelocity = velocity.getMagnitude();
+
 	velocity += (vector / mass);
+
+	if (velocity.getMagnitude() < NEAR_ZERO  &&  velocity.getMagnitude() < preVelocity)
+		velocity.setVector(0, 0, 0);
 }
 
 void Object::accelerate(Vector vector)
 {
+	float preVelocity = velocity.getMagnitude();
+
 	velocity += vector;
+
+	if (velocity.getMagnitude() < NEAR_ZERO  &&  velocity.getMagnitude() < preVelocity)
+		velocity.setVector(0, 0, 0);
 }
 
 void Object::applyTorque(Vector torque)
 {
 	omegaVector *= omega;
-	omegaVector += (torque / (mass / 2.0));
+	omegaVector += (torque / (mass / 1.0));
 	omega = omegaVector.getMagnitude();
 	if (omega != 0)
 		omegaVector /= omega;

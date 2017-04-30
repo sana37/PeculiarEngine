@@ -1,6 +1,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#define NEAR_ZERO	0.02
+
 #include "Vector.h"
 
 class Object
