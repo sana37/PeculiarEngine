@@ -10,7 +10,6 @@ class Player : public Object
 public:
 	Player(const char*);
 	Player(const Player&);
-	void inheritPlayer(short* , short* , Vector***) const;
 	bool updatePlayer(void);
 
 protected:
@@ -18,7 +17,7 @@ protected:
 	void autoMove(void);
 
 private:
-	Vector** route;
+	Vector* route;
 	short routeNum;
 	short routeIndex;
 };

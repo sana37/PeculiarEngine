@@ -1,79 +1,86 @@
 #include "Object.h"
+#include "Calculater.h"
 #include <stdio.h>
 #include <math.h>
 
-Object::Object(const char* fileName)
+Object::Object(const char* fileName) :
+	velocity(Vector()),
+	omegaVector(Vector(0, 1, 0)),
+	omega(0),
+	gravityCenter(Vector())
 {
-	velocity = new Vector();
-	gravityCenter = new Vector();
 	classCode = 'O';
 	radius = 0;
 	isDominated = false;
 
-	FILE* fp = fopen(fileName , "r");
+	FILE* fp = fopen(fileName, "r");
 
-	if(fp != NULL){
-		while(fgetc(fp) != ':');
-		if(fscanf(fp , "%hd" , &vertexNum) == EOF)
+	if (fp != NULL) {
+		while (fgetc(fp) != ':') ;
+		if (fscanf(fp, "%hd", &vertexNum) == EOF)
 			printf("ERROR\n");
 
-		while(fgetc(fp) != '+');
-		vertex = new Vector*[vertexNum];
+		while (fgetc(fp) != '+') ;
+		vertex = new Vector[vertexNum];
 		vertexEmbodyFlag = new bool[vertexNum];
-		for(short i = 0  ;  i < vertexNum  ;  i++){
+		short realVertexNum = 0;
+		for (short i = 0  ;  i < vertexNum  ;  i++) {
 			float temp[3];
 
-			if(fscanf(fp , "%f%f%f" , &temp[0] , &temp[1] , &temp[2]) == EOF){
+			if (fscanf(fp, "%f%f%f", &temp[0], &temp[1], &temp[2]) == EOF) {
 				printf("ERROR\n");
 				break;
 			}
 
-			vertex[i] = new Vector(temp);
+			vertex[i].setVector(temp);
 
 			vertexEmbodyFlag[i] = true;
 
-			while(fgetc(fp) != '/');
-			while(1){
+			while (fgetc(fp) != '/') ;
+			while (1) {
 				char ch = fgetc(fp);
-				if(ch == '/')
+				if (ch == '/')
 					break;
-				if(ch == '|')
+				if (ch == '|')
 					vertexEmbodyFlag[i] = false;
 			}
 
-			if(vertexEmbodyFlag[i] == true)
-				gravityCenter->addVector(temp);
+			if (vertexEmbodyFlag[i] == true) {
+//				gravityCenter.addVector(temp);
+				gravityCenter += Vector(temp);
+				realVertexNum++;
+			}
 		}
-		gravityCenter->multiply(1.0 / (float)vertexNum);
+		gravityCenter /= realVertexNum;
 
 
 
-		while(fgetc(fp) != '*');
+		while (fgetc(fp) != '*') ;
 
 
-		while(fgetc(fp) != ':');
-		if(fscanf(fp , "%hd" , &lineNum) == EOF)
+		while (fgetc(fp) != ':') ;
+		if (fscanf(fp, "%hd", &lineNum) == EOF)
 			printf("ERROR\n");
 
 		lineLVertexIndex = new short[lineNum];
 		lineRVertexIndex = new short[lineNum];
 
-		while(fgetc(fp) != '+');
-		for(short i = 0  ;  i < lineNum  ;  i++){
-			if(fscanf(fp , "%hd%hd" , &lineLVertexIndex[i] , &lineRVertexIndex[i]) == EOF) break;
+		while (fgetc(fp) != '+') ;
+		for (short i = 0  ;  i < lineNum  ;  i++) {
+			if (fscanf(fp, "%hd%hd", &lineLVertexIndex[i], &lineRVertexIndex[i]) == EOF) break;
 			lineLVertexIndex[i]--;
 			lineRVertexIndex[i]--;
 
-			while(fgetc(fp) != '/');
-			while(fgetc(fp) != '/');
+			while (fgetc(fp) != '/') ;
+			while (fgetc(fp) != '/') ;
 		}
 
 
-		while(fgetc(fp) != '*');
+		while (fgetc(fp) != '*') ;
 
 
-		while(fgetc(fp) != ':');
-		if(fscanf(fp , "%hd" , &polygonNum) == EOF)
+		while (fgetc(fp) != ':') ;
+		if (fscanf(fp, "%hd", &polygonNum) == EOF)
 			printf("ERROR\n");
 
 		polygon1VertexIndex = new short[polygonNum];
@@ -84,77 +91,129 @@ Object::Object(const char* fileName)
 		polygonB = new short[polygonNum];
 		polygonEmbodyFlag = new bool[polygonNum];
 
-		while(fgetc(fp) != '+');
-		for(short i = 0  ;  i < polygonNum  ;  i++){
-			float colorR , colorG , colorB;
+		while (fgetc(fp) != '+') ;
+		for (short i = 0  ;  i < polygonNum  ;  i++) {
+			float colorR, colorG, colorB;
 
-			if(fscanf(fp , "%hd%hd%hd" , &polygon1VertexIndex[i] , &polygon2VertexIndex[i] , &polygon3VertexIndex[i]) == EOF) break;
+			if (fscanf(fp, "%hd%hd%hd", &polygon1VertexIndex[i], &polygon2VertexIndex[i], &polygon3VertexIndex[i]) == EOF) break;
 			polygon1VertexIndex[i]--;
 			polygon2VertexIndex[i]--;
 			polygon3VertexIndex[i]--;
 
-			while(fgetc(fp) != '|');
+			while (fgetc(fp) != '|') ;
 
-			if(fscanf(fp , "%f%f%f" , &colorR , &colorG , &colorB) == EOF) break;
+			if (fscanf(fp, "%f%f%f", &colorR, &colorG, &colorB) == EOF) break;
 			polygonR[i] = 32767 * colorR;
 			polygonG[i] = 32767 * colorG;
 			polygonB[i] = 32767 * colorB;
 
 			polygonEmbodyFlag[i] = true;
-			while(fgetc(fp) != '/');
-			while(1){
+			while (fgetc(fp) != '/') ;
+			while (1) {
 				char ch = fgetc(fp);
-				if(ch == '/')
+				if (ch == '/')
 					break;
-				if(ch == '|')
+				if (ch == '|')
 					polygonEmbodyFlag[i] = false;
 			}
 		}
 
 
-		while(fgetc(fp) != '*');
+		while (fgetc(fp) != '*') ;
+
+		while (fgetc(fp) != ':') ;
+		if (fscanf(fp, "%f", &mass) == EOF)
+			printf("ERROR\n");
 
 
-		if(fgetc(fp) == 'v'){
+		while (fgetc(fp) != '*') ;
+
+		if (fgetc(fp) == 'v') {
 			float temp[3];
-			if(fscanf(fp , "%f%f%f" , &temp[0] , &temp[1] , &temp[2]) == EOF){
-				velocity->setVector(0 , 0 , 0);
-			}else{
-				velocity->setVector(temp);
+			if (fscanf(fp, "%f%f%f", &temp[0], &temp[1], &temp[2]) == EOF) {
+				velocity.setVector(0, 0, 0);
+			} else {
+				velocity.setVector(temp);
 			}
 		}
 
 		fclose(fp);
 
-		for(short i = 0  ;  i < vertexNum  ;  i++){
-			if(vertexEmbodyFlag[i] == false)
+		for (short i = 0  ;  i < vertexNum  ;  i++) {
+			if (vertexEmbodyFlag[i] == false)
 				continue;
-			if(radius < (*vertex[i] - *gravityCenter).getMagnitude())
-				radius = (*vertex[i] - *gravityCenter).getMagnitude();
+			if (radius < (vertex[i] - gravityCenter).getMagnitude())
+				radius = (vertex[i] - gravityCenter).getMagnitude();
 		}
-	}else{
+	} else {
 		printf("I cannot open such a file\n");
 		vertexNum = -1;
 		lineNum = -1;
 		polygonNum = -1;
 		//radius = 10000;
+		mass = 1;
 	}
 }
 
-Object::Object(const Object& originalObject)
+Object::Object(const Object& _object)
 {
 //	printf("copy constructer object\n");
-	copyObject(originalObject);
+
+	vertexNum = _object.vertexNum;
+	lineNum = _object.lineNum;
+	polygonNum = _object.polygonNum;
+
+	vertex = new Vector[vertexNum];
+	gravityCenter = _object.gravityCenter;
+	vertexEmbodyFlag = new bool[vertexNum];
+
+	for (short i = 0  ;  i < vertexNum  ;  i++) {
+		vertex[i] = _object.vertex[i];
+		vertexEmbodyFlag[i] = _object.vertexEmbodyFlag[i];
+	}
+
+
+	lineLVertexIndex = new short[lineNum];
+	lineRVertexIndex = new short[lineNum];
+	for (short i = 0  ;  i < lineNum  ;  i++) {
+		lineLVertexIndex[i] = _object.lineLVertexIndex[i];
+		lineRVertexIndex[i] = _object.lineRVertexIndex[i];
+	}
+
+
+	polygon1VertexIndex = new short[polygonNum];
+	polygon2VertexIndex = new short[polygonNum];
+	polygon3VertexIndex = new short[polygonNum];
+	polygonR = new short[polygonNum];
+	polygonG = new short[polygonNum];
+	polygonB = new short[polygonNum];
+	polygonEmbodyFlag = new bool[polygonNum];
+
+	for (short i = 0  ;  i < polygonNum  ;  i++) {
+		polygon1VertexIndex[i] = _object.polygon1VertexIndex[i];
+		polygon2VertexIndex[i] = _object.polygon2VertexIndex[i];
+		polygon3VertexIndex[i] = _object.polygon3VertexIndex[i];
+		polygonR[i] = _object.polygonR[i];
+		polygonG[i] = _object.polygonG[i];
+		polygonB[i] = _object.polygonB[i];
+		polygonEmbodyFlag[i] = _object.polygonEmbodyFlag[i];
+	}
+
+
+	velocity = _object.velocity;
+	omegaVector = _object.omegaVector;
+	omega = _object.omega;
+	radius = _object.radius;
+	mass = _object.mass;
+
+	classCode = _object.classCode;
+	isDominated = _object.isDominated;
 }
 
 Object::~Object(void)
 {
 //	printf("destructer object\n");
-//	printf("classCode : %c\n" , classCode);
-	delete velocity;
-	delete gravityCenter;
-	for(short i = 0  ;  i < vertexNum  ;  i++)
-		delete vertex[i];
+//	printf("classCode : %c\n", classCode);
 	delete[] vertex;
 	delete[] lineLVertexIndex;
 	delete[] lineRVertexIndex;
@@ -168,72 +227,9 @@ Object::~Object(void)
 	delete[] polygonEmbodyFlag;
 }
 
-void Object::inherit(bool* replicaIsDominated , short* replicaLineLVertexIndex , short* replicaLineRVertexIndex , short* replicaPolygon1VertexIndex , short* replicaPolygon2VertexIndex , short* replicaPolygon3VertexIndex) const
+void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga dokuritusitamama unndouno eikyouwo tomoni ukeru sikumini sitai
 {
-	*replicaIsDominated = isDominated;
-	for(short i = 0  ;  i < lineNum  ;  i++){
-		replicaLineLVertexIndex[i] = lineLVertexIndex[i];
-		replicaLineRVertexIndex[i] = lineRVertexIndex[i];
-	}
-	for(short i = 0  ;  i < polygonNum  ;  i++){
-		replicaPolygon1VertexIndex[i] = polygon1VertexIndex[i];
-		replicaPolygon2VertexIndex[i] = polygon2VertexIndex[i];
-		replicaPolygon3VertexIndex[i] = polygon3VertexIndex[i];
-	}
-}
-
-Object Object::operator=(const Object& originalObject)
-{
-	printf("mazuidesuyo! because not delete\n");
-	this->copyObject(originalObject);
-	return(Object(originalObject));
-}
-
-void Object::copyObject(const Object& originalObject)
-{
-	classCode = originalObject.whichClass();
-	vertexNum = originalObject.getVertexNum();
-	vertex = new Vector*[vertexNum];
-	gravityCenter = new Vector(originalObject.getGravityCenter());
-	vertexEmbodyFlag = new bool[vertexNum];
-
-	for(short i = 0  ;  i < vertexNum  ;  i++){
-		vertex[i] = new Vector(originalObject.getVertex(i));
-		vertexEmbodyFlag[i] = originalObject.isVertexEmbody(i);
-	}
-
-
-	lineNum = originalObject.getLineNum();
-	lineLVertexIndex = new short[lineNum];
-	lineRVertexIndex = new short[lineNum];
-
-
-	polygonNum = originalObject.getPolygonNum();
-	polygon1VertexIndex = new short[polygonNum];
-	polygon2VertexIndex = new short[polygonNum];
-	polygon3VertexIndex = new short[polygonNum];
-	polygonR = new short[polygonNum];
-	polygonG = new short[polygonNum];
-	polygonB = new short[polygonNum];
-	polygonEmbodyFlag = new bool[polygonNum];
-
-	for(short i = 0  ;  i < polygonNum  ;  i++){
-		polygonR[i] = originalObject.getPolygonR(i);
-		polygonG[i] = originalObject.getPolygonG(i);
-		polygonB[i] = originalObject.getPolygonB(i);
-		polygonEmbodyFlag[i] = originalObject.isPolygonEmbody(i);
-	}
-
-
-	velocity = new Vector(originalObject.getVelocity());
-	radius = originalObject.getRadius();
-
-	originalObject.inherit(&isDominated , lineLVertexIndex , lineRVertexIndex , polygon1VertexIndex , polygon2VertexIndex , polygon3VertexIndex);
-}
-
-void Object::composeObject(Object* material)
-{
-	Vector** tempVertex = new Vector*[vertexNum + material->getVertexNum()];
+	Vector* tempVertex = new Vector[vertexNum + material->getVertexNum()];
 	short* tempPolygon1VertexIndex = new short[polygonNum + material->getPolygonNum()];
 	short* tempPolygon2VertexIndex = new short[polygonNum + material->getPolygonNum()];
 	short* tempPolygon3VertexIndex = new short[polygonNum + material->getPolygonNum()];
@@ -242,17 +238,13 @@ void Object::composeObject(Object* material)
 	short* tempPolygonB = new short[polygonNum + material->getPolygonNum()];
 	bool* tempVertexEmbodyFlag = new bool[vertexNum + material->getVertexNum()];
 	bool* tempPolygonEmbodyFlag = new bool[polygonNum + material->getPolygonNum()];
-	bool fake1;
-	short fake2;
-	short fake3;
 
-
-	for(short i = 0  ;  i < vertexNum + material->getVertexNum()  ;  i++){
-		if(i < vertexNum){
-			tempVertex[i] = new Vector(*vertex[i]);
+	for (short i = 0  ;  i < vertexNum + material->getVertexNum()  ;  i++) {
+		if (i < vertexNum) {
+			tempVertex[i] = vertex[i];
 			tempVertexEmbodyFlag[i] = vertexEmbodyFlag[i];
-		}else{
-			tempVertex[i] = new Vector(material->getVertex(i - vertexNum));
+		} else {
+			tempVertex[i] = material->getVertex(i - vertexNum);
 			tempVertexEmbodyFlag[i] = false;//////////////
 		}
 	}
@@ -261,9 +253,8 @@ void Object::composeObject(Object* material)
 	vertex = tempVertex;
 	vertexEmbodyFlag = tempVertexEmbodyFlag;
 
-	material->inherit(&fake1 , &fake2 , &fake3 , &tempPolygon1VertexIndex[polygonNum] , &tempPolygon2VertexIndex[polygonNum] , &tempPolygon3VertexIndex[polygonNum]);
-	for(short i = 0  ;  i < polygonNum + material->getPolygonNum()  ;  i++){
-		if(i < polygonNum){
+	for (short i = 0  ;  i < polygonNum + material->getPolygonNum()  ;  i++) {
+		if (i < polygonNum) {
 			tempPolygon1VertexIndex[i] = polygon1VertexIndex[i];
 			tempPolygon2VertexIndex[i] = polygon2VertexIndex[i];
 			tempPolygon3VertexIndex[i] = polygon3VertexIndex[i];
@@ -271,10 +262,10 @@ void Object::composeObject(Object* material)
 			tempPolygonG[i] = polygonG[i];
 			tempPolygonB[i] = polygonB[i];
 			tempPolygonEmbodyFlag[i] = polygonEmbodyFlag[i];
-		}else{
-			tempPolygon1VertexIndex[i] += vertexNum;
-			tempPolygon2VertexIndex[i] += vertexNum;
-			tempPolygon3VertexIndex[i] += vertexNum;
+		} else {
+			tempPolygon1VertexIndex[i] = vertexNum + material->polygon1VertexIndex[i - polygonNum];
+			tempPolygon2VertexIndex[i] = vertexNum + material->polygon2VertexIndex[i - polygonNum];
+			tempPolygon3VertexIndex[i] = vertexNum + material->polygon3VertexIndex[i - polygonNum];
 			tempPolygonR[i] = 0;
 			tempPolygonG[i] = 0;
 			tempPolygonB[i] = 0;
@@ -303,160 +294,156 @@ void Object::composeObject(Object* material)
 
 short Object::getVertexNum(void) const
 {
-	return(vertexNum);
+	return vertexNum;
 }
 
 short Object::getPolygonNum(void) const
 {
-	return(polygonNum);
+	return polygonNum;
 }
 
 short Object::getLineNum(void) const
 {
-	return(lineNum);
+	return lineNum;
 }
 
-
-void Object::getVertex(short vertexIndex , Vector* replicaVertex) const
-{
-	replicaVertex->setVector(vertex[vertexIndex]);
-}
 
 const Vector& Object::getVertex(short vertexIndex) const
 {
-	return(*vertex[vertexIndex]);
-}
-
-
-
-void Object::getGravityCenter(Vector* replicaGravityCenter) const
-{
-	replicaGravityCenter->setVector(gravityCenter);
+	return vertex[vertexIndex];
 }
 
 const Vector& Object::getGravityCenter(void) const
 {
-	return(*gravityCenter);
-}
-
-
-void Object::getPolygon1Vertex(short polygonIndex , Vector* replicaVertex) const
-{
-	this->getVertex(polygon1VertexIndex[polygonIndex] , replicaVertex);
-}
-
-void Object::getPolygon2Vertex(short polygonIndex , Vector* replicaVertex) const
-{
-	this->getVertex(polygon2VertexIndex[polygonIndex] , replicaVertex);
-}
-
-void Object::getPolygon3Vertex(short polygonIndex , Vector* replicaVertex) const
-{
-	this->getVertex(polygon3VertexIndex[polygonIndex] , replicaVertex);
+	return gravityCenter;
 }
 
 const Vector& Object::getPolygon1Vertex(short polygonIndex) const
 {
-	return(this->getVertex(polygon1VertexIndex[polygonIndex]));
+	return this->getVertex(polygon1VertexIndex[polygonIndex]);
 }
 
 const Vector& Object::getPolygon2Vertex(short polygonIndex) const
 {
-	return(this->getVertex(polygon2VertexIndex[polygonIndex]));
+	return this->getVertex(polygon2VertexIndex[polygonIndex]);
 }
 
 const Vector& Object::getPolygon3Vertex(short polygonIndex) const
 {
-	return(this->getVertex(polygon3VertexIndex[polygonIndex]));
-}
-
-void Object::getLineLVertex(short lineIndex , Vector* replicaVertex) const
-{
-	this->getVertex(lineLVertexIndex[lineIndex] , replicaVertex);
-}
-
-void Object::getLineRVertex(short lineIndex , Vector* replicaVertex) const
-{
-	this->getVertex(lineRVertexIndex[lineIndex] , replicaVertex);
+	return this->getVertex(polygon3VertexIndex[polygonIndex]);
 }
 
 const Vector& Object::getLineLVertex(short lineIndex) const
 {
-	return(this->getVertex(lineLVertexIndex[lineIndex]));
+	return this->getVertex(lineLVertexIndex[lineIndex]);
 }
 
 const Vector& Object::getLineRVertex(short lineIndex) const
 {
-	return(this->getVertex(lineRVertexIndex[lineIndex]));
+	return this->getVertex(lineRVertexIndex[lineIndex]);
 }
+
 
 float Object::getRadius(void) const
 {
-	return(radius);
+	return radius;
 }
 
-void Object::getVelocity(Vector* replicaVelocity) const
+float Object::getMass(void)
 {
-	replicaVelocity->setVector(velocity);
+	return mass;
 }
 
 const Vector& Object::getVelocity(void) const
 {
-	return(*velocity);
+	return velocity;
+}
+
+Vector Object::getOmega(void) const
+{
+	return omegaVector * omega;
 }
 
 
 short Object::getPolygonR(short num) const
 {
-	return(polygonR[num]);
+	return polygonR[num];
 }
 
 short Object::getPolygonG(short num) const
 {
-	return(polygonG[num]);
+	return polygonG[num];
 }
 
 short Object::getPolygonB(short num) const
 {
-	return(polygonB[num]);
+	return polygonB[num];
 }
 
 char Object::whichClass(void) const
 {
-	return(classCode);
+	return classCode;
 }
 
 bool Object::isActive(void)
 {
-	return(velocity->getMagnitude() != 0);
+	return (velocity.getMagnitude() != 0);
 }
 
 bool Object::isVertexEmbody(short vertexIndex) const
 {
-	return(vertexEmbodyFlag[vertexIndex]);
+	return vertexEmbodyFlag[vertexIndex];
 }
 
 bool Object::isPolygonEmbody(short polygonIndex) const
 {
-	return(polygonEmbodyFlag[polygonIndex]);
+	return polygonEmbodyFlag[polygonIndex];
 }
 
 
 
 
-void Object::setVertex(short num , Vector* originalVertex)
+void Object::setVertex(short num, const Vector& vector)
 {
-	vertex[num]->setVector(originalVertex);
+	vertex[num] = vector;
 }
 
-void Object::setGravityCenter(Vector* originalGravityCenter)
+void Object::setVertex(short num, float x, float y, float z)
 {
-	gravityCenter->setVector(originalGravityCenter);
+	vertex[num].setVector(x, y, z);
 }
 
-void Object::setVelocity(Vector* originalVelocity)
+void Object::setGravityCenter(const Vector& vector)
 {
-	velocity->setVector(originalVelocity);
+	gravityCenter = vector;
+}
+
+void Object::setGravityCenter(float x, float y, float z)
+{
+	gravityCenter.setVector(x, y, z);
+}
+
+void Object::setVelocity(const Vector& vector)
+{
+	velocity = vector;
+}
+
+void Object::setVelocity(float x, float y, float z)
+{
+	velocity.setVector(x, y, z);
+}
+
+void Object::setOmega(const Vector& vector)
+{
+	omega = vector.getMagnitude();
+	if (omega != 0)
+		omegaVector = vector / omega;
+}
+
+void Object::setOmega(float x, float y, float z)
+{
+	Vector vector(x, y, z);
+	setOmega(vector);
 }
 
 void Object::setDomination(bool originalIsDominated)
@@ -466,47 +453,83 @@ void Object::setDomination(bool originalIsDominated)
 
 bool Object::update(void)
 {
-	this->move();
-	return(false);//whether velocity changes or not
+	this->run();
+	this->rotate();
+	return false;//whether velocity changes or not
 }
 
-void Object::move(void)
+void Object::run(void)
 {
-	for(short i = 0  ;  i < vertexNum  ;  i++){
-		vertex[i]->addVector(velocity);
+	for (short i = 0  ;  i < vertexNum  ;  i++) {
+		vertex[i] += velocity;
 	}
-	gravityCenter->addVector(velocity);
+	gravityCenter += velocity;
 }
 
 void Object::back(void)
 {
-	for(short i = 0  ;  i < vertexNum  ;  i++){
-		vertex[i]->subtractVector(velocity);
+	for (short i = 0  ;  i < vertexNum  ;  i++) {
+		vertex[i] -= velocity;
 	}
-	gravityCenter->subtractVector(velocity);
+	gravityCenter -= velocity;
 }
 
 void Object::stop(void)
 {
-	velocity->setVector(0 , 0 , 0);
+	velocity.setVector(0, 0, 0);
+	omega = 0;
 }
 
-void Object::transport(Vector* movement)
+void Object::moveRelative(const Vector& vector)
 {
-	for(short i = 0  ;  i < vertexNum  ;  i++){
-		vertex[i]->addVector(movement);
+	for (short i = 0  ;  i < vertexNum  ;  i++) {
+		vertex[i] += vector;
 	}
-	gravityCenter->addVector(movement);
+	gravityCenter += vector;
 }
 
-void Object::teleport(Vector* point)
+void Object::moveRelative(float x, float y, float z)
 {
-	Vector temp = *point - *gravityCenter;
+	Vector vector(x, y, z);
+	this->moveRelative(vector);
+}
 
-	for(short i = 0  ;  i < vertexNum  ;  i++){
-		vertex[i]->addVector(&temp);
+void Object::moveAbsolute(const Vector& vector)
+{
+	Vector temp = vector - gravityCenter;
+	this->moveRelative(temp);
+}
+
+void Object::moveAbsolute(float x, float y, float z)
+{
+	Vector vector(x, y, z);
+	this->moveAbsolute(vector);
+}
+
+void Object::rotate(void)
+{
+	for (short i = 0  ;  i < vertexNum  ;  i++) {
+		Calculater::rotate(&vertex[i], gravityCenter, omegaVector, omega);
 	}
-	gravityCenter->addVector(&temp);
+}
+
+void Object::push(Vector vector)
+{
+	velocity += (vector / mass);
+}
+
+void Object::accelerate(Vector vector)
+{
+	velocity += vector;
+}
+
+void Object::applyTorque(Vector torque)
+{
+	omegaVector *= omega;
+	omegaVector += (torque / (mass / 2.0));
+	omega = omegaVector.getMagnitude();
+	if (omega != 0)
+		omegaVector /= omega;
 }
 
 void Object::enblack(short num)
@@ -515,3 +538,9 @@ void Object::enblack(short num)
 	polygonG[num] = 0;
 	polygonB[num] = 0;
 }
+/*
+void Object::debug(void)
+{
+	printf("%f : %f  %f  %f;\n", omega, omegaVector.getX(), omegaVector.getY(), omegaVector.getZ());
+}
+*/

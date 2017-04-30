@@ -1,14 +1,16 @@
 #include <QApplication>
-#include "IntegratedWindow.h"
+#include "Field.h"
 
 int main(int argc , char** argv)
 {
-	QApplication* app = new QApplication(argc , argv);
-	IntegratedWindow* window = new IntegratedWindow();
+	QApplication app(argc , argv);
 
-	app->exec();
+	Field* field = Field::getInstance();
+	field->open();
 
-	delete window;
-	delete app;
-	return(0);
+	app.exec();
+
+	Field::deleteInstance();
+
+	return 0;
 }
