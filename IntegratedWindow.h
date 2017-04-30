@@ -13,16 +13,21 @@ class QTimer;
 class IntegratedWindow : public QDialog
 {
 	Q_OBJECT
+
 public:
 	IntegratedWindow(void);
+
 public slots:
 	void changePlay(void);
 	void tick(void);
 	void scoring(short);
+
 private:
 	void start(void);
 	void endGame(void);
 	void setup(void);
+
+
 	Field* field;
 	QLabel* title;
 	QLabel* label;
@@ -30,6 +35,7 @@ private:
 	QHBoxLayout* layoutH;
 	QVBoxLayout* layout;
 	QTimer* clock;
+
 	short timeCount;
 	short isPlay;
 	int score;

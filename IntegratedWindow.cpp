@@ -58,10 +58,12 @@ void IntegratedWindow::setup(void)
 {
 	field = new Field;
 	field->open();
+
 	title->setText("3D素数シューティングゲーム");
 	QFont font = title->font();
 	font.setPointSize(40);
 	title->setFont(font);
+
 	label->setText("ご自由にプレイしてください。エンターキーを押すとスタートします。\
 \n[ゲーム概要]\n１を除く非素数が書かれた立方体を撃つと、得点になります。\
 \n１または素数を撃つと減点になります。\nまた、撃たれた数字は２つの数字へと分裂し、それらはもとの数の約数です。\
@@ -69,10 +71,12 @@ void IntegratedWindow::setup(void)
 \n↑ ↓ → ← キーを押すと、それぞれの向きへと方向転換します。スペースキーを押すと弾を発射します。\
 \nＷキーを押すと、向いている方向へと進みます。Ｓキーを押すと、反対向きに退きます。");
 	button->setText("始める");
+
 	this->move(10 , 200);
 	this->resize(600 , 300);
 	this->hide();
 	this->show();
+
 	isPlay = 0;
 	score = 0;
 }
