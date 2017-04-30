@@ -52,7 +52,7 @@ Field::Field(void)
 
 	force = NULL;
 //	force = new Force*[forceNum];
-
+/*
 	for (short i = 3  ;  i < 7  ;  i++) {
 //		force[i] = new Force(
 		Force* force = new Force(
@@ -65,7 +65,7 @@ Field::Field(void)
 		force->setPermanent(true);
 		addForce(force);
 	}
-
+*/
 	time->start(TIME_UNIT);
 	autoGeneration->start(5000);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
@@ -145,9 +145,11 @@ void Field::timeControl(void)
 	if (event[0]->isEnabled()) {
 		event[0]->disable();
 		event[2]->disable();
+		event[3]->disable();
 	} else {
 		event[0]->enable();
 		event[2]->enable();
+		event[3]->enable();
 	}
 }
 

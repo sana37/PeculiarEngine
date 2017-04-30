@@ -526,7 +526,7 @@ void Object::accelerate(Vector vector)
 void Object::applyTorque(Vector torque)
 {
 	omegaVector *= omega;
-	omegaVector += (torque / (mass / 10.0));
+	omegaVector += (torque / (mass / 2.0));
 	omega = omegaVector.getMagnitude();
 	if (omega != 0)
 		omegaVector /= omega;

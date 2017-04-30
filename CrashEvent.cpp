@@ -244,14 +244,30 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 			}
 		}
 	}
+/*
+	Vector radiusVector1 = obj1->getGravityCenter() - result->getCrashSpot();
+	Vector omega1 = obj1->getOmega();
+	float radius1 = radiusVector1.getMagnitude();
+	Calculater::rotate(&omega1, Vector(0, 0, 0), radiusVector1 / radius1, 90.0);
+	omega1 *= radius1;
 
+	Vector radiusVector2 = obj2->getGravityCenter() - result->getCrashSpot();
+	Vector omega2 = obj2->getOmega();
+	float radius2 = radiusVector2.getMagnitude();
+	Calculater::rotate(&omega2, Vector(0, 0, 0), radiusVector2 / radius2, 90.0);
+	omega2 *= radius2;
+*/
+//	float radius2 = (result->getCrashSpot() - obj2->getGravityCenter()).getMagnitude();
+//	Vector v = (obj1->getVelocity() + omega1) - (obj2->getVelocity() + omega2);
+	Vector v = obj1->getVelocity() - obj2->getVelocity();
 	Vector solution;
 
-	if (Calculater::solveCubicEquation(p, q, n, (obj1->getVelocity() - obj2->getVelocity()), &solution)) {
+	if (Calculater::solveCubicEquation(p, q, n, v, &solution)) {
 		float m1 = obj1->getMass();
 		float m2 = obj2->getMass();
+		float e = 0.7;
 
-		Vector vector = n * solution.getZ() * 2.0 * (m1 * m2 / (m1 + m2));
+		Vector vector = n * solution.getZ() * (1 + e) * (m1 * m2 / (m1 + m2));
 
 		Force* force = new Force(vector, result->getCrashSpot(), obj2, obj1);
 		field->addForce(force);
