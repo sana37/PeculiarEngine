@@ -20,31 +20,38 @@ void Field::CrashEvent::exec(void)
 	for (short i = 0  ;  i < (field->objectNum - 1)  ;  i++) {
 		for (short j = i + 1  ;  j < field->objectNum  ;  j++) {
 
-			if (field->object[i]->isActive() | field->object[j]->isActive()) {
-				if (canCrashObjSphere(field->object[i], field->object[j])) {
+			if (field->object[i]->isActive() == false  &&  field->object[j]->isActive() == false)
+				continue;
 
-					if (reflectIfCrash(field->object[i], field->object[j])) {
-						short result = -1;
+			if (canCrashObjSphere(field->object[i], field->object[j]) == false)
+				continue;
 
-						if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
-							std::cerr << j << '\n';
-							NumberBox* numberBox = (NumberBox*)field->object[i];
-							result = NumberBox::decompose(&numberBox, &(field->object[j]));
-							field->object[i] = numberBox;
-							std::cerr << "change end\n";
-							field->reportScore(result);
-						}
-						if (field->object[i]->whichClass() == 'O'  &&  field->object[j]->whichClass() == 'N'  &&  i >= 3) {
-							std::cerr << i << '\n';
-							NumberBox* numberBox = (NumberBox*)field->object[j];
-							result = NumberBox::decompose(&numberBox, &(field->object[i]));
-							field->object[j] = numberBox;
-							std::cerr << "change end\n";
-							field->reportScore(result);
-						}
 
-					}
+			if (reflectIfCrash(field->object[i], field->object[j])) {
+				short result = -1;
+
+				if (i == 5  ||  j == 5) {
+					Vector omega = field->object[5]->getOmega();
+					std::cout << omega.getX() << " : " << omega.getY() << " : " << omega.getZ() << "\n";
 				}
+
+				if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
+					std::cerr << j << '\n';
+					NumberBox* numberBox = (NumberBox*)field->object[i];
+					result = NumberBox::decompose(&numberBox, &(field->object[j]));
+					field->object[i] = numberBox;
+					std::cerr << "change end\n";
+					field->reportScore(result);
+				}
+				if (field->object[i]->whichClass() == 'O'  &&  field->object[j]->whichClass() == 'N'  &&  i >= 3) {
+					std::cerr << i << '\n';
+					NumberBox* numberBox = (NumberBox*)field->object[j];
+					result = NumberBox::decompose(&numberBox, &(field->object[i]));
+					field->object[j] = numberBox;
+					std::cerr << "change end\n";
+					field->reportScore(result);
+				}
+
 			}
 
 		}
@@ -244,6 +251,10 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 			}
 		}
 	}
+/*		migitekei or hidaritekei ??  you must confirm it
+	Vector degVelocity1 = obj1->getOmega() % (result->getCrashSpot() - obj1->getGravityCenter());
+	Vector degVelocity2 = obj2->getOmega() % (result->getCrashSpot() - obj2->getGravityCenter());
+*/
 /*
 	Vector radiusVector1 = obj1->getGravityCenter() - result->getCrashSpot();
 	Vector omega1 = obj1->getOmega();
@@ -265,7 +276,7 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 	if (Calculater::solveCubicEquation(p, q, n, v, &solution)) {
 		float m1 = obj1->getMass();
 		float m2 = obj2->getMass();
-		float e = 0.7;
+		float e = 0.8;
 
 		Vector vector = n * solution.getZ() * (1 + e) * (m1 * m2 / (m1 + m2));
 

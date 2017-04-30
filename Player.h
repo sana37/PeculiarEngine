@@ -11,6 +11,7 @@ public:
 	Player(const char*);
 	Player(const Player&);
 	bool updatePlayer(void);
+	char whichClass(void);
 
 protected:
 	void decelerate(void);

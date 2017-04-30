@@ -10,7 +10,8 @@ public:
 	NumberBox(const NumberBox&);
 	void setup(short);
 	short getNum(void) const;
-	static bool decompose(NumberBox** , Object**);
+	static bool decompose(NumberBox**, Object**);
+	char whichClass(void);
 
 private:
 	short number;

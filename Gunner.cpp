@@ -5,7 +5,7 @@
 Gunner::Gunner(const char* fileName, const char* bulletFileName) :
 	Player::Player(fileName), gunsight(Vector(0, -1, 0))
 {
-	classCode = 'G';
+//	classCode = 'G';
 	bulletIndex = 0;
 	bulletCount = 0;
 	modelBullet = new Object(bulletFileName);
@@ -13,15 +13,10 @@ Gunner::Gunner(const char* fileName, const char* bulletFileName) :
 
 Gunner::Gunner(const Gunner& gunner) : Player::Player(gunner)
 {
-	if (gunner.whichClass() == 'G') {
-		bulletCount = gunner.bulletCount;
-		bulletIndex = gunner.bulletIndex;
-		modelBullet = new Object(*(gunner.modelBullet));
-		gunsight = gunner.gunsight;
-	} else {
-		bulletIndex = 0;
-		bulletCount = 0;
-	}
+	bulletCount = gunner.bulletCount;
+	bulletIndex = gunner.bulletIndex;
+	modelBullet = new Object(*(gunner.modelBullet));
+	gunsight = gunner.gunsight;
 }
 
 bool Gunner::updateGunner(void)
@@ -68,4 +63,9 @@ void Gunner::rotateBullet(Vector omega)
 	modelBullet->setOmega(omega);
 	modelBullet->rotate();
 	modelBullet->setOmega(0, 0, 0);
+}
+
+char Gunner::whichClass(void)
+{
+	return 'G';
 }

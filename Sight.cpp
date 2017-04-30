@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "Gunner.h"
 #include "Calculater.h"
+#include "Force.h"
 #include <QKeyEvent>
 #include <iostream>
 
@@ -13,6 +14,7 @@ Sight::Sight(Object** originalObject, short originalObjectNum, short originalDom
 {
 	gbFlag = 0;
 	Vector temp(0, 30, 25);
+//	Vector temp(0, 0, 25);
 
 	X = temp.getX();
 	Y = temp.getY();
@@ -35,6 +37,9 @@ Sight::Sight(Object** originalObject, short originalObjectNum, short originalDom
 	object[dominatorIndex]->setDomination(true);
 	std::cerr << "possessing\n";
 //////////////////////////////////////////////////////////////////////////////// koudaisai only
+	force = NULL;
+	forceNum = 0;
+
 	updateGL();
 }
 
@@ -119,6 +124,12 @@ void Sight::updateObject(Object** originalObject, short originalObjectNum)
 	dominatorSightPoint = temp;
 }
 
+void Sight::updateForce(Force** force, short forceNum)
+{
+	this->force = force;
+	this->forceNum = forceNum;
+}
+
 void Sight::receiveMovement(void)
 {
 	if (possessFlag > 0) {
@@ -166,6 +177,7 @@ void Sight::paintGL(void)
 	for (short i = 0  ;  i < objectNum  ;  i++) {
 		paintObject(object[i]);
 	}
+	paintCrashSpot(force, forceNum);
 
 	glBegin(GL_LINES);
 	glColor3d(0.8, 0, 0);
@@ -184,6 +196,7 @@ void Sight::paintGL(void)
 	glVertex3d(-DOMAIN_MAX,  0, -DOMAIN_MAX);
 	glVertex3d(-DOMAIN_MAX, 2 * DOMAIN_MAX, -DOMAIN_MAX);
 	glEnd();
+
 }
 
 void Sight::paintObject(Object* modelObject)
@@ -203,6 +216,22 @@ void Sight::paintObject(Object* modelObject)
 		temp = modelObject->getPolygon3Vertex(i);
 		glVertex3d(temp.getX(), temp.getY(), temp.getZ());
 	}
+	glEnd();
+}
+
+void Sight::paintCrashSpot(Force** crash, short crashNum)
+{
+	glPointSize(5.0);
+	glBegin(GL_POINTS);
+	glColor3s(32767, 32767, 32767);
+
+	for (short i = 0  ;  i < crashNum  ;  i++) {
+		if (crash[i]->isPermanent() == false) {
+			Vector crashSpot = crash[i]->getForcePoint();
+			glVertex3d(crashSpot.getX(), crashSpot.getY(), crashSpot.getZ());
+		}
+	}
+
 	glEnd();
 }
 
@@ -253,7 +282,7 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			break;
 		}
 
-/*
+
 		case 'I' : {//up
 			velocity.setVector(0, SPEED, 0);
 			break;
@@ -262,7 +291,7 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			velocity.setVector(0, -SPEED, 0);
 			break;
 		}
-*/
+
 
 		case 16777220 : {
 			timeCall();
@@ -368,10 +397,10 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 			omegaPitch = 0;
 			break;
 		}
-/*
+
 		case 'I' ://up
 		case 'K' ://down
-*/
+
 		case 'W' ://go
 		case 'S' : {//back
 			velocity.setVector(0, 0, 0);

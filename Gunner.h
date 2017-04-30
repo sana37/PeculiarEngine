@@ -14,6 +14,7 @@ public:
 	Object fire(void);
 	void trigger(Vector);
 	void rotateBullet(Vector);
+	char whichClass(void);
 
 private:
 	Object* modelBullet;

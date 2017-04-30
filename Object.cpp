@@ -9,7 +9,7 @@ Object::Object(const char* fileName) :
 	omega(0),
 	gravityCenter(Vector())
 {
-	classCode = 'O';
+//	classCode = 'O';
 	radius = 0;
 	isDominated = false;
 
@@ -206,7 +206,7 @@ Object::Object(const Object& _object)
 	radius = _object.radius;
 	mass = _object.mass;
 
-	classCode = _object.classCode;
+//	classCode = _object.classCode;
 	isDominated = _object.isDominated;
 }
 
@@ -380,9 +380,9 @@ short Object::getPolygonB(short num) const
 	return polygonB[num];
 }
 
-char Object::whichClass(void) const
+char Object::whichClass(void)// const
 {
-	return classCode;
+	return 'O';
 }
 
 bool Object::isActive(void)

@@ -59,8 +59,6 @@ private:
 
 	short objectNum;
 	short forceNum;
-//	char** stateCrash;
-//	short** indexCrash;
 	short eventNum;
 
 	short deadObjectIndex[100];

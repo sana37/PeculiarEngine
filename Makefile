@@ -1417,6 +1417,7 @@ Sight.o: Sight.cpp Sight.h \
 		Gunner.h \
 		Player.h \
 		Calculater.h \
+		Force.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QKeyEvent
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Sight.o Sight.cpp
 

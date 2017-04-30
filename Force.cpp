@@ -24,6 +24,18 @@ Force::~Force(void)
 
 void Force::exec(void)
 {
+	if (obj1 == NULL  &&  obj2 != NULL) {
+//		forcePoint = obj2->getGravityCenter();
+//		(*this) *= -1.0;
+		obj2->push(*this);
+		return;
+	}
+	if (obj1 != NULL  &&  obj2 == NULL) {
+//		forcePoint = obj1->getGravityCenter();
+		obj1->push(*this);
+		return;
+	}
+
 	if (obj1 != NULL) {
 		applyDecomposedForce(obj1);
 	}
@@ -60,4 +72,9 @@ void Force::setPermanent(bool permanent)
 bool Force::isPermanent(void)
 {
 	return permanent;
+}
+
+Vector Force::getForcePoint(void)
+{
+	return forcePoint;
 }

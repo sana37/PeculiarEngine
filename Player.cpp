@@ -4,7 +4,7 @@
 
 Player::Player(const char* fileName) : Object::Object(fileName)
 {
-	classCode = 'P';
+//	classCode = 'P';
 	FILE* fp = fopen(fileName, "r");
 
 	if (fp != NULL) {
@@ -47,18 +47,11 @@ Player::Player(const char* fileName) : Object::Object(fileName)
 Player::Player(const Player& player) : Object::Object(player)
 {
 //	classCode = 'P';
-	if (player.whichClass() != 'O') {
-		routeNum = player.routeNum;
-		routeIndex = player.routeIndex;
-		route = new Vector[routeNum];
-		for (short i = 0  ;  i < routeNum  ;  i++)
-			route[i] = player.route[i];
-
-	} else {
-		printf("copy Object -> Player or more\n");
-		routeNum = 0;
-		routeIndex = 0;
-	}
+	routeNum = player.routeNum;
+	routeIndex = player.routeIndex;
+	route = new Vector[routeNum];
+	for (short i = 0  ;  i < routeNum  ;  i++)
+		route[i] = player.route[i];
 }
 
 bool Player::updatePlayer(void)
@@ -92,4 +85,9 @@ void Player::autoMove(void)
 		temp *= (0.05 / temp.getMagnitude());
 	}
 	velocity += temp;
+}
+
+char Player::whichClass(void)
+{
+	return 'P';
 }

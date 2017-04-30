@@ -4,7 +4,7 @@
 
 NumberBox::NumberBox(short num) : Object::Object("cube")
 {
-	classCode = 'N';
+//	classCode = 'N';
 	number = num;
 	setOmega(3, 1, 0);
 	this->setup(number);
@@ -14,7 +14,7 @@ NumberBox::NumberBox(const NumberBox& originalNumberBox) : Object::Object(origin
 {
 	Vector temp = this->getGravityCenter();
 
-	this->moveAbsolute(0 , 0 , 0);
+	this->moveAbsolute(0, 0, 0);
 
 	number = originalNumberBox.getNum();
 	this->setup(number);
@@ -26,7 +26,7 @@ void NumberBox::setup(short num)
 {
 	Object* temp;
 
-	switch(num / 10){
+	switch (num / 10) {
 		case 0 : {
 			temp = new Object("l0");
 			break;
@@ -75,7 +75,7 @@ void NumberBox::setup(short num)
 	this->composeObject(temp);
 	delete temp;
 
-	switch(num % 10){
+	switch (num % 10) {
 		case 0 : {
 			temp = new Object("r0");
 			break;
@@ -127,10 +127,10 @@ void NumberBox::setup(short num)
 
 short NumberBox::getNum(void) const
 {
-	return(number);
+	return number;
 }
 
-bool NumberBox::decompose(NumberBox** operatedNumberBox , Object** operatedObject)
+bool NumberBox::decompose(NumberBox** operatedNumberBox, Object** operatedObject)
 {
 	NumberBox* replica1;
 	NumberBox* replica2;
@@ -141,8 +141,8 @@ bool NumberBox::decompose(NumberBox** operatedNumberBox , Object** operatedObjec
 	short replicaNumber1 = (*operatedNumberBox)->getNum();
 	short replicaNumber2 = sqrt((*operatedNumberBox)->getNum()) / 1;
 
-	for(  ;  replicaNumber2 > 0  ;  replicaNumber2--){
-		if(replicaNumber1 % replicaNumber2 == 0){
+	for (  ;  replicaNumber2 > 0  ;  replicaNumber2--) {
+		if (replicaNumber1 % replicaNumber2 == 0) {
 			replicaNumber1 /= replicaNumber2;
 			break;
 		}
@@ -163,9 +163,14 @@ bool NumberBox::decompose(NumberBox** operatedNumberBox , Object** operatedObjec
 	*operatedObject = replica2;
 
 	std::cerr << "decompose end\n";
-	if(replicaNumber1 == 1  ||  replicaNumber2 == 1){
-		return(false);
-	}else{
-		return(true);
+	if (replicaNumber1 == 1  ||  replicaNumber2 == 1) {
+		return false;
+	} else {
+		return true;
 	}
+}
+
+char NumberBox::whichClass(void)
+{
+	return 'N';
 }

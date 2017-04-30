@@ -18,6 +18,7 @@ public:
 	void applyDecomposedForce(Object*);
 	void setPermanent(bool);
 	bool isPermanent(void);
+	Vector getForcePoint(void);
 
 private:
 	Object* obj1;

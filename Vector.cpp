@@ -32,7 +32,6 @@ Vector::Vector(Vector* vector)
 
 Vector::Vector(const Vector& vector)
 {
-//	std::cerr << "copy constructer\n";
 	X = vector.getX();
 	Y = vector.getY();
 	Z = vector.getZ();
@@ -128,6 +127,20 @@ Vector Vector::operator/(float k) const
 float Vector::operator*(const Vector& vector) const
 {
 	return (X * vector.X) + (Y * vector.Y) + (Z * vector.Z);
+}
+
+Vector Vector::operator%(const Vector& vector) const
+{
+	float a[3], b[3];
+
+	this->getVector(a);
+	vector.getVector(b);
+
+	return Vector(
+		a[1]*b[2] - b[1]*a[2],
+		a[2]*b[0] - b[2]*a[0],
+		a[0]*b[1] - b[0]*a[1]
+	);
 }
 
 const Vector& Vector::operator=(const Vector& vector)

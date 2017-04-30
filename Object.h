@@ -8,7 +8,7 @@ class Object
 public:
 	Object(const char*);
 	Object(const Object&);//copy constructer
-	~Object(void);
+	virtual ~Object(void);
 	void composeObject(Object*);
 
 
@@ -37,7 +37,7 @@ public:
 	short getPolygonG(short) const;
 	short getPolygonB(short) const;
 
-	char whichClass(void) const;
+	virtual char whichClass(void);// const;
 
 	bool isActive(void);
 	bool isVertexEmbody(short) const;
@@ -76,7 +76,7 @@ public:
 
 
 protected:
-	char classCode;
+//	char classCode;
 	Vector velocity;
 	Vector omegaVector;
 	float omega;

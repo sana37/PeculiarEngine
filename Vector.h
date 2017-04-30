@@ -8,7 +8,7 @@ public:
 	Vector(float*);
 	Vector(float, float, float);
 	Vector(Vector*);
-	Vector(const Vector&);//copy constructer
+	Vector(const Vector&);
 	~Vector(void);
 
 	float getX(void) const;
@@ -28,6 +28,7 @@ public:
 	Vector operator*(float) const;
 	Vector operator/(float) const;
 	float operator*(const Vector&) const;
+	Vector operator%(const Vector&) const;
 	const Vector& operator=(const Vector&);
 	const Vector& operator+=(const Vector&);
 	const Vector& operator-=(const Vector&);

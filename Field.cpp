@@ -22,7 +22,6 @@ Field::Field(void)
 	objectNum = OBJECT_NUM;/////////
 	eventNum = EVENT_NUM;
 	forceNum = 0;
-//	forceNum = OBJECT_NUM - 3;
 
 	time = new QTimer;
 	autoGeneration = new QTimer;
@@ -45,27 +44,24 @@ Field::Field(void)
 	sight = new Sight(object, objectNum, 2);
 
 	event = new Event*[eventNum];
-	event[0] = new MoveEvent();
-	event[1] = new SightMoveEvent();
-	event[2] = new CrashEvent();
-	event[3] = new ForceEvent();
+	event[0] = new ForceEvent();
+	event[1] = new MoveEvent();
+	event[2] = new SightMoveEvent();
+	event[3] = new CrashEvent();
 
 	force = NULL;
-//	force = new Force*[forceNum];
-/*
+//
 	for (short i = 3  ;  i < 7  ;  i++) {
-//		force[i] = new Force(
 		Force* force = new Force(
 			Vector(0, -GRAVITY, 0) * object[i]->getMass(),
 			object[i]->getGravityCenter(),
 			object[i],
 			NULL
 		);
-//		force[i]->setPermanent(true);
 		force->setPermanent(true);
 		addForce(force);
 	}
-*/
+//
 	time->start(TIME_UNIT);
 	autoGeneration->start(5000);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
@@ -134,21 +130,19 @@ void Field::execTimeEvent(void)
 		if (event[i]->isEnabled())
 			event[i]->exec();
 	}
-	object[0]->stop();
-	object[1]->stop();
 	sight->updateGL();
 }
 
 void Field::timeControl(void)
 {
-//event[1] is always enabled
+//event[2] is always enabled
 	if (event[0]->isEnabled()) {
 		event[0]->disable();
-		event[2]->disable();
+		event[1]->disable();
 		event[3]->disable();
 	} else {
 		event[0]->enable();
-		event[2]->enable();
+		event[1]->enable();
 		event[3]->enable();
 	}
 }
@@ -277,9 +271,9 @@ void Field::objectGenerate(Object* newObject)
 		if (i == objectNum - 1) {
 			switch (newObject->whichClass()) {
 				case 'O' : tempObject[i] = new Object(*newObject);	break;
-				case 'P' : tempObject[i] = new Player(*((Player*)newObject));	break;
-				case 'G' : tempObject[i] = new Gunner(*((Gunner*)newObject));	break;
-				case 'N' : tempObject[i] = new NumberBox(*((NumberBox*)newObject));	break;
+				case 'P' : tempObject[i] = new Player(*(dynamic_cast<Player*>(newObject)));	break;
+				case 'G' : tempObject[i] = new Gunner(*(dynamic_cast<Gunner*>(newObject)));	break;
+				case 'N' : tempObject[i] = new NumberBox(*(dynamic_cast<NumberBox*>(newObject)));	break;
 			}
 		} else {
 			tempObject[i] = object[i];
@@ -310,6 +304,7 @@ void Field::addForce(Force* force)
 		delete[] (this->force);
 
 	this->force = tempForce;
+	sight->updateForce(this->force, forceNum);
 }
 
 void Field::finishForce(short idx)
@@ -329,6 +324,7 @@ void Field::finishForce(short idx)
 
 	delete[] force;
 	force = tempForce;
+	sight->updateForce(this->force, forceNum);
 }
 
 Field* Field::field = NULL;
