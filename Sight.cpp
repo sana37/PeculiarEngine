@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-Sight::Sight(Object** originalObject, short originalObjectNum, short originalDominatorIndex) :
+Sight::Sight(Object** originalObject, short originalObjectNum, short originalDominatorIndex, Array<Force*>* force_p) :
 	lookAt(Vector(0, 0, -1)),
 	lookAtN(Vector(1, 0, 0)),
 	velocity(Vector(0, 0, 0))
@@ -37,8 +37,7 @@ Sight::Sight(Object** originalObject, short originalObjectNum, short originalDom
 	object[dominatorIndex]->setDomination(true);
 	std::cerr << "possessing\n";
 //////////////////////////////////////////////////////////////////////////////// koudaisai only
-	force = NULL;
-	forceNum = 0;
+	this->force_p = force_p;
 
 	updateGL();
 }
@@ -124,12 +123,6 @@ void Sight::updateObject(Object** originalObject, short originalObjectNum)
 	dominatorSightPoint = temp;
 }
 
-void Sight::updateForce(Force** force, short forceNum)
-{
-	this->force = force;
-	this->forceNum = forceNum;
-}
-
 void Sight::receiveMovement(void)
 {
 	if (possessFlag > 0) {
@@ -177,7 +170,7 @@ void Sight::paintGL(void)
 	for (short i = 0  ;  i < objectNum  ;  i++) {
 		paintObject(object[i]);
 	}
-	paintCrashSpot(force, forceNum);
+	paintCrashSpot();
 
 	glBegin(GL_LINES);
 	glColor3d(0.8, 0, 0);
@@ -219,15 +212,15 @@ void Sight::paintObject(Object* modelObject)
 	glEnd();
 }
 
-void Sight::paintCrashSpot(Force** crash, short crashNum)
+void Sight::paintCrashSpot(void)
 {
 	glPointSize(5.0);
 	glBegin(GL_POINTS);
 	glColor3s(32767, 32767, 32767);
 
-	for (short i = 0  ;  i < crashNum  ;  i++) {
-		if (crash[i]->isPermanent() == false) {
-			Vector crashSpot = crash[i]->getForcePoint();
+	for (short i = 0  ;  i < force_p->length()  ;  i++) {
+		if (force_p->get(i)->isPermanent() == false) {
+			Vector crashSpot = force_p->get(i)->getForcePoint();
 			glVertex3d(crashSpot.getX(), crashSpot.getY(), crashSpot.getZ());
 		}
 	}

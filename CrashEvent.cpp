@@ -274,14 +274,23 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 	Vector solution;
 
 	if (Calculater::solveCubicEquation(p, q, n, v, &solution)) {
-		float m1 = obj1->getMass();
-		float m2 = obj2->getMass();
-		float e = 0.7;
+//		Vector vector = n * solution.getZ() * (1 + e) * (m1 * m2 / (m1 + m2));
+		Vector vector = n * solution.getZ();
 
-		Vector vector = n * solution.getZ() * (1 + e) * (m1 * m2 / (m1 + m2));
+//		if (vector.getMagnitude() > NEAR_ZERO) {
+			float m1 = obj1->getMass();
+			float m2 = obj2->getMass();
+			float e = 0.7;
 
-		Force* force = new Force(vector, result->getCrashSpot(), obj2, obj1);
-		field->addForce(force);
+			vector *= (1 + e) * (m1 * m2 / (m1 + m2));
+			Force* force = new Force(vector, result->getCrashSpot(), obj2, obj1);
+			field->addForce(force);
+/*		} else {
+			Force* force = new Force(vector, result->getCrashSpot(), obj2, obj1);//vector's size is not depended
+			force->set
+			field->addForce(force);
+		}
+*/
 	} else {
 		std::cerr << "through?\n";
 	}

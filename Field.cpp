@@ -16,12 +16,10 @@
 #include <QTimer>
 #include <iostream>
 
-Field::Field(void)
+Field::Field(void) : event(EVENT_NUM)
 {
 	std::cerr << "Hello world\n";
 	objectNum = OBJECT_NUM;/////////
-	eventNum = EVENT_NUM;
-	forceNum = 0;
 
 	time = new QTimer;
 	autoGeneration = new QTimer;
@@ -41,15 +39,13 @@ Field::Field(void)
 	object[5] = new NumberBox(91);
 	object[6] = new NumberBox(72);
 */
-	sight = new Sight(object, objectNum, 2);
+	sight = new Sight(object, objectNum, 2, &force);
 
-	event = new Event*[eventNum];
-	event[0] = new ForceEvent();
-	event[1] = new MoveEvent();
-	event[2] = new SightMoveEvent();
-	event[3] = new CrashEvent();
+	event.add(new ForceEvent());
+	event.add(new MoveEvent());
+	event.add(new SightMoveEvent());
+	event.add(new CrashEvent());
 
-	force = NULL;
 //
 	for (short i = 3  ;  i < 7  ;  i++) {
 		Force* force = new Force(
@@ -129,7 +125,7 @@ void Field::open(void)
 
 void Field::execTimeEvent(void)
 {
-	for (short i = 0  ;  i < eventNum  ;  i++) {
+	for (short i = 0  ;  i < event.length()  ;  i++) {
 		if (event[i]->isEnabled())
 			event[i]->exec();
 	}
@@ -292,42 +288,13 @@ void Field::objectGenerate(Object* newObject)
 
 void Field::addForce(Force* force)
 {
-	forceNum++;
-	Force** tempForce = new Force*[forceNum];
-
-	for (short i = 0  ;  i < forceNum  ;  i++) {
-		if (i != forceNum - 1) {
-			tempForce[i] = this->force[i];
-		} else {
-			tempForce[i] = force;
-		}
-	}
-
-	if (this->force != NULL)
-		delete[] (this->force);
-
-	this->force = tempForce;
-	sight->updateForce(this->force, forceNum);
+	this->force.add(force);
 }
 
 void Field::finishForce(short idx)
 {
 	delete force[idx];
-
-	forceNum--;
-	Force** tempForce = new Force*[forceNum];
-
-	for (short i = 0  ;  i < forceNum  ;  i++) {
-		if (i < idx) {
-			tempForce[i] = force[i];
-		} else {
-			tempForce[i] = force[i + 1];
-		}
-	}
-
-	delete[] force;
-	force = tempForce;
-	sight->updateForce(this->force, forceNum);
+	force.remove(idx);
 }
 
 Field* Field::field = NULL;

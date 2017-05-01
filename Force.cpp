@@ -3,7 +3,7 @@
 #include "Calculater.h"
 #include <iostream>//to use NULL... I dont like this
 
-Force::Force(Vector vector, Vector point, Object* obj1, Object* obj2) : Vector::Vector(vector), forcePoint(point), permanent(false)
+Force::Force(Vector vector, Vector point, Object* obj1, Object* obj2) : Vector::Vector(vector), forcePoint(point), permanent(false), setted(true)
 {
 	this->obj1 = obj1;
 	this->obj2 = obj2;
@@ -69,9 +69,24 @@ void Force::setPermanent(bool permanent)
 	this->permanent = permanent;
 }
 
+void Force::enSet(void)
+{
+	setted = true;
+}
+
+void Force::disSet(void)
+{
+	setted = false;
+}
+
 bool Force::isPermanent(void)
 {
 	return permanent;
+}
+
+bool Force::isSetted(void)
+{
+	return setted;
 }
 
 Vector Force::getForcePoint(void)

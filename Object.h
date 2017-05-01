@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#define NEAR_ZERO	0.02
+//#define NEAR_ZERO	0.005
 
 #include "Vector.h"
 

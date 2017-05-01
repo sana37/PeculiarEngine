@@ -4,6 +4,7 @@
 #include <GL/glu.h>
 #include <QGLWidget>
 #include "Vector.h"
+#include "Array.h"
 
 #define SPEED 0.15
 #define DOMAIN_MAX 29.85
@@ -18,10 +19,9 @@ class Sight : public QGLWidget
 {
 	Q_OBJECT
 public:
-	Sight(Object**, short, short);
+	Sight(Object**, short, short, Array<Force*>*);
 	void update(void);
 	void updateObject(Object**, short);
-	void updateForce(Force**, short);
 	void receiveMovement(void);
 	short getDominatorIndex(void);
 signals:
@@ -31,20 +31,19 @@ private:
 	void resizeGL(int, int);
 	void paintGL(void);
 	void paintObject(Object*);
-	void paintCrashSpot(Force**, short);
+	void paintCrashSpot(void);
 	void keyPressEvent(QKeyEvent*);
 	void keyReleaseEvent(QKeyEvent*);
 	void rotateSelf(Vector*, Vector, float, float);
 
 	short objectNum;
-	short forceNum;
 	float X, Y, Z;
 	float omegaYaw;
 	float omegaPitch;
 	short dominatorIndex;
 	short possessFlag;
 	Object** object;
-	Force** force;
+	Array<Force*>* force_p;
 	Vector lookAt;
 	Vector lookAtN;
 	Vector velocity;

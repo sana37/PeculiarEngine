@@ -2,12 +2,14 @@
 #define FIELD_H
 
 #include <QObject>
+#include "Array.h"
 
 #define OBJECT_NUM	7
 #define EVENT_NUM	4
 #define TIME_UNIT	10
 #define WORLD		80
 #define GRAVITY		0.004
+#define NEAR_ZERO	0.03
 
 class Sight;
 class Object;
@@ -54,12 +56,10 @@ private:
 	QTimer* time;
 	QTimer* autoGeneration;
 	Object** object;
-	Force** force;
-	Event** event;
+	Array<Force*> force;
+	Array<Event*> event;
 
 	short objectNum;
-	short forceNum;
-	short eventNum;
 
 	short deadObjectIndex[100];
 	short deadObjectNum;

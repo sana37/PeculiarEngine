@@ -17,7 +17,10 @@ public:
 	void exec(void);
 	void applyDecomposedForce(Object*);
 	void setPermanent(bool);
+	void enSet(void);
+	void disSet(void);
 	bool isPermanent(void);
+	bool isSetted(void);
 	Vector getForcePoint(void);
 
 private:
@@ -25,6 +28,7 @@ private:
 	Object* obj2;
 	Vector forcePoint;
 	bool permanent;
+	bool setted;
 
 };
 
