@@ -11,7 +11,7 @@ public:
 	Gunner(const char*, const char*);
 	Gunner(const Gunner&);
 	bool updateGunner(void);
-	Object fire(void);
+	Object* fire(void);
 	void trigger(Vector);
 	void rotateBullet(Vector);
 	char whichClass(void);

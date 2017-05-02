@@ -19,11 +19,26 @@
 Field::Field(void) : event(EVENT_NUM)
 {
 	std::cerr << "Hello world\n";
-	objectNum = OBJECT_NUM;/////////
+//	objectNum = OBJECT_NUM;/////////
 
 	time = new QTimer;
 	autoGeneration = new QTimer;
 
+	object.add(new Object("ground0"));
+	object.add(new Object("sky1"));
+	object.add(new Gunner("player", "bullet"));
+/*
+	object.add(new Object("object0"));
+	object.add(new Object("object1"));
+	object.add(new Object("object2"));
+	object.add(new Object("object0"));
+*/
+	object.add(new NumberBox(54));
+	object.add(new NumberBox(50));
+	object.add(new NumberBox(91));
+	object.add(new NumberBox(72));
+
+/*
 	object = new Object*[objectNum];
 	object[0] = new Object("ground0");
 	object[1] = new Object("sky1");
@@ -33,20 +48,20 @@ Field::Field(void) : event(EVENT_NUM)
 	object[4] = new Object("object1");
 	object[5] = new Object("object2");
 	object[6] = new Object("object0");
-/*
+//
 	object[3] = new NumberBox(54);
 	object[4] = new NumberBox(50);
 	object[5] = new NumberBox(91);
 	object[6] = new NumberBox(72);
 */
-	sight = new Sight(object, objectNum, 2, &force);
+	sight = new Sight(&object, /*objectNum,*/ 2, &force);
 
 	event.add(new ForceEvent());
 	event.add(new MoveEvent());
 	event.add(new SightMoveEvent());
 	event.add(new CrashEvent());
 
-//
+/*
 	for (short i = 3  ;  i < 7  ;  i++) {
 		Force* force = new Force(
 			Vector(0, -GRAVITY, 0) * object[i]->getMass(),
@@ -57,7 +72,7 @@ Field::Field(void) : event(EVENT_NUM)
 		force->setPermanent(true);
 		addForce(force);
 	}
-//
+*/
 	time->start(TIME_UNIT);
 	autoGeneration->start(5000);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
@@ -65,27 +80,27 @@ Field::Field(void) : event(EVENT_NUM)
 //	QObject::connect(autoGeneration, SIGNAL(timeout()), this, SLOT(autoGenerate()));
 
 	object[3]->moveAbsolute(8, 12, 0);
-//	object[3]->setVelocity(0.03, 0.05, 0);
-	object[3]->setVelocity(0, 0, 0);
+	object[3]->setVelocity(0.03, 0.05, 0);
+//	object[3]->setVelocity(0, 0, 0);
 	object[3]->setOmega(1, 1, 0);
 	for (short i = 0  ;  i < 10  ;  i++)
 		object[3]->rotate();
 	object[3]->setOmega(0, 0, 0);
 
 	object[4]->moveAbsolute(6, 16, 6);
-//	object[4]->setVelocity(-0.03, 0.03, 0.08);
-	object[4]->setVelocity(0, 0, 0);
+	object[4]->setVelocity(-0.03, 0.03, 0.08);
+//	object[4]->setVelocity(0, 0, 0);
 
 	object[5]->moveAbsolute(3, 13, 3);
-//	object[5]->setVelocity(0, -0.05, 0.03);
-	object[5]->setVelocity(0, 0, 0);
+	object[5]->setVelocity(0, -0.05, 0.03);
+//	object[5]->setVelocity(0, 0, 0);
 	object[5]->setOmega(0.1, 0.1, 0);
 	object[5]->rotate();
 	object[5]->setOmega(0, 0, 0);
 
 	object[6]->moveAbsolute(0, 15, 0);
-//	object[6]->setVelocity(0.04, 0.1, 0);
-	object[6]->setVelocity(0, 0, 0);
+	object[6]->setVelocity(0.04, 0.1, 0);
+//	object[6]->setVelocity(0, 0, 0);
 
 	deadObjectNum = 0;
 	autoGenerationIndex = 0;
@@ -241,11 +256,11 @@ void Field::autoGenerate(void)
 	}
 	temp->setVelocity(vector);
 
-	objectGenerate(temp);
+	addObject(temp);
 	autoGenerationIndex++;
 }
 
-void Field::objectGenerate(Object* newObject)
+void Field::addObject(Object* newObject)
 {
 /*
 	if (deadObjectNum > 0) {
@@ -262,7 +277,8 @@ void Field::objectGenerate(Object* newObject)
 		return;
 	}
 */
-
+	object.add(newObject);
+/*
 	objectNum++;
 	Object** tempObject = new Object*[objectNum];
 
@@ -282,8 +298,8 @@ void Field::objectGenerate(Object* newObject)
 	delete[] object;
 
 	object = tempObject;
-
-	sight->updateObject(object, objectNum);
+*/
+//	sight->updateObject(object, objectNum);
 }
 
 void Field::addForce(Force* force)

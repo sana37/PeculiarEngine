@@ -37,7 +37,7 @@ bool Gunner::updateGunner(void)
 	}
 }
 
-Object Gunner::fire(void)
+Object* Gunner::fire(void)
 {
 //	bulletIndex++;
 
@@ -49,7 +49,7 @@ Object Gunner::fire(void)
 	temp = gunsight * 0.5;
 	modelBullet->setVelocity(temp);
 
-	return Object(*modelBullet);
+	return new Object(*modelBullet);
 }
 
 void Gunner::trigger(Vector lookAt)

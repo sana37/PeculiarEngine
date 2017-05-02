@@ -17,8 +17,10 @@ const char Field::CrashEvent::FAILURE = -1;
 
 void Field::CrashEvent::exec(void)
 {
-	for (short i = 0  ;  i < (field->objectNum - 1)  ;  i++) {
-		for (short j = i + 1  ;  j < field->objectNum  ;  j++) {
+	short objectNum = field->object.length();
+
+	for (short i = 0  ;  i < (objectNum - 1)  ;  i++) {
+		for (short j = i + 1  ;  j < objectNum  ;  j++) {
 
 			if (field->object[i]->isActive() == false  &&  field->object[j]->isActive() == false)
 				continue;
@@ -29,25 +31,32 @@ void Field::CrashEvent::exec(void)
 
 			if (reflectIfCrash(field->object[i], field->object[j])) {
 				short result = -1;
-
+/*
 				if (i == 5  ||  j == 5) {
 					Vector vector = field->object[5]->getVelocity();
 					std::cout << vector.getX() << " : " << vector.getY() << " : " << vector.getZ() << "\n";
 				}
+*/
 
 				if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
 					std::cerr << j << '\n';
-					NumberBox* numberBox = (NumberBox*)field->object[i];
-					result = NumberBox::decompose(&numberBox, &(field->object[j]));
-					field->object[i] = numberBox;
+					NumberBox* numberBox = dynamic_cast<NumberBox*> (field->object[i]);
+					Object* object = field->object[j];
+					result = NumberBox::decompose(&numberBox, &object);
+//					field->object[i] = numberBox;
+					field->object.set(i, numberBox);
+					field->object.set(j, object);
 					std::cerr << "change end\n";
 					field->reportScore(result);
 				}
 				if (field->object[i]->whichClass() == 'O'  &&  field->object[j]->whichClass() == 'N'  &&  i >= 3) {
 					std::cerr << i << '\n';
-					NumberBox* numberBox = (NumberBox*)field->object[j];
-					result = NumberBox::decompose(&numberBox, &(field->object[i]));
-					field->object[j] = numberBox;
+					NumberBox* numberBox = dynamic_cast<NumberBox*> (field->object[j]);
+					Object* object = field->object[i];
+					result = NumberBox::decompose(&numberBox, &object);
+//					field->object[j] = numberBox;
+					field->object.set(j, numberBox);
+					field->object.set(i, object);
 					std::cerr << "change end\n";
 					field->reportScore(result);
 				}

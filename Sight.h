@@ -19,9 +19,9 @@ class Sight : public QGLWidget
 {
 	Q_OBJECT
 public:
-	Sight(Object**, short, short, Array<Force*>*);
+	Sight(Array<Object*>*, short, Array<Force*>*);
 	void update(void);
-	void updateObject(Object**, short);
+//	void updateObject(Object**, short);
 	void receiveMovement(void);
 	short getDominatorIndex(void);
 signals:
@@ -36,13 +36,14 @@ private:
 	void keyReleaseEvent(QKeyEvent*);
 	void rotateSelf(Vector*, Vector, float, float);
 
-	short objectNum;
+//	short objectNum;
 	float X, Y, Z;
 	float omegaYaw;
 	float omegaPitch;
 	short dominatorIndex;
 	short possessFlag;
-	Object** object;
+//	Object** object;
+	Array<Object*>* object_p;
 	Array<Force*>* force_p;
 	Vector lookAt;
 	Vector lookAtN;

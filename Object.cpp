@@ -121,14 +121,21 @@ Object::Object(const char* fileName) :
 
 		while (fgetc(fp) != '*') ;
 
-		while (fgetc(fp) != ':') ;
-		if (fscanf(fp, "%f", &mass) == EOF)
-			printf("ERROR\n");
+		char next = fgetc(fp);
+
+		if (next == 'm') {
+			while (fgetc(fp) != ':') ;
+			if (fscanf(fp, "%f", &mass) == EOF)
+				printf("ERROR\n");
+
+			while (fgetc(fp) != '*') ;
+			next = fgetc(fp);
+		} else {
+			mass = 1;
+		}
 
 
-		while (fgetc(fp) != '*') ;
-
-		if (fgetc(fp) == 'v') {
+		if (next == 'v') {
 			float temp[3];
 			if (fscanf(fp, "%f%f%f", &temp[0], &temp[1], &temp[2]) == EOF) {
 				velocity.setVector(0, 0, 0);

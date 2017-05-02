@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-Sight::Sight(Object** originalObject, short originalObjectNum, short originalDominatorIndex, Array<Force*>* force_p) :
+Sight::Sight(Array<Object*>* object_p,/* short originalObjectNum,*/ short originalDominatorIndex, Array<Force*>* force_p) :
 	lookAt(Vector(0, 0, -1)),
 	lookAtN(Vector(1, 0, 0)),
 	velocity(Vector(0, 0, 0))
@@ -23,18 +23,20 @@ Sight::Sight(Object** originalObject, short originalObjectNum, short originalDom
 	omegaYaw = 0;
 	omegaPitch = 0;
 
-	objectNum = originalObjectNum;
+//	objectNum = originalObjectNum;
 	dominatorIndex = originalDominatorIndex;
 
-	object = originalObject;
-	dominatorSightPoint = new Vector[objectNum];
-	object[dominatorIndex]->moveAbsolute(temp);
+	this->object_p = object_p;
+//	object = originalObject;
+	dominatorSightPoint = new Vector[object_p->length()];
+		//sight and field are friends because of object_p !!!!
+	(*object_p)[dominatorIndex]->moveAbsolute(temp);
 //////////////////////////////////////////////////////////////////////////////// koudaisai only
-	object[dominatorIndex]->stop();
+	(*object_p)[dominatorIndex]->stop();
 	dominatorSightPoint[originalDominatorIndex].setVector(0, 0.1, -0.1);
 
 	possessFlag = 2;
-	object[dominatorIndex]->setDomination(true);
+	(*object_p)[dominatorIndex]->setDomination(true);
 	std::cerr << "possessing\n";
 //////////////////////////////////////////////////////////////////////////////// koudaisai only
 	this->force_p = force_p;
@@ -70,25 +72,25 @@ void Sight::update(void)
 		Vector vertex;
 
 		vertex = basePoint - dominatorSightPoint[dominatorIndex];
-		object[dominatorIndex]->moveAbsolute(vertex);
+		(*object_p)[dominatorIndex]->moveAbsolute(vertex);
 
 		if (omegaYaw != 0  ||  omegaPitch != 0) {
-			short vertexNum = object[dominatorIndex]->getVertexNum();
+			short vertexNum = (*object_p)[dominatorIndex]->getVertexNum();
 
 			for (short i = 0  ;  i < vertexNum  ;  i++) {
-				vertex = object[dominatorIndex]->getVertex(i);
+				vertex = (*object_p)[dominatorIndex]->getVertex(i);
 				rotateSelf(&vertex, basePoint, omegaYaw, omegaPitch);
-				object[dominatorIndex]->setVertex(i, vertex);
+				(*object_p)[dominatorIndex]->setVertex(i, vertex);
 			}
 
-			vertex = object[dominatorIndex]->getGravityCenter();
+			vertex = (*object_p)[dominatorIndex]->getGravityCenter();
 			rotateSelf(&vertex, basePoint, omegaYaw, omegaPitch);
-			object[dominatorIndex]->setGravityCenter(vertex);
+			(*object_p)[dominatorIndex]->setGravityCenter(vertex);
 
 			rotateSelf(&dominatorSightPoint[dominatorIndex], zero, omegaYaw, omegaPitch);
 
-			if (object[dominatorIndex]->whichClass() == 'G') {
-				Gunner* gunner = (Gunner*) object[dominatorIndex];
+			if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
+				Gunner* gunner = (Gunner*) (*object_p)[dominatorIndex];
 
 				Vector omega(0, omegaYaw, 0);
 				gunner->rotateBullet(omega);
@@ -102,7 +104,7 @@ void Sight::update(void)
 
 	}
 }
-
+/*
 void Sight::updateObject(Object** originalObject, short originalObjectNum)
 {
 	short preObjectNum = objectNum;
@@ -122,11 +124,12 @@ void Sight::updateObject(Object** originalObject, short originalObjectNum)
 	delete[] dominatorSightPoint;
 	dominatorSightPoint = temp;
 }
-
+*/
+//// dominatorSightPoint's size should be extended!!
 void Sight::receiveMovement(void)
 {
 	if (possessFlag > 0) {
-		Vector temp = object[dominatorIndex]->getVelocity();
+		Vector temp = (*object_p)[dominatorIndex]->getVelocity();
 
 		X += temp.getX();
 		Y += temp.getY();
@@ -167,8 +170,8 @@ void Sight::paintGL(void)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (short i = 0  ;  i < objectNum  ;  i++) {
-		paintObject(object[i]);
+	for (short i = 0  ;  i < object_p->length()  ;  i++) {
+		paintObject((*object_p)[i]);
 	}
 	paintCrashSpot();
 
@@ -257,9 +260,9 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			break;
 		}
 		case ' ' : {
-			if (possessFlag == 2  &&  object[dominatorIndex]->whichClass() == 'G') {
-				Gunner* gunner = (Gunner*) object[dominatorIndex];
-				gunner->trigger(lookAt/*, lookAtN, yaw, pitch*/);
+			if (possessFlag == 2  &&  (*object_p)[dominatorIndex]->whichClass() == 'G') {
+				Gunner* gunner = dynamic_cast<Gunner*>((*object_p)[dominatorIndex]);
+				gunner->trigger(lookAt);
 			}
 			break;
 		}
@@ -296,7 +299,7 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			possessFlag++;
 			switch (possessFlag) {
 				case 1 : {
-					Vector temp = object[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
+					Vector temp = (*object_p)[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
 
 					X = temp.getX();
 					Y = temp.getY();
@@ -307,13 +310,13 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 				}
 				case 2 : {
 //					Vector temp(dominatorSightPoint[dominatorIndex]);
-					object[dominatorIndex]->setDomination(true);
+					(*object_p)[dominatorIndex]->setDomination(true);
 					std::cerr << "possessing\n";
 //					std::cerr << "x : " << temp.getX() << ", y : " << temp.getY() << ", z : " << temp.getZ() << '\n';
 					break;
 				}
 				case 3 : {
-					object[dominatorIndex]->setDomination(false);
+					(*object_p)[dominatorIndex]->setDomination(false);
 					possessFlag = 0;
 					std::cerr << "release possess\n";
 					break;
@@ -325,15 +328,15 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			if (possessFlag == 1) {
 				Vector temp;
 
-//				object[dominatorIndex]->setDomination(false);
+//				(*object_p)[dominatorIndex]->setDomination(false);
 
 				dominatorIndex++;
-				if (dominatorIndex >= objectNum)
+				if (dominatorIndex >= object_p->length())
 					dominatorIndex = 0;
 
-//				object[dominatorIndex]->setDomination(true);
+//				(*object_p)[dominatorIndex]->setDomination(true);
 
-				temp = object[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
+				temp = (*object_p)[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
 
 				X = temp.getX();
 				Y = temp.getY();
@@ -345,15 +348,15 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			if (possessFlag == 1) {
 				Vector temp;
 
-//				object[dominatorIndex]->setDomination(false);
+//				(*object_p)[dominatorIndex]->setDomination(false);
 
 				dominatorIndex--;
 				if (dominatorIndex < 0)
-					dominatorIndex = objectNum - 1;
+					dominatorIndex = object_p->length() - 1;
 
-//				object[dominatorIndex]->setDomination(true);
+//				(*object_p)[dominatorIndex]->setDomination(true);
 
-				temp = object[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
+				temp = (*object_p)[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
 
 				X = temp.getX();
 				Y = temp.getY();

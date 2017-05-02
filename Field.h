@@ -48,18 +48,19 @@ public slots:
 	void autoGenerate(void);
 
 private:
-	void objectGenerate(Object*);
+	void addObject(Object*);
 	void addForce(Force*);
 	void finishForce(short);
 
 	Sight* sight;
 	QTimer* time;
 	QTimer* autoGeneration;
-	Object** object;
+//	Object** object;
+	Array<Object*> object;
 	Array<Force*> force;
 	Array<Event*> event;
 
-	short objectNum;
+//	short objectNum;
 
 	short deadObjectIndex[100];
 	short deadObjectNum;

@@ -15,20 +15,20 @@ void Field::MoveEvent::exec(void)
 	field->object[0]->stop();
 	field->object[1]->stop();
 
-	for (short i = 0  ;  i < field->objectNum  ;  i++) {
+	for (short i = 0  ;  i < field->object.length()  ;  i++) {
 		switch (field->object[i]->whichClass()) {
 			case 'G' : {
-				Gunner* gunner = (Gunner*)field->object[i];
+				Gunner* gunner = dynamic_cast<Gunner*> (field->object[i]);
 
 				signal = gunner->updateGunner();
 				if (signal) {
-					Object bullet(gunner->fire());
-					field->objectGenerate(&bullet);
+					Object* bullet = gunner->fire();
+					field->addObject(bullet);
 				}
 				break;
 			}
 			case 'P' : {
-				Player* player = (Player*)field->object[i];
+				Player* player = dynamic_cast<Player*> (field->object[i]);
 
 				signal = player->updatePlayer();
 				break;

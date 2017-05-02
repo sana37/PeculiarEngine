@@ -82,6 +82,7 @@ template<typename T>
 void Array<T>::add(T t)
 {
 	if (size == max) {
+		std::cerr << "extend!!\n";
 		max *= 2;
 		T* newArray = new T[max];
 

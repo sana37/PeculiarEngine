@@ -39,7 +39,7 @@ public:
 	short getPolygonG(short) const;
 	short getPolygonB(short) const;
 
-	virtual char whichClass(void);// const;
+	virtual char whichClass(void);
 
 	bool isActive(void);
 	bool isVertexEmbody(short) const;

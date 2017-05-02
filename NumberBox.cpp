@@ -6,10 +6,10 @@ NumberBox::NumberBox(short num) : Object::Object("cube")
 {
 //	classCode = 'N';
 	number = num;
-	setOmega(3, 1, 0);
 	this->setup(number);
 }
-
+//this copy constructer is wrong!! vertexs increase permanently
+/*
 NumberBox::NumberBox(const NumberBox& originalNumberBox) : Object::Object(originalNumberBox)
 {
 	Vector temp = this->getGravityCenter();
@@ -22,6 +22,11 @@ NumberBox::NumberBox(const NumberBox& originalNumberBox) : Object::Object(origin
 	this->moveAbsolute(temp);
 }
 
+NumberBox::NumberBox(const NumberBox& numberBox, short num) : Object::Object(dynamic_cast<const Object&>(numberBox))
+{
+	Vector temp 
+}
+*/
 void NumberBox::setup(short num)
 {
 	Object* temp;
@@ -132,14 +137,13 @@ short NumberBox::getNum(void) const
 
 bool NumberBox::decompose(NumberBox** operatedNumberBox, Object** operatedObject)
 {
-	NumberBox* replica1;
-	NumberBox* replica2;
 	Vector replica1Velocity = (*operatedNumberBox)->getVelocity();
 	Vector replica2Velocity = (*operatedObject)->getVelocity() * 0.01;
 	Vector replica1Point = (*operatedNumberBox)->getGravityCenter();
-	Vector replica2Point = (*operatedObject)->getGravityCenter() + (replica2Velocity * (3.0 / replica2Velocity.getMagnitude()));
+	Vector replica2Point = (*operatedObject)->getGravityCenter() + (replica2Velocity * (3.0 / replica2Velocity.getMagnitude()));//magnitude = 0??
+//	omega copy
 	short replicaNumber1 = (*operatedNumberBox)->getNum();
-	short replicaNumber2 = sqrt((*operatedNumberBox)->getNum()) / 1;
+	short replicaNumber2 = sqrt((*operatedNumberBox)->getNum());
 
 	for (  ;  replicaNumber2 > 0  ;  replicaNumber2--) {
 		if (replicaNumber1 % replicaNumber2 == 0) {
@@ -148,8 +152,8 @@ bool NumberBox::decompose(NumberBox** operatedNumberBox, Object** operatedObject
 		}
 	}
 	std::cerr << "decompose(new)\n";
-	replica1 = new NumberBox(replicaNumber1);
-	replica2 = new NumberBox(replicaNumber2);
+	NumberBox* replica1 = new NumberBox(replicaNumber1);
+	NumberBox* replica2 = new NumberBox(replicaNumber2);
 
 	replica1->moveAbsolute(replica1Point);
 	replica2->moveAbsolute(replica2Point);
