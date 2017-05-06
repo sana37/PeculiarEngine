@@ -32,7 +32,7 @@ private:
 
 	Field(void);
 	Field(const Field&);
-	~Field(void);
+	virtual ~Field(void);
 
 public:
 	static Field* getInstance(void);

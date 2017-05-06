@@ -10,6 +10,7 @@ class Gunner : public Player
 public:
 	Gunner(const char*, const char*);
 	Gunner(const Gunner&);
+
 	bool updateGunner(void);
 	Object* fire(void);
 	void trigger(Vector);

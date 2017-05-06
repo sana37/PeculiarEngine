@@ -6,9 +6,10 @@
 class NumberBox : public Object
 {
 public:
-	NumberBox(short);
+	explicit NumberBox(short);
 //	NumberBox(const NumberBox&);
 //	NumberBox(const NumberBox&, short);
+
 	void setup(short);
 	short getNum(void) const;
 	static bool decompose(NumberBox**, Object**);

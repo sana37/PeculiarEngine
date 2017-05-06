@@ -10,7 +10,7 @@ class Array
 {
 public:
 	Array(void);
-	Array(int);
+	explicit Array(int);
 
 	T operator[](int);
 	T get(int);

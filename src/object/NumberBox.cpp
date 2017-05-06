@@ -2,7 +2,7 @@
 #include <math.h>
 #include <iostream>//
 
-NumberBox::NumberBox(short num) : Object::Object("cube")
+NumberBox::NumberBox(short num) : Object::Object("res/cube")
 {
 //	classCode = 'N';
 	number = num;
@@ -33,47 +33,47 @@ void NumberBox::setup(short num)
 
 	switch (num / 10) {
 		case 0 : {
-			temp = new Object("l0");
+			temp = new Object("res/l0");
 			break;
 		}
 		case 1 : {
-			temp = new Object("l1");
+			temp = new Object("res/l1");
 			break;
 		}
 		case 2 : {
-			temp = new Object("l2");
+			temp = new Object("res/l2");
 			break;
 		}
 		case 3 : {
-			temp = new Object("l3");
+			temp = new Object("res/l3");
 			break;
 		}
 		case 4 : {
-			temp = new Object("l4");
+			temp = new Object("res/l4");
 			break;
 		}
 		case 5 : {
-			temp = new Object("l5");
+			temp = new Object("res/l5");
 			break;
 		}
 		case 6 : {
-			temp = new Object("l6");
+			temp = new Object("res/l6");
 			break;
 		}
 		case 7 : {
-			temp = new Object("l7");
+			temp = new Object("res/l7");
 			break;
 		}
 		case 8 : {
-			temp = new Object("l8");
+			temp = new Object("res/l8");
 			break;
 		}
 		case 9 : {
-			temp = new Object("l9");
+			temp = new Object("res/l9");
 			break;
 		}
 		default: {
-			temp = new Object("l0");
+			temp = new Object("res/l0");
 			break;
 		}
 	}
@@ -82,47 +82,47 @@ void NumberBox::setup(short num)
 
 	switch (num % 10) {
 		case 0 : {
-			temp = new Object("r0");
+			temp = new Object("res/r0");
 			break;
 		}
 		case 1 : {
-			temp = new Object("r1");
+			temp = new Object("res/r1");
 			break;
 		}
 		case 2 : {
-			temp = new Object("r2");
+			temp = new Object("res/r2");
 			break;
 		}
 		case 3 : {
-			temp = new Object("r3");
+			temp = new Object("res/r3");
 			break;
 		}
 		case 4 : {
-			temp = new Object("r4");
+			temp = new Object("res/r4");
 			break;
 		}
 		case 5 : {
-			temp = new Object("r5");
+			temp = new Object("res/r5");
 			break;
 		}
 		case 6 : {
-			temp = new Object("r6");
+			temp = new Object("res/r6");
 			break;
 		}
 		case 7 : {
-			temp = new Object("r7");
+			temp = new Object("res/r7");
 			break;
 		}
 		case 8 : {
-			temp = new Object("r8");
+			temp = new Object("res/r8");
 			break;
 		}
 		case 9 : {
-			temp = new Object("r9");
+			temp = new Object("res/r9");
 			break;
 		}
 		default: {
-			temp = new Object("r0");
+			temp = new Object("res/r0");
 			break;
 		}
 	}

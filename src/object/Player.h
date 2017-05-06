@@ -8,8 +8,9 @@ class Vector;
 class Player : public Object
 {
 public:
-	Player(const char*);
+	explicit Player(const char*);
 	Player(const Player&);
+
 	bool updatePlayer(void);
 	char whichClass(void);
 

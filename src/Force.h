@@ -12,7 +12,7 @@ class Force : public Vector
 public:
 	Force(Vector, Vector, Object*, Object*);
 	Force(const Force&);
-	~Force(void);
+	virtual ~Force(void);
 
 	void exec(void);
 	void applyDecomposedForce(Object*);

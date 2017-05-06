@@ -8,7 +8,7 @@
 class Object
 {
 public:
-	Object(const char*);
+	explicit Object(const char*);
 	Object(const Object&);//copy constructer
 	virtual ~Object(void);
 	void composeObject(Object*);

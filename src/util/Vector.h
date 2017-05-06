@@ -9,7 +9,7 @@ public:
 	Vector(float, float, float);
 	Vector(Vector*);
 	Vector(const Vector&);
-	~Vector(void);
+	virtual ~Vector(void);
 
 	float getX(void) const;
 	float getY(void) const;

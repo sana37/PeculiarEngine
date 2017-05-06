@@ -9,7 +9,6 @@ Object::Object(const char* fileName) :
 	omega(0),
 	gravityCenter(Vector())
 {
-//	classCode = 'O';
 	radius = 0;
 	isDominated = false;
 
@@ -46,7 +45,6 @@ Object::Object(const char* fileName) :
 			}
 
 			if (vertexEmbodyFlag[i] == true) {
-//				gravityCenter.addVector(temp);
 				gravityCenter += Vector(temp);
 				realVertexNum++;
 			}
@@ -164,8 +162,6 @@ Object::Object(const char* fileName) :
 
 Object::Object(const Object& _object)
 {
-//	printf("copy constructer object\n");
-
 	vertexNum = _object.vertexNum;
 	lineNum = _object.lineNum;
 	polygonNum = _object.polygonNum;
@@ -213,14 +209,11 @@ Object::Object(const Object& _object)
 	radius = _object.radius;
 	mass = _object.mass;
 
-//	classCode = _object.classCode;
 	isDominated = _object.isDominated;
 }
 
 Object::~Object(void)
 {
-//	printf("destructer object\n");
-//	printf("classCode : %c\n", classCode);
 	delete[] vertex;
 	delete[] lineLVertexIndex;
 	delete[] lineRVertexIndex;
@@ -387,7 +380,7 @@ short Object::getPolygonB(short num) const
 	return polygonB[num];
 }
 
-char Object::whichClass(void)// const
+char Object::whichClass(void)
 {
 	return 'O';
 }
@@ -522,22 +515,12 @@ void Object::rotate(void)
 
 void Object::push(Vector vector)
 {
-//	float preVelocity = velocity.getMagnitude();
-
 	velocity += (vector / mass);
-
-//	if (velocity.getMagnitude() < NEAR_ZERO  &&  velocity.getMagnitude() < preVelocity)
-//		velocity.setVector(0, 0, 0);
 }
 
 void Object::accelerate(Vector vector)
 {
-//	float preVelocity = velocity.getMagnitude();
-
 	velocity += vector;
-
-//	if (velocity.getMagnitude() < NEAR_ZERO  &&  velocity.getMagnitude() < preVelocity)
-//		velocity.setVector(0, 0, 0);
 }
 
 void Object::applyTorque(Vector torque)

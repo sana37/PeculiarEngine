@@ -20,6 +20,7 @@ class Sight : public QGLWidget
 	Q_OBJECT
 public:
 	Sight(Array<Object*>*, short, Array<Force*>*);
+
 	void update(void);
 //	void updateObject(Object**, short);
 	void receiveMovement(void);
