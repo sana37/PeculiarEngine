@@ -5,6 +5,11 @@
 TEMPLATE = app
 TARGET = PrimeNumberGame
 INCLUDEPATH += . src src/util src/event src/object
+DESTDIR = target
+OBJECTS_DIR = generated
+MOC_DIR = generated
+QT += widgets opengl
+LIBS += -lGLU
 
 # Input
 HEADERS += src/CrashKeeper.h \
@@ -41,6 +46,3 @@ SOURCES += src/CrashKeeper.cpp \
            src/object/Player.cpp \
            src/util/Calculater.cpp \
            src/util/Vector.cpp
-
-QT += widgets opengl
-LIBS += -lGLU
