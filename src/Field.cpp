@@ -256,6 +256,7 @@ void Field::addObject(Object* newObject)
 	}
 */
 	object.add(newObject);
+//	syncObject();
 }
 
 void Field::addForce(Force* force)

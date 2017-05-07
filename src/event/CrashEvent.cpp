@@ -4,11 +4,13 @@
 #include "NumberBox.h"
 #include "Calculater.h"
 #include "CrashResult.h"
+#include "CrashKeeper.h"
 #include <iostream>
 #include <math.h>
 
 Field::CrashEvent::CrashEvent(void) : Field::Event::Event()
 {
+	crashKeeper = CrashKeeper::getInstance();
 }
 
 const char Field::CrashEvent::OVER = 1;
@@ -17,6 +19,8 @@ const char Field::CrashEvent::FAILURE = -1;
 
 void Field::CrashEvent::exec(void)
 {
+//	Object** object = crashKeeper->getFloatingObjects();
+
 	short objectNum = field->object.length();
 
 	for (short i = 0  ;  i < (objectNum - 1)  ;  i++) {

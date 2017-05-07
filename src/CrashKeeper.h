@@ -15,6 +15,8 @@ public:
 	static CrashKeeper* getInstance(void);
 	static void deleteInstance(void);
 
+	Array<Object*> getFloatingObjects(void);
+
 private:
 	static CrashKeeper* crashKeeper;
 	Array<Object*>* object;

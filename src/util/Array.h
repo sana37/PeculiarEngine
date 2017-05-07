@@ -11,6 +11,8 @@ class Array
 public:
 	Array(void);
 	explicit Array(int);
+	explicit Array(const Array<T>&);
+	virtual ~Array(void);
 
 	T operator[](int);
 	T get(int);
@@ -44,6 +46,25 @@ Array<T>::Array(int initialMax)
 	max = initialMax;
 	size = 0;
 	std::cerr << "Array: start " << max << "\n";
+}
+
+template<typename T>
+Array<T>::Array(const Array<T>& ary)
+{
+	max = ary.max;
+	size = ary.size;
+	array = new T[max];
+
+	for (int i = 0  ;  i < size  ;  i++) {
+		array[i] = ary.array[i];
+	}
+}
+
+template<typename T>
+Array<T>::~Array(void)
+{
+	delete[] array;
+	std::cerr << "Array: size " << size << "\n";
 }
 
 template<typename T>

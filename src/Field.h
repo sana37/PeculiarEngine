@@ -40,6 +40,7 @@ public:
 	void open(void);
 
 signals:
+//	void syncObject(void);
 	void reportScore(short);
 
 public slots:

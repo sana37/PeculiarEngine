@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "ObjectStatus.h"
 #include "Calculater.h"
 #include <stdio.h>
 #include <math.h>
@@ -11,6 +12,7 @@ Object::Object(const char* fileName) :
 {
 	radius = 0;
 	isDominated = false;
+	status = new ObjectStatus();
 
 	FILE* fp = fopen(fileName, "r");
 
@@ -160,27 +162,27 @@ Object::Object(const char* fileName) :
 	}
 }
 
-Object::Object(const Object& _object)
+Object::Object(const Object& object)
 {
-	vertexNum = _object.vertexNum;
-	lineNum = _object.lineNum;
-	polygonNum = _object.polygonNum;
+	vertexNum = object.vertexNum;
+	lineNum = object.lineNum;
+	polygonNum = object.polygonNum;
 
 	vertex = new Vector[vertexNum];
-	gravityCenter = _object.gravityCenter;
+	gravityCenter = object.gravityCenter;
 	vertexEmbodyFlag = new bool[vertexNum];
 
 	for (short i = 0  ;  i < vertexNum  ;  i++) {
-		vertex[i] = _object.vertex[i];
-		vertexEmbodyFlag[i] = _object.vertexEmbodyFlag[i];
+		vertex[i] = object.vertex[i];
+		vertexEmbodyFlag[i] = object.vertexEmbodyFlag[i];
 	}
 
 
 	lineLVertexIndex = new short[lineNum];
 	lineRVertexIndex = new short[lineNum];
 	for (short i = 0  ;  i < lineNum  ;  i++) {
-		lineLVertexIndex[i] = _object.lineLVertexIndex[i];
-		lineRVertexIndex[i] = _object.lineRVertexIndex[i];
+		lineLVertexIndex[i] = object.lineLVertexIndex[i];
+		lineRVertexIndex[i] = object.lineRVertexIndex[i];
 	}
 
 
@@ -193,23 +195,24 @@ Object::Object(const Object& _object)
 	polygonEmbodyFlag = new bool[polygonNum];
 
 	for (short i = 0  ;  i < polygonNum  ;  i++) {
-		polygon1VertexIndex[i] = _object.polygon1VertexIndex[i];
-		polygon2VertexIndex[i] = _object.polygon2VertexIndex[i];
-		polygon3VertexIndex[i] = _object.polygon3VertexIndex[i];
-		polygonR[i] = _object.polygonR[i];
-		polygonG[i] = _object.polygonG[i];
-		polygonB[i] = _object.polygonB[i];
-		polygonEmbodyFlag[i] = _object.polygonEmbodyFlag[i];
+		polygon1VertexIndex[i] = object.polygon1VertexIndex[i];
+		polygon2VertexIndex[i] = object.polygon2VertexIndex[i];
+		polygon3VertexIndex[i] = object.polygon3VertexIndex[i];
+		polygonR[i] = object.polygonR[i];
+		polygonG[i] = object.polygonG[i];
+		polygonB[i] = object.polygonB[i];
+		polygonEmbodyFlag[i] = object.polygonEmbodyFlag[i];
 	}
 
 
-	velocity = _object.velocity;
-	omegaVector = _object.omegaVector;
-	omega = _object.omega;
-	radius = _object.radius;
-	mass = _object.mass;
+	velocity = object.velocity;
+	omegaVector = object.omegaVector;
+	omega = object.omega;
+	radius = object.radius;
+	mass = object.mass;
 
-	isDominated = _object.isDominated;
+	isDominated = object.isDominated;
+	status = new ObjectStatus(*(object.status));
 }
 
 Object::~Object(void)
@@ -225,6 +228,7 @@ Object::~Object(void)
 	delete[] polygonB;
 	delete[] vertexEmbodyFlag;
 	delete[] polygonEmbodyFlag;
+	delete status;
 }
 
 void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga dokuritusitamama unndouno eikyouwo tomoni ukeru sikumini sitai
@@ -383,6 +387,11 @@ short Object::getPolygonB(short num) const
 char Object::whichClass(void)
 {
 	return 'O';
+}
+
+ObjectStatus* Object::getStatus(void)
+{
+	return status;
 }
 
 bool Object::isActive(void)

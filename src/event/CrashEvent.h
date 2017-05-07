@@ -5,6 +5,7 @@
 
 class Vector;
 class Object;
+class CrashKeeper;
 
 class Field::CrashEvent : public Field::Event
 {
@@ -29,6 +30,8 @@ private:
 	static const char OVER;
 	static const char SUCCESS;
 	static const char FAILURE;
+
+	CrashKeeper* crashKeeper;
 };
 
 #endif

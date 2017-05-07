@@ -59,6 +59,7 @@ SOURCES       = src/CrashKeeper.cpp \
 		src/object/Gunner.cpp \
 		src/object/NumberBox.cpp \
 		src/object/Object.cpp \
+		src/object/ObjectStatus.cpp \
 		src/object/Player.cpp \
 		src/util/Calculater.cpp \
 		src/util/Vector.cpp generated/moc_Field.cpp \
@@ -77,6 +78,7 @@ OBJECTS       = generated/CrashKeeper.o \
 		generated/Gunner.o \
 		generated/NumberBox.o \
 		generated/Object.o \
+		generated/ObjectStatus.o \
 		generated/Player.o \
 		generated/Calculater.o \
 		generated/Vector.o \
@@ -203,6 +205,7 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		src/object/Gunner.cpp \
 		src/object/NumberBox.cpp \
 		src/object/Object.cpp \
+		src/object/ObjectStatus.cpp \
 		src/object/Player.cpp \
 		src/util/Calculater.cpp \
 		src/util/Vector.cpp
@@ -471,7 +474,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d generated/PrimeNumberGame1.0.0 || mkdir -p generated/PrimeNumberGame1.0.0
-	$(COPY_FILE) --parents $(DIST) generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.h src/CrashResult.h src/Field.h src/Force.h src/Sight.h src/event/CrashEvent.h src/event/Event.h src/event/ForceEvent.h src/event/MoveEvent.h src/event/SightMoveEvent.h src/object/Gunner.h src/object/NumberBox.h src/object/Object.h src/object/Player.h src/util/Array.h src/util/Calculater.h src/util/Vector.h generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.cpp src/CrashResult.cpp src/Field.cpp src/Force.cpp src/main.cpp src/Sight.cpp src/event/CrashEvent.cpp src/event/Event.cpp src/event/ForceEvent.cpp src/event/MoveEvent.cpp src/event/SightMoveEvent.cpp src/object/Gunner.cpp src/object/NumberBox.cpp src/object/Object.cpp src/object/Player.cpp src/util/Calculater.cpp src/util/Vector.cpp generated/PrimeNumberGame1.0.0/ && (cd `dirname generated/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname generated/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r generated/PrimeNumberGame1.0.0
+	$(COPY_FILE) --parents $(DIST) generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.h src/CrashResult.h src/Field.h src/Force.h src/Sight.h src/event/CrashEvent.h src/event/Event.h src/event/ForceEvent.h src/event/MoveEvent.h src/event/SightMoveEvent.h src/object/Gunner.h src/object/NumberBox.h src/object/Object.h src/object/ObjectStatus.h src/object/Player.h src/util/Array.h src/util/Calculater.h src/util/Vector.h generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.cpp src/CrashResult.cpp src/Field.cpp src/Force.cpp src/main.cpp src/Sight.cpp src/event/CrashEvent.cpp src/event/Event.cpp src/event/ForceEvent.cpp src/event/MoveEvent.cpp src/event/SightMoveEvent.cpp src/object/Gunner.cpp src/object/NumberBox.cpp src/object/Object.cpp src/object/ObjectStatus.cpp src/object/Player.cpp src/util/Calculater.cpp src/util/Vector.cpp generated/PrimeNumberGame1.0.0/ && (cd `dirname generated/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname generated/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r generated/PrimeNumberGame1.0.0
 
 
 clean:compiler_clean 
@@ -1175,7 +1178,8 @@ generated/CrashEvent.o: src/event/CrashEvent.cpp src/event/CrashEvent.h \
 		src/Force.h \
 		src/object/NumberBox.h \
 		src/util/Calculater.h \
-		src/CrashResult.h
+		src/CrashResult.h \
+		src/CrashKeeper.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/CrashEvent.o src/event/CrashEvent.cpp
 
 generated/Event.o: src/event/Event.cpp src/event/Event.h \
@@ -1549,8 +1553,12 @@ generated/NumberBox.o: src/object/NumberBox.cpp src/object/NumberBox.h \
 
 generated/Object.o: src/object/Object.cpp src/object/Object.h \
 		src/util/Vector.h \
+		src/object/ObjectStatus.h \
 		src/util/Calculater.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Object.o src/object/Object.cpp
+
+generated/ObjectStatus.o: src/object/ObjectStatus.cpp src/object/ObjectStatus.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/ObjectStatus.o src/object/ObjectStatus.cpp
 
 generated/Player.o: src/object/Player.cpp src/object/Player.h \
 		src/object/Object.h \

@@ -25,6 +25,7 @@ HEADERS += src/CrashKeeper.h \
            src/object/Gunner.h \
            src/object/NumberBox.h \
            src/object/Object.h \
+           src/object/ObjectStatus.h \
            src/object/Player.h \
            src/util/Array.h \
            src/util/Calculater.h \
@@ -43,6 +44,7 @@ SOURCES += src/CrashKeeper.cpp \
            src/object/Gunner.cpp \
            src/object/NumberBox.cpp \
            src/object/Object.cpp \
+           src/object/ObjectStatus.cpp \
            src/object/Player.cpp \
            src/util/Calculater.cpp \
            src/util/Vector.cpp

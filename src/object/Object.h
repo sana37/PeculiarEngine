@@ -5,6 +5,8 @@
 
 #include "Vector.h"
 
+class ObjectStatus;
+
 class Object
 {
 public:
@@ -40,6 +42,7 @@ public:
 	short getPolygonB(short) const;
 
 	virtual char whichClass(void);
+	ObjectStatus* getStatus(void);
 
 	bool isActive(void);
 	bool isVertexEmbody(short) const;
@@ -107,6 +110,8 @@ private:
 	float mass;
 	bool* vertexEmbodyFlag;
 	bool* polygonEmbodyFlag;
+
+	ObjectStatus* status;
 
 };
 
