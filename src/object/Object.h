@@ -11,8 +11,9 @@ class Object
 {
 public:
 	explicit Object(const char*);
-	Object(const Object&);//copy constructer
+	Object(const Object&);
 	virtual ~Object(void);
+
 	void composeObject(Object*);
 
 

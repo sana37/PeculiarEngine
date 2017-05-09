@@ -56,12 +56,10 @@ private:
 	Sight* sight;
 	QTimer* time;
 	QTimer* autoGeneration;
-//	Object** object;
 	Array<Object*> object;
 	Array<Force*> force;
 	Array<Event*> event;
 
-//	short objectNum;
 
 	short deadObjectIndex[100];
 	short deadObjectNum;

@@ -10,16 +10,20 @@ class Array
 {
 public:
 	Array(void);
-	explicit Array(int);
-	explicit Array(const Array<T>&);
+/*	explicit*/ Array(int);
+	Array(const Array<T>&);
 	virtual ~Array(void);
 
-	T operator[](int);
+	T operator[](int) const;
 	T get(int);
 	void set(int, T);
 	void add(T);
 	void remove(int);
-	int length(void);
+	void removeAll(void);
+	void removeIfMatchOnce(T);
+	void removeIfMatchAll(T);//if int == T ??
+	void removeDuplicated(void);
+	int length(void) const;
 
 private:
 	T* array;
@@ -58,23 +62,25 @@ Array<T>::Array(const Array<T>& ary)
 	for (int i = 0  ;  i < size  ;  i++) {
 		array[i] = ary.array[i];
 	}
+	std::cerr << "Array:   copy " << max << "\n";
 }
 
 template<typename T>
 Array<T>::~Array(void)
 {
 	delete[] array;
-	std::cerr << "Array: size " << size << "\n";
+//	if (size != max  &&  size != 0)
+		std::cerr << "Array: size " << size << " , max " << max << "\n";
 }
 
 template<typename T>
-T Array<T>::operator[](int idx)
+T Array<T>::operator[](int idx) const
 {
 	if (idx < size) {
 		return array[idx];
 	} else {
 		std::cerr << "Array: invalid access\n";
-		return 0;
+		std::terminate();
 	}
 }
 
@@ -85,7 +91,7 @@ T Array<T>::get(int idx)
 		return array[idx];
 	} else {
 		std::cerr << "Array: invalid access\n";
-		return 0;
+		std::terminate();
 	}
 }
 
@@ -96,6 +102,7 @@ void Array<T>::set(int idx, T t)
 		array[idx] = t;
 	} else {
 		std::cerr << "Array: invalid access\n";
+		std::terminate();
 	}
 }
 
@@ -122,19 +129,60 @@ void Array<T>::add(T t)
 template<typename T>
 void Array<T>::remove(int idx)
 {
-//	delete array[idx];//??!!
+	if (idx < 0  ||  size <= idx)
+		return;
 
 	size--;
-	for (short i = idx  ;  i < size  ;  i++) {
+	for (int i = idx  ;  i < size  ;  i++) {
 		array[i] = array[i + 1];
 	}
 }
 
 template<typename T>
-int Array<T>::length(void)
+void Array<T>::removeAll(void)
+{
+	size = 0;
+}
+
+template<typename T>
+void Array<T>::removeIfMatchOnce(T t)
+{
+	for (int i = 0  ;  i < size  ;  i++) {
+		if (array[i] == t) {
+			remove(i);
+			return;
+		}
+	}
+}
+
+template<typename T>
+void Array<T>::removeIfMatchAll(T t)
+{
+	for (int i = 0  ;  i < size  ;  i++) {
+		if (array[i] == t) {
+			remove(i);
+			i--;
+		}
+	}
+}
+
+template<typename T>
+void Array<T>::removeDuplicated(void)
+{
+	for (short i = 0  ;  i < size  ;  i++) {
+		for (short j = i + 1  ;  j < size  ;  j++) {
+			if (array[i] == array[j]) {
+				remove(j);
+				j--;
+			}
+		}
+	}
+}
+
+template<typename T>
+int Array<T>::length(void) const
 {
 	return size;
 }
-
 
 #endif

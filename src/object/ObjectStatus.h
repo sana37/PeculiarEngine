@@ -1,6 +1,12 @@
 #ifndef OBJECTSTATUS_H
 #define OBJECTSTATUS_H
 
+#define FIRST_ATTACH_MAX	10
+
+#include "Array.h"
+
+class Object;
+
 class ObjectStatus
 {
 	friend class Object;
@@ -10,12 +16,12 @@ private:
 	ObjectStatus(const ObjectStatus&);
 
 public:
-	bool isFloat(void);
-	void attach(void);
-	void detach(void);
+	const Array<Object*>& getAttachedObjects(void);
+	void attach(Object*);
+	void detach(Object*);
 
 private:
-	bool floating;
+	Array<Object*> attachedObjects;
 
 };
 

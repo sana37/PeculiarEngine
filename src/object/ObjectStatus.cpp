@@ -1,25 +1,32 @@
 #include "ObjectStatus.h"
+#include "Object.h"
 
-ObjectStatus::ObjectStatus(void) : floating(true)
+ObjectStatus::ObjectStatus(void) : attachedObjects(FIRST_ATTACH_MAX)
 {
 }
 
-ObjectStatus::ObjectStatus(const ObjectStatus& status)
+ObjectStatus::ObjectStatus(const ObjectStatus& status) : attachedObjects(status.attachedObjects)
 {
-	floating = status.floating;
 }
 
-bool ObjectStatus::isFloat(void)
+const Array<Object*>& ObjectStatus::getAttachedObjects(void)
 {
-	return floating;
+	return attachedObjects;
 }
 
-void ObjectStatus::attach(void)
+void ObjectStatus::attach(Object* object)
 {
-	floating = false;
+	attachedObjects.add(object);
 }
 
-void ObjectStatus::detach(void)
+void ObjectStatus::detach(Object* object)
 {
-	floating = true;
+	short objectNum = attachedObjects.length();
+
+	for (short i = 0  ;  i < objectNum  ;  i++) {
+		if (attachedObjects[i] == object) {
+			attachedObjects.remove(i);
+			break;
+		}
+	}
 }

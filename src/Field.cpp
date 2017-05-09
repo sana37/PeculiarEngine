@@ -13,6 +13,8 @@
 #include "CrashEvent.h"
 #include "ForceEvent.h"
 
+#include "CrashKeeper.h"////
+
 #include <QTimer>
 #include <iostream>
 
@@ -33,6 +35,8 @@ Field::Field(void) : event(EVENT_NUM)
 	object.add(new Object("res/object0"));
 
 	sight = new Sight(&object, 2, &force);
+
+	CrashKeeper::getInstance(&object);
 
 	event.add(new ForceEvent());
 	event.add(new MoveEvent());
@@ -98,7 +102,7 @@ Field* Field::getInstance(void)
 {
 	if (field == NULL)
 		field = new Field();
-	return(field);
+	return field;
 }
 
 void Field::deleteInstance(void)

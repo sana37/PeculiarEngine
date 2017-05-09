@@ -10,7 +10,7 @@
 
 Field::CrashEvent::CrashEvent(void) : Field::Event::Event()
 {
-	crashKeeper = CrashKeeper::getInstance();
+	crashKeeper = CrashKeeper::getInstance(&(field->object));
 }
 
 const char Field::CrashEvent::OVER = 1;
@@ -19,8 +19,48 @@ const char Field::CrashEvent::FAILURE = -1;
 
 void Field::CrashEvent::exec(void)
 {
-//	Object** object = crashKeeper->getFloatingObjects();
+	const Array< Pair<Object*> >& pairs = crashKeeper->getDetachedObjectsPairs();
 
+	for (short i = 0  ;  i < pairs.length()  ;  i++) {
+		Object* obj1 = pairs[i].getInstance1();
+		Object* obj2 = pairs[i].getInstance2();
+
+			if (obj1->isActive() == false  &&  obj2->isActive() == false)
+				continue;
+
+			if (canCrashObjSphere(obj1, obj2) == false)
+				continue;
+
+			if (reflectIfCrash(obj1, obj2)) {
+/*
+				short result = -1;
+				if (obj1->whichClass() == 'N'  &&  obj2->whichClass() == 'O'  &&  j >= 3) {
+					std::cerr << j << '\n';
+					NumberBox* numberBox = dynamic_cast<NumberBox*> (obj1);
+					Object* object = obj2;
+					result = NumberBox::decompose(&numberBox, &object);
+//					obj1 = numberBox;
+					field->object.set(i, numberBox);
+					field->object.set(j, object);
+					std::cerr << "change end\n";
+					field->reportScore(result);
+				}
+				if (obj1->whichClass() == 'O'  &&  obj2->whichClass() == 'N'  &&  i >= 3) {
+					std::cerr << i << '\n';
+					NumberBox* numberBox = dynamic_cast<NumberBox*> (obj2);
+					Object* object = obj1;
+					result = NumberBox::decompose(&numberBox, &object);
+//					obj2 = numberBox;
+					field->object.set(j, numberBox);
+					field->object.set(i, object);
+					std::cerr << "change end\n";
+					field->reportScore(result);
+				}
+*/
+			}
+	}
+
+/*
 	short objectNum = field->object.length();
 
 	for (short i = 0  ;  i < (objectNum - 1)  ;  i++) {
@@ -35,12 +75,6 @@ void Field::CrashEvent::exec(void)
 
 			if (reflectIfCrash(field->object[i], field->object[j])) {
 				short result = -1;
-/*
-				if (i == 5  ||  j == 5) {
-					Vector vector = field->object[5]->getVelocity();
-					std::cout << vector.getX() << " : " << vector.getY() << " : " << vector.getZ() << "\n";
-				}
-*/
 
 				if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
 					std::cerr << j << '\n';
@@ -69,7 +103,10 @@ void Field::CrashEvent::exec(void)
 
 		}
 	}
+*/
 }
+
+//void Field::CrashEvent::execCrashInDetachedObjects(
 
 bool Field::CrashEvent::canCrashObjSphere(Object* obj1, Object* obj2)
 {

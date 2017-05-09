@@ -1,5 +1,6 @@
 #include "Force.h"
 #include "Object.h"
+#include "ObjectStatus.h"
 #include "Calculater.h"
 #include <iostream>//to use NULL... I dont like this
 
@@ -7,6 +8,10 @@ Force::Force(Vector vector, Vector point, Object* obj1, Object* obj2) : Vector::
 {
 	this->obj1 = obj1;
 	this->obj2 = obj2;
+	if (obj1 != NULL  &&  obj2 != NULL) {	//i want to make force classes else
+		obj1->getStatus()->attach(obj2);
+		obj2->getStatus()->attach(obj1);
+	}
 }
 
 Force::Force(const Force& force) : Vector::Vector((Vector) force), forcePoint(force.forcePoint)
@@ -18,6 +23,10 @@ Force::Force(const Force& force) : Vector::Vector((Vector) force), forcePoint(fo
 
 Force::~Force(void)
 {
+	if (obj1 != NULL  &&  obj2 != NULL) {
+		obj1->getStatus()->detach(obj2);
+		obj2->getStatus()->detach(obj1);
+	}
 	obj1 = NULL;
 	obj2 = NULL;
 }

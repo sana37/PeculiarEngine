@@ -28,6 +28,7 @@ HEADERS += src/CrashKeeper.h \
            src/object/ObjectStatus.h \
            src/object/Player.h \
            src/util/Array.h \
+           src/util/Pair.h \
            src/util/Calculater.h \
            src/util/Vector.h
 SOURCES += src/CrashKeeper.cpp \

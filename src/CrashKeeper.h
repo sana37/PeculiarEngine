@@ -1,21 +1,25 @@
 #ifndef CRASHKEEPER_H
 #define CRASHKEEPER_H
 
+#define ATTACH_PAIR_MAX		100
+
 #include "Array.h"
+#include "Pair.h"
 
 class Object;
 
 class CrashKeeper
 {
 private:
-	CrashKeeper(void);
+	CrashKeeper(Array<Object*>*);
 	CrashKeeper(const CrashKeeper&);
 
 public:
-	static CrashKeeper* getInstance(void);
+	static CrashKeeper* getInstance(Array<Object*>*);
 	static void deleteInstance(void);
 
-	Array<Object*> getFloatingObjects(void);
+	const Array< Pair<Object*> >& getAttachedObjectsPairs(void);
+	const Array< Pair<Object*> >& getDetachedObjectsPairs(void);
 
 private:
 	static CrashKeeper* crashKeeper;
