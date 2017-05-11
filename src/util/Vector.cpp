@@ -25,16 +25,16 @@ Vector::Vector(float x, float y, float z)
 
 Vector::Vector(Vector* vector)
 {
-	X = vector->getX();
-	Y = vector->getY();
-	Z = vector->getZ();
+	X = vector->X;
+	Y = vector->Y;
+	Z = vector->Z;
 }
 
 Vector::Vector(const Vector& vector)
 {
-	X = vector.getX();
-	Y = vector.getY();
-	Z = vector.getZ();
+	X = vector.X;
+	Y = vector.Y;
+	Z = vector.Z;
 }
 
 Vector::~Vector(void)
@@ -97,21 +97,21 @@ void Vector::setVector(float x, float y, float z)
 	Z = z;
 }
 
-void Vector::setVector(Vector* vector)
+void Vector::setVector(const Vector& vector)
 {
-	X = vector->getX();
-	Y = vector->getY();
-	Z = vector->getZ();
+	X = vector.X;
+	Y = vector.Y;
+	Z = vector.Z;
 }
 
-Vector Vector::operator+(const Vector& addedVector) const
+Vector Vector::operator+(const Vector& vector) const
 {
-	return Vector(X + addedVector.getX(), Y + addedVector.getY(), Z + addedVector.getZ());
+	return Vector(X + vector.X, Y + vector.Y, Z + vector.Z);
 }
 
-Vector Vector::operator-(const Vector& subtractedVector) const
+Vector Vector::operator-(const Vector& vector) const
 {
-	return Vector(X - subtractedVector.getX(), Y - subtractedVector.getY(), Z - subtractedVector.getZ());
+	return Vector(X - vector.X, Y - vector.Y, Z - vector.Z);
 }
 
 Vector Vector::operator*(float k) const
@@ -131,39 +131,34 @@ float Vector::operator*(const Vector& vector) const
 
 Vector Vector::operator%(const Vector& vector) const
 {
-	float a[3], b[3];
-
-	this->getVector(a);
-	vector.getVector(b);
-
 	return Vector(
-		a[1]*b[2] - b[1]*a[2],
-		a[2]*b[0] - b[2]*a[0],
-		a[0]*b[1] - b[0]*a[1]
+		Y*vector.Z - vector.Y*Z,
+		Z*vector.X - vector.Z*X,
+		X*vector.Y - vector.X*Y
 	);
 }
 
 const Vector& Vector::operator=(const Vector& vector)
 {
-	X = vector.getX();
-	Y = vector.getY();
-	Z = vector.getZ();
+	X = vector.X;
+	Y = vector.Y;
+	Z = vector.Z;
 	return *this;
 }
 
 const Vector& Vector::operator+=(const Vector& vector)
 {
-	X += vector.getX();
-	Y += vector.getY();
-	Z += vector.getZ();
+	X += vector.X;
+	Y += vector.Y;
+	Z += vector.Z;
 	return *this;
 }
 
 const Vector& Vector::operator-=(const Vector& vector)
 {
-	X -= vector.getX();
-	Y -= vector.getY();
-	Z -= vector.getZ();
+	X -= vector.X;
+	Y -= vector.Y;
+	Z -= vector.Z;
 	return *this;
 }
 

@@ -134,6 +134,7 @@ Object::Object(const char* fileName) :
 			mass = 1;
 		}
 
+		inertiaMoment = mass * 30;
 
 		if (next == 'v') {
 			float temp[3];
@@ -358,6 +359,11 @@ float Object::getMass(void)
 	return mass;
 }
 
+float Object::getInertiaMoment(void)
+{
+	return inertiaMoment;
+}
+
 const Vector& Object::getVelocity(void) const
 {
 	return velocity;
@@ -366,6 +372,16 @@ const Vector& Object::getVelocity(void) const
 Vector Object::getOmega(void) const
 {
 	return omegaVector * omega;
+}
+
+Vector Object::getOmegaBaseVector(void)
+{
+	return omegaVector;
+}
+
+float Object::getOmegaMagnitude(void)
+{
+	return omega;
 }
 
 
@@ -518,7 +534,7 @@ void Object::moveAbsolute(float x, float y, float z)
 void Object::rotate(void)
 {
 	for (short i = 0  ;  i < vertexNum  ;  i++) {
-		Calculater::rotate(&vertex[i], gravityCenter, omegaVector, omega);
+		Calculater::rotateRad(&vertex[i], gravityCenter, omegaVector, omega);
 	}
 }
 
@@ -535,7 +551,7 @@ void Object::accelerate(Vector vector)
 void Object::applyTorque(Vector torque)
 {
 	omegaVector *= omega;
-	omegaVector += (torque / (mass / 1.0));
+	omegaVector += (torque / inertiaMoment);
 	omega = omegaVector.getMagnitude();
 	if (omega != 0)
 		omegaVector /= omega;

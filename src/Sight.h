@@ -8,7 +8,7 @@
 
 #define SPEED 0.15
 #define DOMAIN_MAX 29.85
-#define OMEGA 0.8
+#define OMEGA 0.01
 
 
 class Object;
@@ -32,7 +32,7 @@ private:
 	void resizeGL(int, int);
 	void paintGL(void);
 	void paintObject(Object*);
-	void paintCrashSpot(void);
+//	void paintCrashSpot(void);
 	void keyPressEvent(QKeyEvent*);
 	void keyReleaseEvent(QKeyEvent*);
 	void rotateSelf(Vector*, Vector, float, float);

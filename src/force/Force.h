@@ -3,13 +3,15 @@
 
 #include "Vector.h"
 
-class Object;
-
-//class which present force from obj2 to obj1.(force from obj1 to obj2 is presented as instance * -1)
-//tukaisute
 class Force : public Vector
 {
 public:
+	explicit Force(Vector);
+	Force(const Force&);
+	virtual ~Force(void);
+
+	virtual void exec(void) = 0;
+/*
 	Force(Vector, Vector, Object*, Object*);
 	Force(const Force&);
 	virtual ~Force(void);
@@ -29,7 +31,7 @@ private:
 	Vector forcePoint;
 	bool permanent;
 	bool setted;
-
+*/
 };
 
 #endif

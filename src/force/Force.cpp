@@ -1,9 +1,23 @@
 #include "Force.h"
+/*
 #include "Object.h"
 #include "ObjectStatus.h"
 #include "Calculater.h"
 #include <iostream>//to use NULL... I dont like this
+*/
 
+Force::Force(Vector vector) : Vector::Vector(vector)
+{
+}
+
+Force::Force(const Force& force) : Vector::Vector(dynamic_cast<const Vector&>(force))
+{
+}
+
+Force::~Force(void)
+{
+}
+/*
 Force::Force(Vector vector, Vector point, Object* obj1, Object* obj2) : Vector::Vector(vector), forcePoint(point), permanent(false), setted(true)
 {
 	this->obj1 = obj1;
@@ -102,3 +116,4 @@ Vector Force::getForcePoint(void)
 {
 	return forcePoint;
 }
+*/

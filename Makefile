@@ -15,7 +15,7 @@ CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT -fPIE $(DEFINES)
-INCPATH       = -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I. -I. -Isrc -Isrc/util -Isrc/event -Isrc/object -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtOpenGL -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore -Igenerated
+INCPATH       = -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I. -I. -Isrc -Isrc/util -Isrc/object -Isrc/event -Isrc/force -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtOpenGL -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore -Igenerated
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/opt/Qt/5.3/gcc_64 -Wl,-rpath,/opt/Qt/5.3/gcc_64/lib
 LIBS          = $(SUBLIBS) -lGLU -L/opt/Qt/5.3/gcc_64/lib -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
@@ -48,7 +48,6 @@ OBJECTS_DIR   = generated/
 SOURCES       = src/CrashKeeper.cpp \
 		src/CrashResult.cpp \
 		src/Field.cpp \
-		src/Force.cpp \
 		src/main.cpp \
 		src/Sight.cpp \
 		src/event/CrashEvent.cpp \
@@ -56,6 +55,9 @@ SOURCES       = src/CrashKeeper.cpp \
 		src/event/ForceEvent.cpp \
 		src/event/MoveEvent.cpp \
 		src/event/SightMoveEvent.cpp \
+		src/force/Force.cpp \
+		src/force/Gravity.cpp \
+		src/force/Impulse.cpp \
 		src/object/Gunner.cpp \
 		src/object/NumberBox.cpp \
 		src/object/Object.cpp \
@@ -67,7 +69,6 @@ SOURCES       = src/CrashKeeper.cpp \
 OBJECTS       = generated/CrashKeeper.o \
 		generated/CrashResult.o \
 		generated/Field.o \
-		generated/Force.o \
 		generated/main.o \
 		generated/Sight.o \
 		generated/CrashEvent.o \
@@ -75,6 +76,9 @@ OBJECTS       = generated/CrashKeeper.o \
 		generated/ForceEvent.o \
 		generated/MoveEvent.o \
 		generated/SightMoveEvent.o \
+		generated/Force.o \
+		generated/Gravity.o \
+		generated/Impulse.o \
 		generated/Gunner.o \
 		generated/NumberBox.o \
 		generated/Object.o \
@@ -194,7 +198,6 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		PrimeNumberGame.pro src/CrashKeeper.cpp \
 		src/CrashResult.cpp \
 		src/Field.cpp \
-		src/Force.cpp \
 		src/main.cpp \
 		src/Sight.cpp \
 		src/event/CrashEvent.cpp \
@@ -202,6 +205,9 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		src/event/ForceEvent.cpp \
 		src/event/MoveEvent.cpp \
 		src/event/SightMoveEvent.cpp \
+		src/force/Force.cpp \
+		src/force/Gravity.cpp \
+		src/force/Impulse.cpp \
 		src/object/Gunner.cpp \
 		src/object/NumberBox.cpp \
 		src/object/Object.cpp \
@@ -474,7 +480,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d generated/PrimeNumberGame1.0.0 || mkdir -p generated/PrimeNumberGame1.0.0
-	$(COPY_FILE) --parents $(DIST) generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.h src/CrashResult.h src/Field.h src/Force.h src/Sight.h src/event/CrashEvent.h src/event/Event.h src/event/ForceEvent.h src/event/MoveEvent.h src/event/SightMoveEvent.h src/object/Gunner.h src/object/NumberBox.h src/object/Object.h src/object/ObjectStatus.h src/object/Player.h src/util/Array.h src/util/Pair.h src/util/Calculater.h src/util/Vector.h generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.cpp src/CrashResult.cpp src/Field.cpp src/Force.cpp src/main.cpp src/Sight.cpp src/event/CrashEvent.cpp src/event/Event.cpp src/event/ForceEvent.cpp src/event/MoveEvent.cpp src/event/SightMoveEvent.cpp src/object/Gunner.cpp src/object/NumberBox.cpp src/object/Object.cpp src/object/ObjectStatus.cpp src/object/Player.cpp src/util/Calculater.cpp src/util/Vector.cpp generated/PrimeNumberGame1.0.0/ && (cd `dirname generated/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname generated/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r generated/PrimeNumberGame1.0.0
+	$(COPY_FILE) --parents $(DIST) generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.h src/CrashResult.h src/Field.h src/Sight.h src/event/CrashEvent.h src/event/Event.h src/event/ForceEvent.h src/event/MoveEvent.h src/event/SightMoveEvent.h src/force/Force.h src/force/Gravity.h src/force/Impulse.h src/object/Gunner.h src/object/NumberBox.h src/object/Object.h src/object/ObjectStatus.h src/object/Player.h src/util/Array.h src/util/Calculater.h src/util/Pair.h src/util/Vector.h generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.cpp src/CrashResult.cpp src/Field.cpp src/main.cpp src/Sight.cpp src/event/CrashEvent.cpp src/event/Event.cpp src/event/ForceEvent.cpp src/event/MoveEvent.cpp src/event/SightMoveEvent.cpp src/force/Force.cpp src/force/Gravity.cpp src/force/Impulse.cpp src/object/Gunner.cpp src/object/NumberBox.cpp src/object/Object.cpp src/object/ObjectStatus.cpp src/object/Player.cpp src/util/Calculater.cpp src/util/Vector.cpp generated/PrimeNumberGame1.0.0/ && (cd `dirname generated/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname generated/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r generated/PrimeNumberGame1.0.0
 
 
 clean:compiler_clean 
@@ -551,7 +557,7 @@ generated/moc_Field.cpp: /opt/Qt/5.3/gcc_64/include/QtCore/QObject \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
 		src/util/Array.h \
 		src/Field.h
-	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame/src -I/home/sanada/Documents/program/git/PrimeNumberGame/src/util -I/home/sanada/Documents/program/git/PrimeNumberGame/src/event -I/home/sanada/Documents/program/git/PrimeNumberGame/src/object -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtOpenGL -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore src/Field.h -o generated/moc_Field.cpp
+	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame/src -I/home/sanada/Documents/program/git/PrimeNumberGame/src/util -I/home/sanada/Documents/program/git/PrimeNumberGame/src/object -I/home/sanada/Documents/program/git/PrimeNumberGame/src/event -I/home/sanada/Documents/program/git/PrimeNumberGame/src/force -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtOpenGL -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore src/Field.h -o generated/moc_Field.cpp
 
 generated/moc_Sight.cpp: /opt/Qt/5.3/gcc_64/include/QtOpenGL/QGLWidget \
 		/opt/Qt/5.3/gcc_64/include/QtOpenGL/qgl.h \
@@ -669,7 +675,7 @@ generated/moc_Sight.cpp: /opt/Qt/5.3/gcc_64/include/QtOpenGL/QGLWidget \
 		src/util/Vector.h \
 		src/util/Array.h \
 		src/Sight.h
-	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame/src -I/home/sanada/Documents/program/git/PrimeNumberGame/src/util -I/home/sanada/Documents/program/git/PrimeNumberGame/src/event -I/home/sanada/Documents/program/git/PrimeNumberGame/src/object -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtOpenGL -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore src/Sight.h -o generated/moc_Sight.cpp
+	/opt/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/opt/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame -I/home/sanada/Documents/program/git/PrimeNumberGame/src -I/home/sanada/Documents/program/git/PrimeNumberGame/src/util -I/home/sanada/Documents/program/git/PrimeNumberGame/src/object -I/home/sanada/Documents/program/git/PrimeNumberGame/src/event -I/home/sanada/Documents/program/git/PrimeNumberGame/src/force -I/opt/Qt/5.3/gcc_64/include -I/opt/Qt/5.3/gcc_64/include/QtOpenGL -I/opt/Qt/5.3/gcc_64/include/QtWidgets -I/opt/Qt/5.3/gcc_64/include/QtGui -I/opt/Qt/5.3/gcc_64/include/QtCore src/Sight.h -o generated/moc_Sight.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -868,7 +874,9 @@ generated/Field.o: src/Field.cpp src/Field.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
 		src/util/Vector.h \
-		src/Force.h \
+		src/force/Force.h \
+		src/force/Impulse.h \
+		src/force/Gravity.h \
 		src/object/Object.h \
 		src/object/Player.h \
 		src/object/NumberBox.h \
@@ -878,18 +886,12 @@ generated/Field.o: src/Field.cpp src/Field.h \
 		src/event/SightMoveEvent.h \
 		src/event/CrashEvent.h \
 		src/event/ForceEvent.h \
+		src/CrashKeeper.h \
+		src/util/Pair.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QTimer \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qtimer.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qbasictimer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Field.o src/Field.cpp
-
-generated/Force.o: src/Force.cpp src/Force.h \
-		src/util/Vector.h \
-		src/object/Object.h \
-		src/object/ObjectStatus.h \
-		src/util/Array.h \
-		src/util/Calculater.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Force.o src/Force.cpp
 
 generated/main.o: src/main.cpp /opt/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
 		/opt/Qt/5.3/gcc_64/include/QtWidgets/qapplication.h \
@@ -1122,7 +1124,6 @@ generated/Sight.o: src/Sight.cpp src/Sight.h \
 		src/object/Gunner.h \
 		src/object/Player.h \
 		src/util/Calculater.h \
-		src/Force.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QKeyEvent
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Sight.o src/Sight.cpp
 
@@ -1181,7 +1182,8 @@ generated/CrashEvent.o: src/event/CrashEvent.cpp src/event/CrashEvent.h \
 		src/util/Array.h \
 		src/object/Object.h \
 		src/util/Vector.h \
-		src/Force.h \
+		src/force/Force.h \
+		src/force/Impulse.h \
 		src/object/NumberBox.h \
 		src/util/Calculater.h \
 		src/CrashResult.h \
@@ -1296,7 +1298,7 @@ generated/ForceEvent.o: src/event/ForceEvent.cpp src/event/ForceEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
 		src/util/Array.h \
-		src/Force.h \
+		src/force/Force.h \
 		src/util/Vector.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/ForceEvent.o src/event/ForceEvent.cpp
 
@@ -1546,6 +1548,25 @@ generated/SightMoveEvent.o: src/event/SightMoveEvent.cpp src/event/SightMoveEven
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
 		src/util/Vector.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/SightMoveEvent.o src/event/SightMoveEvent.cpp
+
+generated/Force.o: src/force/Force.cpp src/force/Force.h \
+		src/util/Vector.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Force.o src/force/Force.cpp
+
+generated/Gravity.o: src/force/Gravity.cpp src/force/Gravity.h \
+		src/force/Force.h \
+		src/util/Vector.h \
+		src/object/Object.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Gravity.o src/force/Gravity.cpp
+
+generated/Impulse.o: src/force/Impulse.cpp src/force/Impulse.h \
+		src/force/Force.h \
+		src/util/Vector.h \
+		src/object/Object.h \
+		src/object/ObjectStatus.h \
+		src/util/Array.h \
+		src/util/Calculater.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Impulse.o src/force/Impulse.cpp
 
 generated/Gunner.o: src/object/Gunner.cpp src/object/Gunner.h \
 		src/object/Player.h \

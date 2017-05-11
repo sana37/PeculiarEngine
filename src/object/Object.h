@@ -34,9 +34,12 @@ public:
 
 	float getRadius(void) const;
 	float getMass(void);
+	float getInertiaMoment(void);
 
 	const Vector& getVelocity(void) const;
 	Vector getOmega(void) const;
+	Vector getOmegaBaseVector(void);
+	float getOmegaMagnitude(void);
 
 	short getPolygonR(short) const;
 	short getPolygonG(short) const;
@@ -109,6 +112,7 @@ private:
 
 	float radius;
 	float mass;
+	float inertiaMoment;
 	bool* vertexEmbodyFlag;
 	bool* polygonEmbodyFlag;
 
