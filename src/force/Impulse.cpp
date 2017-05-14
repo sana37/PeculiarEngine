@@ -77,9 +77,9 @@ void Impulse::applyDecomposedForce(Object* obj)
 	Vector transForce = baseTrans * ((*this) * baseTrans);// / (baseTrans * baseTrans);// this is 1.0 !!
 	Vector rotateForce = (*this) - transForce;
 
-	Calculater::rotateDeg(&rotateForce, Vector(0, 0, 0), baseTrans, 90.0);
-	obj->applyTorque(rotateForce);
-//	obj->applyTorque(baseTrans % rotateForce * radius);
+//	Calculater::rotateDeg(&rotateForce, Vector(0, 0, 0), baseTrans, 90.0);
+//	obj->applyTorque(rotateForce);
+	obj->applyTorque(baseTrans % rotateForce * radius);
 }
 
 bool Impulse::applySmallForce(void)//Object* obj)
