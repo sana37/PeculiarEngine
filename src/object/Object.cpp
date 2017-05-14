@@ -160,6 +160,7 @@ Object::Object(const char* fileName) :
 		polygonNum = -1;
 		//radius = 10000;
 		mass = 1;
+		inertiaMoment = mass * 30;
 	}
 }
 
@@ -211,6 +212,7 @@ Object::Object(const Object& object)
 	omega = object.omega;
 	radius = object.radius;
 	mass = object.mass;
+	inertiaMoment = object.inertiaMoment;
 
 	isDominated = object.isDominated;
 	status = new ObjectStatus(*(object.status));
