@@ -31,10 +31,10 @@ Field::Field(void) : event(EVENT_NUM)
 	object.add(new Object("res/sky1"));
 	object.add(new Gunner("res/player", "res/bullet"));
 
-	object.add(new Object("res/object0"));
-	object.add(new Object("res/object1"));
+//	object.add(new Object("res/object0"));
+//	object.add(new Object("res/object1"));
 	object.add(new Object("res/object2"));
-	object.add(new Object("res/object0"));
+//	object.add(new Object("res/object0"));
 
 	sight = new Sight(&object, 2, &force);
 
@@ -45,12 +45,13 @@ Field::Field(void) : event(EVENT_NUM)
 	event.add(new SightMoveEvent());
 	event.add(new CrashEvent());
 
-/*
-	for (short i = 3  ;  i < 7  ;  i++) {
+
+//	for (short i = 3  ;  i < 7  ;  i++) {
+	for (short i = 3  ;  i < 4  ;  i++) {
 		Force* gravity = new Gravity(object[i]);
 		addForce(gravity);
 	}
-*/
+
 	time->start(TIME_UNIT);
 	autoGeneration->start(5000);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
@@ -64,7 +65,7 @@ Field::Field(void) : event(EVENT_NUM)
 	for (short i = 0  ;  i < 10  ;  i++)
 		object[3]->rotate();
 	object[3]->setOmega(0, 0, 0);
-
+/*
 	object[4]->moveAbsolute(6, 16, 6);
 //	object[4]->setVelocity(-0.03, 0.03, 0.08);
 	object[4]->setVelocity(0, 0, 0);
@@ -79,7 +80,7 @@ Field::Field(void) : event(EVENT_NUM)
 	object[6]->moveAbsolute(0, 15, 0);
 //	object[6]->setVelocity(0.04, 0.1, 0);
 	object[6]->setVelocity(0, 0, 0);
-
+*/
 	deadObjectNum = 0;
 	autoGenerationIndex = 0;
 }

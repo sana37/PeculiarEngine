@@ -55,6 +55,10 @@ Impulse::~Impulse(void)
 
 void Impulse::exec(void)
 {
+	if (applySmallForce())
+		std::cerr << "true\n\n";
+	else
+		std::cerr << "false\n\n";
 
 	applyDecomposedForce(obj1);
 
@@ -104,7 +108,7 @@ bool Impulse::applySmallForce(void)//Object* obj)
 	float dtheta1;
 	float dtheta2;
 
-	int timeDevide = 1;
+	int timeDevide = 2;
 	float timeLapse = 0;
 	float k1 = K1;								//k1 is coefficient of force.  F = k1 / (x^2)
 	float k2 = 1 / m1 + 1 / m2;					//(1 / k2) is used as mass by relative velocity
@@ -114,6 +118,7 @@ bool Impulse::applySmallForce(void)//Object* obj)
 	float k6 = k4 / obj2->getInertiaMoment();
 
 	while (1) {
+		std::cerr << dist << ", " << timeLapse << "\n";
 		dimpulse = k1 / (dist * dist * timeDevide);	//impulse = F * dt (dt = 1 / timeDevide)
 		impulseSum += dimpulse;
 
@@ -126,19 +131,20 @@ bool Impulse::applySmallForce(void)//Object* obj)
 //		theta1 += dtheta1;
 //		theta2 += dtheta2;
 
+		std::cerr << rvg / timeDevide << " : " << -dtheta1 * k3 << " : " << -dtheta2 * k4 << "\n";
 		dx = (rvg / timeDevide) - (dtheta1 * k3) - (dtheta2 * k4);
 
 		if (dx > 0)
 			return true;
 
 		dist += dx;
-		timeLapse += (1 / timeDevide);
+		timeLapse += (1.0 / timeDevide);
 
 		if (timeLapse > 0.99)
 			return false;
 
 		if (dist <= 0.0) {							//retry  back status
-			timeLapse -= (1 / timeDevide);
+			timeLapse -= (1.0 / timeDevide);
 			dist -= dx;
 //			theta1 -= dtheta1;
 //			theta2 -= dtheta2;

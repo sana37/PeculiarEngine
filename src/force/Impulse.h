@@ -1,8 +1,8 @@
 #ifndef IMPULSE_H
 #define IMPULSE_H
 
-#define LEAST_DIST	0.001
-#define K1			1
+#define LEAST_DIST	0.05
+#define K1			0.000001
 
 #include "Force.h"
 
