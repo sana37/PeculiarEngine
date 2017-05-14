@@ -2,7 +2,7 @@
 #include "Object.h"
 #include "Gunner.h"
 #include "Calculater.h"
-#include "Force.h"
+//#include "Force.h"
 #include <QKeyEvent>
 #include <iostream>
 
@@ -173,7 +173,7 @@ void Sight::paintGL(void)
 	for (short i = 0  ;  i < object_p->length()  ;  i++) {
 		paintObject((*object_p)[i]);
 	}
-	paintCrashSpot();
+//	paintCrashSpot();
 
 	glBegin(GL_LINES);
 	glColor3d(0.8, 0, 0);
@@ -214,7 +214,7 @@ void Sight::paintObject(Object* modelObject)
 	}
 	glEnd();
 }
-
+/*
 void Sight::paintCrashSpot(void)
 {
 	glPointSize(5.0);
@@ -230,7 +230,7 @@ void Sight::paintCrashSpot(void)
 
 	glEnd();
 }
-
+*/
 void Sight::keyPressEvent(QKeyEvent* keyboard)
 {
 	int ch;

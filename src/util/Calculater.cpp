@@ -30,9 +30,9 @@ bool Calculater::solveCubicEquation(const Vector& A, const Vector& B, const Vect
 	return true;
 }
 
-void Calculater::rotateRad(Vector* vertex_p, const Vector& offset, const Vector& shaft, float deg)
+void Calculater::rotateRad(Vector* vertex_p, const Vector& offset, const Vector& shaft, float rad)
 {
-	if (deg == 0)
+	if (rad == 0)
 		return;
 
 	*vertex_p -= offset;
@@ -46,30 +46,29 @@ void Calculater::rotateRad(Vector* vertex_p, const Vector& offset, const Vector&
 	float vz = vertex_p->getZ();
 //	float r = shaft.getMagnitude();//sqrt(sx*sx + sy*sy + sz*sz);
 
-//	deg *= PI / 180.0;
 /*
 	sx /= r;
 	sy /= r;
 	sz /= r;
 */
-	temp[0] = matrix1(sx, deg)*vx + matrix2(sx, sy, -sz, deg)*vy + matrix2(sx, sz, sy, deg)*vz;
-	temp[1] = matrix2(sx, sy, sz, deg)*vx + matrix1(sy, deg)*vy + matrix2(sy, sz, -sx, deg)*vz;
-	temp[2] = matrix2(sx, sz, -sy, deg)*vx + matrix2(sy, sz, sx, deg)*vy + matrix1(sz, deg)*vz;
+	temp[0] = matrix1(sx, rad)*vx + matrix2(sx, sy, -sz, rad)*vy + matrix2(sx, sz, sy, rad)*vz;
+	temp[1] = matrix2(sx, sy, sz, rad)*vx + matrix1(sy, rad)*vy + matrix2(sy, sz, -sx, rad)*vz;
+	temp[2] = matrix2(sx, sz, -sy, rad)*vx + matrix2(sy, sz, sx, rad)*vy + matrix1(sz, rad)*vz;
 
 	vertex_p->setVector(temp);
 	*vertex_p += offset;
 }
 
-float Calculater::matrix1(float m, float deg)
+float Calculater::matrix1(float m, float rad)
 {
-	return m*m + (1 - m*m)*cos(deg);
+	return m*m + (1 - m*m)*cos(rad);
 }
 
-float Calculater::matrix2(float l, float m, float n, float deg)
+float Calculater::matrix2(float l, float m, float n, float rad)
 {
-	return l*m*(1 - cos(deg)) + n*sin(deg);
+	return l*m*(1 - cos(rad)) + n*sin(rad);
 }
-
+/*
 bool Calculater::calculate1(const Vector& A, const Vector& B, Vector* ansVector)
 {
 	short s = 0;
@@ -138,3 +137,4 @@ bool Calculater::calculate1(const Vector& A, const Vector& B, Vector* ansVector)
 	ansVector->setVector(ans);
 	return true;
 }
+*/

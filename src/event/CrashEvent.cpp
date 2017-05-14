@@ -1,6 +1,7 @@
 #include "CrashEvent.h"
 #include "Object.h"
 #include "Force.h"
+#include "Impulse.h"
 #include "NumberBox.h"
 #include "Calculater.h"
 #include "CrashResult.h"
@@ -266,41 +267,7 @@ void Field::CrashEvent::reflectLineAndLine(Object* obj1, Object* obj2, CrashResu
 
 void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& p, const Vector& q, CrashResult* result)
 {
-	Vector n;
-
-	if (Calculater::calculate1(p, q, &n) == false) {
-		if (Calculater::calculate1(q, p, &n) == false) {
-			n.setVector(2, 2, 2);
-
-			if (p.getX() == 0  &&  p.getY() == 0)
-				n.setZ(0);
-			if (p.getX() == 0  &&  p.getZ() == 0)
-				n.setY(0);
-			if (p.getY() == 0  &&  p.getZ() == 0)
-				n.setX(0);
-
-			if (q.getX() == 0  &&  q.getY() == 0)
-				n.setZ(0);
-			if (q.getX() == 0  &&  q.getZ() == 0)
-				n.setY(0);
-			if (q.getY() == 0  &&  q.getZ() == 0)
-				n.setX(0);
-
-			if (n.getX() == 0  &&  n.getY() == 0)
-				n.setZ(1);
-			if (n.getX() == 0  &&  n.getZ() == 0)
-				n.setY(1);
-			if (n.getY() == 0  &&  n.getZ() == 0)
-				n.setX(1);
-
-			if (n.getX() + n.getY() + n.getZ() >= 1.9) {
-				std::cerr << "reflection failed...   code:" << n.getX() + n.getY() + n.getZ() << '\n';
-				return;
-			} else {
-//				std::cerr << "reflection one chance\n";
-			}
-		}
-	}
+	Vector n = p % q;
 /*		migitekei or hidaritekei ??  you must confirm it
 	Vector degVelocity1 = obj1->getOmega() % (result->getCrashSpot() - obj1->getGravityCenter());
 	Vector degVelocity2 = obj2->getOmega() % (result->getCrashSpot() - obj2->getGravityCenter());
@@ -325,17 +292,19 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 
 	if (Calculater::solveCubicEquation(p, q, n, v, &solution)) {
 //		Vector vector = n * solution.getZ() * (1 + e) * (m1 * m2 / (m1 + m2));
-		Vector vector = n * solution.getZ();
+		Vector rv = n * solution.getZ();
 
 //		if (vector.getMagnitude() > NEAR_ZERO) {
 			float m1 = obj1->getMass();
 			float m2 = obj2->getMass();
 			float e = 0.7;
 
-			vector *= (1 + e) * (m1 * m2 / (m1 + m2));
-			Force* force = new Force(vector, result->getCrashSpot(), obj2, obj1);
-			field->addForce(force);
-/*		} else {
+//			vector *= (1 + e) * (m1 * m2 / (m1 + m2));
+			rv *= -(1 + e) * (m1 * m2 / (m1 + m2));
+			Force* impulse = new Impulse(rv, result->getCrashSpot(), obj1, obj2);
+			field->addForce(impulse);
+/*
+		} else {
 			Force* force = new Force(vector, result->getCrashSpot(), obj2, obj1);//vector's size is not depended
 			force->set
 			field->addForce(force);

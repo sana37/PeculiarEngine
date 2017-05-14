@@ -2,6 +2,8 @@
 
 #include "Sight.h"
 #include "Force.h"
+#include "Impulse.h"
+#include "Gravity.h"
 
 #include "Object.h"
 #include "Player.h"
@@ -45,14 +47,8 @@ Field::Field(void) : event(EVENT_NUM)
 
 /*
 	for (short i = 3  ;  i < 7  ;  i++) {
-		Force* force = new Force(
-			Vector(0, -GRAVITY, 0) * object[i]->getMass(),
-			object[i]->getGravityCenter(),
-			object[i],
-			NULL
-		);
-		force->setPermanent(true);
-		addForce(force);
+		Force* gravity = new Gravity(object[i]);
+		addForce(gravity);
 	}
 */
 	time->start(TIME_UNIT);

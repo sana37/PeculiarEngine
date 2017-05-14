@@ -21,7 +21,7 @@ public:
 	void setZ(float);
 	void setVector(float*);
 	void setVector(float, float, float);
-	void setVector(Vector*);
+	void setVector(const Vector&);
 
 	Vector operator+(const Vector&) const;
 	Vector operator-(const Vector&) const;

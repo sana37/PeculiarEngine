@@ -32,7 +32,7 @@ private:
 	void resizeGL(int, int);
 	void paintGL(void);
 	void paintObject(Object*);
-	void paintCrashSpot(void);
+//	void paintCrashSpot(void);
 	void keyPressEvent(QKeyEvent*);
 	void keyReleaseEvent(QKeyEvent*);
 	void rotateSelf(Vector*, Vector, float, float);
