@@ -411,6 +411,6 @@ void Sight::rotateSelf(Vector* vertex_p, Vector basePoint, float degYaw, float d
 {
 	Vector shaft(0, 1, 0);
 
-	Calculater::rotate(vertex_p, basePoint, shaft, degYaw);
-	Calculater::rotate(vertex_p, basePoint, lookAtN, degPitch);
+	Calculater::rotateRad(vertex_p, basePoint, shaft, degYaw);
+	Calculater::rotateRad(vertex_p, basePoint, lookAtN, degPitch);
 }

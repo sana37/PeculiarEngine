@@ -69,7 +69,8 @@ void Force::applyDecomposedForce(Object* obj)
 	Vector transForce = baseTrans * ((*this) * baseTrans);// / (baseTrans * baseTrans);// this is 1.0 !!
 	Vector rotateForce = (*this) - transForce;
 
-	Calculater::rotate(&rotateForce, Vector(0, 0, 0), baseTrans, 90.0);
+//	Calculater::rotate(&rotateForce, Vector(0, 0, 0), baseTrans, 90.0);
+	Calculater::rotateRad(&rotateForce, Vector(0, 0, 0), baseTrans, 3.141592 / 2);
 	obj->applyTorque(rotateForce);
 }
 

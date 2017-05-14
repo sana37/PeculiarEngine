@@ -36,7 +36,7 @@ public:
 	float getMass(void);
 
 	const Vector& getVelocity(void) const;
-	Vector getOmega(void) const;
+	Vector getOmega(void) const;			//!!
 
 	short getPolygonR(short) const;
 	short getPolygonG(short) const;
@@ -56,8 +56,8 @@ public:
 	void setGravityCenter(float, float, float);
 	void setVelocity(const Vector&);
 	void setVelocity(float, float, float);
-	void setOmega(const Vector&);
-	void setOmega(float, float, float);
+	void setOmega(const Vector&);			//!!
+	void setOmega(float, float, float);		//!!
 
 	void setDomination(bool);
 	bool update(void);
@@ -70,11 +70,11 @@ public:
 	void moveAbsolute(const Vector&);
 	void moveAbsolute(float, float, float);
 
-	void rotate(void);
+	void rotate(void);						//!!
 
 	void push(Vector);
 	void accelerate(Vector);
-	void applyTorque(Vector);
+	void applyTorque(Vector);				//!!
 
 	void enblack(short);
 

@@ -518,7 +518,7 @@ void Object::moveAbsolute(float x, float y, float z)
 void Object::rotate(void)
 {
 	for (short i = 0  ;  i < vertexNum  ;  i++) {
-		Calculater::rotate(&vertex[i], gravityCenter, omegaVector, omega);
+		Calculater::rotateRad(&vertex[i], gravityCenter, omegaVector, omega);
 	}
 }
 
@@ -535,7 +535,7 @@ void Object::accelerate(Vector vector)
 void Object::applyTorque(Vector torque)
 {
 	omegaVector *= omega;
-	omegaVector += (torque / (mass / 1.0));
+	omegaVector += (torque / (mass * 30));
 	omega = omegaVector.getMagnitude();
 	if (omega != 0)
 		omegaVector /= omega;

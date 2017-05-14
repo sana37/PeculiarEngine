@@ -30,7 +30,7 @@ bool Calculater::solveCubicEquation(const Vector& A, const Vector& B, const Vect
 	return true;
 }
 
-void Calculater::rotate(Vector* vertex_p, const Vector& offset, const Vector& shaft, float deg)
+void Calculater::rotateRad(Vector* vertex_p, const Vector& offset, const Vector& shaft, float deg)
 {
 	if (deg == 0)
 		return;
@@ -46,7 +46,7 @@ void Calculater::rotate(Vector* vertex_p, const Vector& offset, const Vector& sh
 	float vz = vertex_p->getZ();
 //	float r = shaft.getMagnitude();//sqrt(sx*sx + sy*sy + sz*sz);
 
-	deg *= PI / 180.0;
+//	deg *= PI / 180.0;
 /*
 	sx /= r;
 	sy /= r;

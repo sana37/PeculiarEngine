@@ -6,9 +6,9 @@
 #include "Vector.h"
 #include "Array.h"
 
-#define SPEED 0.15
-#define DOMAIN_MAX 29.85
-#define OMEGA 0.8
+#define SPEED 		0.15
+#define DOMAIN_MAX 	29.85
+#define OMEGA 		0.01
 
 
 class Object;

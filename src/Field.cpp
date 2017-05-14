@@ -43,7 +43,7 @@ Field::Field(void) : event(EVENT_NUM)
 	event.add(new SightMoveEvent());
 	event.add(new CrashEvent());
 
-//
+/*
 	for (short i = 3  ;  i < 7  ;  i++) {
 		Force* force = new Force(
 			Vector(0, -GRAVITY, 0) * object[i]->getMass(),
@@ -54,7 +54,7 @@ Field::Field(void) : event(EVENT_NUM)
 		force->setPermanent(true);
 		addForce(force);
 	}
-//
+*/
 	time->start(TIME_UNIT);
 	autoGeneration->start(5000);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
