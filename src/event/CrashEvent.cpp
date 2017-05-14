@@ -309,13 +309,15 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 	Vector radiusVector1 = obj1->getGravityCenter() - result->getCrashSpot();
 	Vector omega1 = obj1->getOmega();
 	float radius1 = radiusVector1.getMagnitude();
-	Calculater::rotate(&omega1, Vector(0, 0, 0), radiusVector1 / radius1, 90.0);
+	Calculater::rotateRad(&omega1, Vector(0, 0, 0), radiusVector1 / radius1, PI / 2.0);
+//	Calculater::rotate(&omega1, Vector(0, 0, 0), radiusVector1 / radius1, 90.0);
 	omega1 *= radius1;
 
 	Vector radiusVector2 = obj2->getGravityCenter() - result->getCrashSpot();
 	Vector omega2 = obj2->getOmega();
 	float radius2 = radiusVector2.getMagnitude();
-	Calculater::rotate(&omega2, Vector(0, 0, 0), radiusVector2 / radius2, 90.0);
+	Calculater::rotateRad(&omega2, Vector(0, 0, 0), radiusVector2 / radius2, PI / 2.0);
+//	Calculater::rotate(&omega2, Vector(0, 0, 0), radiusVector2 / radius2, 90.0);
 	omega2 *= radius2;
 */
 //	float radius2 = (result->getCrashSpot() - obj2->getGravityCenter()).getMagnitude();

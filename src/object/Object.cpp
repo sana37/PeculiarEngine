@@ -134,6 +134,7 @@ Object::Object(const char* fileName) :
 			mass = 1;
 		}
 
+		inertiaMoment = mass * 30;
 
 		if (next == 'v') {
 			float temp[3];
@@ -358,6 +359,11 @@ float Object::getMass(void)
 	return mass;
 }
 
+float Object::getInertiaMoment(void)
+{
+	return inertiaMoment;
+}
+
 const Vector& Object::getVelocity(void) const
 {
 	return velocity;
@@ -535,7 +541,7 @@ void Object::accelerate(Vector vector)
 void Object::applyTorque(Vector torque)
 {
 	omegaVector *= omega;
-	omegaVector += (torque / (mass * 30));
+	omegaVector += (torque / inertiaMoment);
 	omega = omegaVector.getMagnitude();
 	if (omega != 0)
 		omegaVector /= omega;
