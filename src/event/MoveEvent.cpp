@@ -12,9 +12,6 @@ void Field::MoveEvent::exec(void)
 {
 	bool signal;
 
-	field->object[0]->stop();
-	field->object[1]->stop();
-
 	for (short i = 0  ;  i < field->object.length()  ;  i++) {
 		switch (field->object[i]->whichClass()) {
 			case 'G' : {

@@ -49,6 +49,7 @@ public:
 	ObjectStatus* getStatus(void);
 
 	bool isActive(void);
+	bool isFixed(void);
 	bool isVertexEmbody(short) const;
 	bool isPolygonEmbody(short) const;
 
@@ -62,7 +63,10 @@ public:
 	void setOmega(const Vector&);
 	void setOmega(float, float, float);
 
+	void setInertiaMoment(float);
 	void setDomination(bool);
+	void fix(void);
+	void release(void);
 	bool update(void);
 
 	void run(void);
@@ -113,6 +117,7 @@ private:
 	float radius;
 	float mass;
 	float inertiaMoment;
+	bool fixed;
 	bool* vertexEmbodyFlag;
 	bool* polygonEmbodyFlag;
 

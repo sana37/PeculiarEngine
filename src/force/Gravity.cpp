@@ -21,3 +21,8 @@ void Gravity::exec(void)
 {
 	obj->push(*this);
 }
+
+bool Gravity::isDone(void)
+{
+	return false;
+}

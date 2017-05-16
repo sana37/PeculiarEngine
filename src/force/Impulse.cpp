@@ -24,7 +24,7 @@ Impulse::Impulse(Vector rv, Vector point, Object* obj1, Object* obj2) :
 ///
 }
 */
-Impulse::Impulse(const Vector& vector, const Vector& point, Object* obj1, Object* obj2) : Force::Force(vector), forcePoint(point)
+Impulse::Impulse(const Vector& vector, const Vector& point, Object* obj1, Object* obj2) : Force::Force(vector), forcePoint(point), done(true)
 {
 	this->obj1 = obj1;
 	this->obj2 = obj2;
@@ -35,10 +35,10 @@ Impulse::Impulse(const Vector& vector, const Vector& point, Object* obj1, Object
 	float m1 = obj1->getMass();
 	float m2 = obj2->getMass();
 	float e = 0.7;
-	rv0 = vector / ((1 + e) * (m1 * m2 / (m1 + m2)) * -1.0);
+	rv0 = vector / ((1 + e) * (m1 * m2 / (m1 + m2)) * -1.0);//should be in exec() because relative velocity may have changed
 }
 
-Impulse::Impulse(const Impulse& impulse) : Force::Force(dynamic_cast<const Force&>(impulse)), forcePoint(impulse.forcePoint)
+Impulse::Impulse(const Impulse& impulse) : Force::Force(dynamic_cast<const Force&>(impulse)), forcePoint(impulse.forcePoint), done(impulse.done)
 {
 	this->obj1 = impulse.obj1;
 	this->obj2 = impulse.obj2;
@@ -55,38 +55,38 @@ Impulse::~Impulse(void)
 
 void Impulse::exec(void)
 {
-	if (applySmallForce())
+	if (applySmallForce()) {
 		std::cerr << "true\n\n";
-	else
+		done = true;
+	} else {
 		std::cerr << "false\n\n";
-
-	applyDecomposedForce(obj1);
-
-	(*this) *= -1.0;
-
-	applyDecomposedForce(obj2);
-
-	(*this) *= -1.0;
-
+		done = false;
+	}
 }
 
-void Impulse::applyDecomposedForce(Object* obj)
+bool Impulse::isDone(void)
 {
-	obj->push(*this);
+	return done;
+}
+
+void Impulse::applyDecomposedForce(Object* obj, const Vector& force)
+{
+	if (obj->isFixed())
+		return;
+
+	obj->push(force);
 
 	Vector baseTrans = (forcePoint - obj->getGravityCenter());
 	float radius = baseTrans.getMagnitude();
 	baseTrans /= radius;
 
-	Vector transForce = baseTrans * ((*this) * baseTrans);// / (baseTrans * baseTrans);// this is 1.0 !!
-	Vector rotateForce = (*this) - transForce;
+	Vector transForce = baseTrans * (force * baseTrans);
+	Vector rotateForce = force - transForce;
 
-//	Calculater::rotateDeg(&rotateForce, Vector(0, 0, 0), baseTrans, 90.0);
-//	obj->applyTorque(rotateForce);
 	obj->applyTorque(baseTrans % rotateForce * radius);
 }
 
-bool Impulse::applySmallForce(void)//Object* obj)
+bool Impulse::applySmallForce(void)
 {
 	float m1 = obj1->getMass();
 	float m2 = obj2->getMass();
@@ -117,6 +117,11 @@ bool Impulse::applySmallForce(void)//Object* obj)
 	float k5 = k3 / obj1->getInertiaMoment();	//k5, k6  =  k3, k4 / I  =  r * cos0 / I
 	float k6 = k4 / obj2->getInertiaMoment();
 
+	if (obj1->isFixed())
+		omega1 = k3 = k5 = 0;
+	if (obj2->isFixed())
+		omega2 = k4 = k6 = 0;
+
 	while (1) {
 		std::cerr << dist << ", " << timeLapse << "\n";
 		dimpulse = k1 / (dist * dist * timeDevide);	//impulse = F * dt (dt = 1 / timeDevide)
@@ -134,14 +139,25 @@ bool Impulse::applySmallForce(void)//Object* obj)
 		std::cerr << rvg / timeDevide << " : " << -dtheta1 * k3 << " : " << -dtheta2 * k4 << "\n";
 		dx = (rvg / timeDevide) - (dtheta1 * k3) - (dtheta2 * k4);
 
-		if (dx > 0)
+		if (dx > 0) {
+			applyDecomposedForce(obj1, *this);
+			applyDecomposedForce(obj2, *this * -1.0);
 			return true;
+		}
 
 		dist += dx;
 		timeLapse += (1.0 / timeDevide);
 
-		if (timeLapse > 0.99)
+		if (timeLapse > 0.99) {
+			Vector smallForce = (*this) * (impulseSum / impulseMax);//gravity and air resistance should be considered
+
+			applyDecomposedForce(obj1, smallForce);
+			applyDecomposedForce(obj2, smallForce * -1.0);
+
+			(*this) -= smallForce;
+
 			return false;
+		}
 
 		if (dist <= 0.0) {							//retry  back status
 			timeLapse -= (1.0 / timeDevide);
@@ -156,6 +172,8 @@ bool Impulse::applySmallForce(void)//Object* obj)
 		}
 
 		if (impulseSum > impulseMax) {
+			applyDecomposedForce(obj1, *this);
+			applyDecomposedForce(obj2, *this * -1.0);
 			std::cerr << "impulse error or rubbed\n";
 			return true;
 		}

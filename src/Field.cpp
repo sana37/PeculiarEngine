@@ -31,9 +31,9 @@ Field::Field(void) : event(EVENT_NUM)
 	object.add(new Object("res/sky1"));
 	object.add(new Gunner("res/player", "res/bullet"));
 
+	object.add(new Object("res/object2"));
 //	object.add(new Object("res/object0"));
 //	object.add(new Object("res/object1"));
-	object.add(new Object("res/object2"));
 //	object.add(new Object("res/object0"));
 
 	sight = new Sight(&object, 2, &force);
@@ -45,18 +45,19 @@ Field::Field(void) : event(EVENT_NUM)
 	event.add(new SightMoveEvent());
 	event.add(new CrashEvent());
 
-
+///
 //	for (short i = 3  ;  i < 7  ;  i++) {
 	for (short i = 3  ;  i < 4  ;  i++) {
 		Force* gravity = new Gravity(object[i]);
 		addForce(gravity);
 	}
+///
 
-	time->start(TIME_UNIT);
-	autoGeneration->start(5000);
-	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
-	QObject::connect(sight, SIGNAL(timeCall()), this, SLOT(timeControl()));
-//	QObject::connect(autoGeneration, SIGNAL(timeout()), this, SLOT(autoGenerate()));
+	object[0]->fix();
+	object[1]->fix();
+
+//	object[3]->setInertiaMoment(object[3]->getMass() * 2 / 5);
+	object[3]->setInertiaMoment(object[3]->getMass() * 40 / 5);
 
 	object[3]->moveAbsolute(8, 12, 0);
 //	object[3]->setVelocity(0.03, 0.05, 0);
@@ -81,6 +82,13 @@ Field::Field(void) : event(EVENT_NUM)
 //	object[6]->setVelocity(0.04, 0.1, 0);
 	object[6]->setVelocity(0, 0, 0);
 */
+
+	time->start(TIME_UNIT);
+	autoGeneration->start(5000);
+	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
+	QObject::connect(sight, SIGNAL(timeCall()), this, SLOT(timeControl()));
+//	QObject::connect(autoGeneration, SIGNAL(timeout()), this, SLOT(autoGenerate()));
+
 	deadObjectNum = 0;
 	autoGenerationIndex = 0;
 }

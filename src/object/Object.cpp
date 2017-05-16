@@ -8,7 +8,8 @@ Object::Object(const char* fileName) :
 	velocity(Vector()),
 	omegaVector(Vector(0, 1, 0)),
 	omega(0),
-	gravityCenter(Vector())
+	gravityCenter(Vector()),
+	fixed(false)
 {
 	radius = 0;
 	isDominated = false;
@@ -214,6 +215,7 @@ Object::Object(const Object& object)
 	mass = object.mass;
 	inertiaMoment = object.inertiaMoment;
 
+	fixed = object.fixed;
 	isDominated = object.isDominated;
 	status = new ObjectStatus(*(object.status));
 }
@@ -417,6 +419,11 @@ bool Object::isActive(void)
 	return (velocity.getMagnitude() != 0);
 }
 
+bool Object::isFixed(void)
+{
+	return fixed;
+}
+
 bool Object::isVertexEmbody(short vertexIndex) const
 {
 	return vertexEmbodyFlag[vertexIndex];
@@ -473,9 +480,25 @@ void Object::setOmega(float x, float y, float z)
 	setOmega(vector);
 }
 
+void Object::setInertiaMoment(float inertiaMoment)
+{
+	this->inertiaMoment = inertiaMoment;
+}
+
 void Object::setDomination(bool originalIsDominated)
 {
 	isDominated = originalIsDominated;
+}
+
+void Object::fix(void)
+{
+	fixed = true;
+	stop();
+}
+
+void Object::release(void)
+{
+	fixed = false;
 }
 
 bool Object::update(void)

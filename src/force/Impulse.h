@@ -19,7 +19,9 @@ public:
 	virtual ~Impulse(void);
 
 	void exec(void);
-	void applyDecomposedForce(Object*);
+	bool isDone(void);
+
+	void applyDecomposedForce(Object*, const Vector&);
 	bool applySmallForce(void);
 	float kakikukeko(const Vector&, Object*);
 	float aiueo(const Vector&, Object*);
@@ -30,6 +32,7 @@ private:
 	Object* obj2;
 	Vector rv0;
 	Vector forcePoint;
+	bool done;
 };
 
 #endif
