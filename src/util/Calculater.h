@@ -1,9 +1,6 @@
 #ifndef CALCULATER_H
 #define CALCULATER_H
 
-#define PI 3.141592
-
-
 class Vector;
 
 class Calculater

@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Player.h"
 #include "Gunner.h"
+#include "Define.h"
 
 Field::MoveEvent::MoveEvent(void) : Field::Event::Event()
 {

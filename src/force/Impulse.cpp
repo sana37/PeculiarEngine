@@ -2,28 +2,10 @@
 #include "Object.h"
 #include "ObjectStatus.h"
 #include "Calculater.h"
+#include "Define.h"
 #include <iostream>//to use NULL... I dont like this
-/*
-Impulse::Impulse(Vector rv, Vector point, Object* obj1, Object* obj2) :
-	Force::Force(Vector(0, 0, 0)), //fake
-	rv0(rv),
-	forcePoint(point)
-{
-	this->obj1 = obj1;
-	this->obj2 = obj2;
 
-	obj1->getStatus()->attach(obj2);
-	obj2->getStatus()->attach(obj1);
 
-//	setup();
-///
-	float m1 = obj1->getMass();
-	float m2 = obj2->getMass();
-	float e = 0.7;
-	this->setVector(rv0 * (1 + e) * (m1 * m2 / (m1 + m2)) * -1.0);
-///
-}
-*/
 Impulse::Impulse(const Vector& vector, const Vector& point, Object* obj1, Object* obj2) : Force::Force(vector), forcePoint(point), done(true)
 {
 	this->obj1 = obj1;
@@ -103,8 +85,6 @@ bool Impulse::applySmallForce(void)
 
 	float omega1 = aiueo(*this, obj1);			//if omega > 0, get near. otherwise, get remote
 	float omega2 = aiueo(*this * -1.0, obj2);
-//	float theta1 = 0;
-//	float theta2 = 0;
 	float dtheta1;
 	float dtheta2;
 
@@ -117,10 +97,14 @@ bool Impulse::applySmallForce(void)
 	float k5 = k3 / obj1->getInertiaMoment();	//k5, k6  =  k3, k4 / I  =  r * cos0 / I
 	float k6 = k4 / obj2->getInertiaMoment();
 
-	if (obj1->isFixed())
+	if (obj1->isFixed()) {
 		omega1 = k3 = k5 = 0;
-	if (obj2->isFixed())
+//		Vector gravity(0, -GRAVITY, 0);
+//		gravity * obj2->getVelocity();
+	}
+	if (obj2->isFixed()) {
 		omega2 = k4 = k6 = 0;
+	}
 
 	while (1) {
 		std::cerr << dist << ", " << timeLapse << "\n";
@@ -128,13 +112,12 @@ bool Impulse::applySmallForce(void)
 		impulseSum += dimpulse;
 
 		rvg += dimpulse * k2;
+//		rvg += 
 		omega1 -= dimpulse * k5;					//force applies for objects to get remote. so minus.
 		omega2 -= dimpulse * k6;					//omega(t2) - omega(t1)  =  impulse * cos0 * r / I  =  Fcos0 * r * dt / I
 
 		dtheta1 = omega1 / timeDevide;
 		dtheta2 = omega2 / timeDevide;
-//		theta1 += dtheta1;
-//		theta2 += dtheta2;
 
 		std::cerr << rvg / timeDevide << " : " << -dtheta1 * k3 << " : " << -dtheta2 * k4 << "\n";
 		dx = (rvg / timeDevide) - (dtheta1 * k3) - (dtheta2 * k4);
@@ -162,8 +145,6 @@ bool Impulse::applySmallForce(void)
 		if (dist <= 0.0) {							//retry  back status
 			timeLapse -= (1.0 / timeDevide);
 			dist -= dx;
-//			theta1 -= dtheta1;
-//			theta2 -= dtheta2;
 			omega1 += dimpulse * k5;
 			omega2 += dimpulse * k6;
 			rvg -= dimpulse * k2;

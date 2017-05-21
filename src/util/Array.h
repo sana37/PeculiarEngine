@@ -1,8 +1,7 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#define INITIAL_MAX	50
-
+#include "Define.h"
 #include <iostream>
 
 template<typename T>

@@ -16,6 +16,7 @@
 #include "ForceEvent.h"
 
 #include "CrashKeeper.h"////
+#include "Define.h"
 
 #include <QTimer>
 #include <iostream>

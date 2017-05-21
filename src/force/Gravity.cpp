@@ -1,5 +1,6 @@
 #include "Gravity.h"
 #include "Object.h"
+#include "Define.h"
 #include <iostream>
 
 Gravity::Gravity(Object* obj) : Force::Force(Vector(0, -GRAVITY, 0) * obj->getMass())

@@ -1,6 +1,7 @@
 #include "CrashKeeper.h"
 #include "Object.h"
 #include "ObjectStatus.h"
+#include "Define.h"
 
 CrashKeeper::CrashKeeper(Array<Object*>* objects)
 {

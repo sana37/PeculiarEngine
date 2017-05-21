@@ -1,5 +1,6 @@
 #include "Calculater.h"
 #include "Vector.h"
+#include "Define.h"
 #include <iostream>
 #include <math.h>
 

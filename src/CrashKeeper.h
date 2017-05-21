@@ -1,8 +1,6 @@
 #ifndef CRASHKEEPER_H
 #define CRASHKEEPER_H
 
-#define ATTACH_PAIR_MAX		100
-
 #include "Array.h"
 #include "Pair.h"
 

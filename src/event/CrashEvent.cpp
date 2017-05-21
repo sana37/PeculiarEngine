@@ -6,6 +6,7 @@
 #include "Calculater.h"
 #include "CrashResult.h"
 #include "CrashKeeper.h"
+#include "Define.h"
 #include <iostream>
 #include <math.h>
 
@@ -26,85 +27,41 @@ void Field::CrashEvent::exec(void)
 		Object* obj1 = pairs[i].getInstance1();
 		Object* obj2 = pairs[i].getInstance2();
 
-			if (obj1->isActive() == false  &&  obj2->isActive() == false)
-				continue;
+		if (obj1->isActive() == false  &&  obj2->isActive() == false)
+			continue;
 
-			if (canCrashObjSphere(obj1, obj2) == false)
-				continue;
+		if (canCrashObjSphere(obj1, obj2) == false)
+			continue;
 
-			if (reflectIfCrash(obj1, obj2)) {
+		if (reflectIfCrash(obj1, obj2)) {
 /*
-				short result = -1;
-				if (obj1->whichClass() == 'N'  &&  obj2->whichClass() == 'O'  &&  j >= 3) {
-					std::cerr << j << '\n';
-					NumberBox* numberBox = dynamic_cast<NumberBox*> (obj1);
-					Object* object = obj2;
-					result = NumberBox::decompose(&numberBox, &object);
-//					obj1 = numberBox;
-					field->object.set(i, numberBox);
-					field->object.set(j, object);
-					std::cerr << "change end\n";
-					field->reportScore(result);
-				}
-				if (obj1->whichClass() == 'O'  &&  obj2->whichClass() == 'N'  &&  i >= 3) {
-					std::cerr << i << '\n';
-					NumberBox* numberBox = dynamic_cast<NumberBox*> (obj2);
-					Object* object = obj1;
-					result = NumberBox::decompose(&numberBox, &object);
-//					obj2 = numberBox;
-					field->object.set(j, numberBox);
-					field->object.set(i, object);
-					std::cerr << "change end\n";
-					field->reportScore(result);
-				}
+			short result = -1;
+			if (obj1->whichClass() == 'N'  &&  obj2->whichClass() == 'O'  &&  j >= 3) {
+				std::cerr << j << '\n';
+				NumberBox* numberBox = dynamic_cast<NumberBox*> (obj1);
+				Object* object = obj2;
+				result = NumberBox::decompose(&numberBox, &object);
+//				obj1 = numberBox;
+				field->object.set(i, numberBox);
+				field->object.set(j, object);
+				std::cerr << "change end\n";
+				field->reportScore(result);
+			}
+			if (obj1->whichClass() == 'O'  &&  obj2->whichClass() == 'N'  &&  i >= 3) {
+				std::cerr << i << '\n';
+				NumberBox* numberBox = dynamic_cast<NumberBox*> (obj2);
+				Object* object = obj1;
+				result = NumberBox::decompose(&numberBox, &object);
+//				obj2 = numberBox;
+				field->object.set(j, numberBox);
+				field->object.set(i, object);
+				std::cerr << "change end\n";
+				field->reportScore(result);
+			}
 */
-			}
-	}
-
-/*
-	short objectNum = field->object.length();
-
-	for (short i = 0  ;  i < (objectNum - 1)  ;  i++) {
-		for (short j = i + 1  ;  j < objectNum  ;  j++) {
-
-			if (field->object[i]->isActive() == false  &&  field->object[j]->isActive() == false)
-				continue;
-
-			if (canCrashObjSphere(field->object[i], field->object[j]) == false)
-				continue;
-
-
-			if (reflectIfCrash(field->object[i], field->object[j])) {
-				short result = -1;
-
-				if (field->object[i]->whichClass() == 'N'  &&  field->object[j]->whichClass() == 'O'  &&  j >= 3) {
-					std::cerr << j << '\n';
-					NumberBox* numberBox = dynamic_cast<NumberBox*> (field->object[i]);
-					Object* object = field->object[j];
-					result = NumberBox::decompose(&numberBox, &object);
-//					field->object[i] = numberBox;
-					field->object.set(i, numberBox);
-					field->object.set(j, object);
-					std::cerr << "change end\n";
-					field->reportScore(result);
-				}
-				if (field->object[i]->whichClass() == 'O'  &&  field->object[j]->whichClass() == 'N'  &&  i >= 3) {
-					std::cerr << i << '\n';
-					NumberBox* numberBox = dynamic_cast<NumberBox*> (field->object[j]);
-					Object* object = field->object[i];
-					result = NumberBox::decompose(&numberBox, &object);
-//					field->object[j] = numberBox;
-					field->object.set(j, numberBox);
-					field->object.set(i, object);
-					std::cerr << "change end\n";
-					field->reportScore(result);
-				}
-
-			}
-
 		}
 	}
-*/
+
 }
 
 //void Field::CrashEvent::execCrashInDetachedObjects(

@@ -1,8 +1,6 @@
 #ifndef OBJECTSTATUS_H
 #define OBJECTSTATUS_H
 
-#define FIRST_ATTACH_MAX	10
-
 #include "Array.h"
 
 class Object;

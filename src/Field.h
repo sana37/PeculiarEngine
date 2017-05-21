@@ -4,12 +4,6 @@
 #include <QObject>
 #include "Array.h"
 
-#define OBJECT_NUM	7
-#define EVENT_NUM	4
-#define TIME_UNIT	10	//depended on by GRAVITY
-#define WORLD		80
-#define NEAR_ZERO	0.03
-
 class Sight;
 class Object;
 class Force;

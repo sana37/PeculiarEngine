@@ -3,6 +3,7 @@
 #include "Gunner.h"
 #include "Calculater.h"
 //#include "Force.h"
+#include "Define.h"
 #include <QKeyEvent>
 #include <iostream>
 

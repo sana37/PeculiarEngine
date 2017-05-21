@@ -1,5 +1,6 @@
 #include "ObjectStatus.h"
 #include "Object.h"
+#include "Define.h"
 
 ObjectStatus::ObjectStatus(void) : attachedObjects(FIRST_ATTACH_MAX)
 {
