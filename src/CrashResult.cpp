@@ -14,6 +14,10 @@ Field::CrashEvent::CrashResult::CrashResult(const Field::CrashEvent::CrashResult
 	crashSpot = crashResult.crashSpot;
 }
 
+Field::CrashEvent::CrashResult::~CrashResult(void)
+{
+}
+
 const Field::CrashEvent::CrashResult& Field::CrashEvent::CrashResult::operator=(const Field::CrashEvent::CrashResult& crashResult)
 {
 	result = crashResult.result;

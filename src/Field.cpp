@@ -41,9 +41,9 @@ Field::Field(void) : event(EVENT_NUM)
 
 	CrashKeeper::getInstance(&object);
 
+	event.add(new SightMoveEvent());
 	event.add(new ForceEvent());
 	event.add(new MoveEvent());
-	event.add(new SightMoveEvent());
 	event.add(new CrashEvent());
 
 ///
@@ -137,15 +137,15 @@ void Field::execTimeEvent(void)
 
 void Field::timeControl(void)
 {
-//event[2] is always enabled
-	if (event[0]->isEnabled()) {
-		event[0]->disable();
-		event[1]->disable();
-		event[3]->disable();
+//event[0] is always enabled
+	if (event[1]->isEnabled()) {
+		for (short i = 1; i < EVENT_NUM; i++) {
+			event[i]->disable();
+		}
 	} else {
-		event[0]->enable();
-		event[1]->enable();
-		event[3]->enable();
+		for (short i = 1; i < EVENT_NUM; i++) {
+			event[i]->enable();
+		}
 	}
 }
 

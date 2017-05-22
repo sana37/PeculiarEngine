@@ -1,6 +1,7 @@
 #include "Object.h"
 #include "ObjectStatus.h"
 #include "Calculater.h"
+#include "Define.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -135,7 +136,7 @@ Object::Object(const char* fileName) :
 			mass = 1;
 		}
 
-		inertiaMoment = mass * 30;
+		inertiaMoment = mass * MOMENT_PER_MASS;
 
 		if (next == 'v') {
 			float temp[3];
@@ -161,7 +162,7 @@ Object::Object(const char* fileName) :
 		polygonNum = -1;
 		//radius = 10000;
 		mass = 1;
-		inertiaMoment = mass * 30;
+		inertiaMoment = mass * MOMENT_PER_MASS;
 	}
 }
 
@@ -565,6 +566,8 @@ void Object::rotate(void)
 
 void Object::push(Vector vector)
 {
+	if (fixed)
+		return;
 	velocity += (vector / mass);
 }
 
@@ -572,9 +575,11 @@ void Object::accelerate(Vector vector)
 {
 	velocity += vector;
 }
-
+//fix check is executed in object class
 void Object::applyTorque(Vector torque)
 {
+	if (fixed)
+		return;
 	omegaVector *= omega;
 	omegaVector += (torque / inertiaMoment);
 	omega = omegaVector.getMagnitude();

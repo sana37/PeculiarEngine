@@ -10,6 +10,7 @@ class Field::CrashEvent::CrashResult
 public:
 	CrashResult(void);
 	CrashResult(const CrashResult&);
+	virtual ~CrashResult(void);
 
 	const CrashResult& operator=(const CrashResult&);
 

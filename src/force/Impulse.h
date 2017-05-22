@@ -18,6 +18,7 @@ public:
 	void exec(void);
 	bool isDone(void);
 
+	void applyForceWithEnergy(void);
 	void applyDecomposedForce(Object*, const Vector&);
 	bool applySmallForce(void);
 	float kakikukeko(const Vector&, Object*);
@@ -28,6 +29,7 @@ private:
 	Object* obj1;
 	Object* obj2;
 	Vector rv0;
+	Vector base;
 	Vector forcePoint;
 	bool done;
 };

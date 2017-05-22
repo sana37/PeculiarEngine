@@ -21,6 +21,12 @@ const char Field::CrashEvent::FAILURE = -1;
 
 void Field::CrashEvent::exec(void)
 {
+	execSecondCrash();
+	execFirstCrash();
+}
+
+void Field::CrashEvent::execFirstCrash(void)
+{
 	const Array< Pair<Object*> >& pairs = crashKeeper->getDetachedObjectsPairs();
 
 	for (short i = 0  ;  i < pairs.length()  ;  i++) {
@@ -61,10 +67,22 @@ void Field::CrashEvent::exec(void)
 */
 		}
 	}
-
 }
 
-//void Field::CrashEvent::execCrashInDetachedObjects(
+void Field::CrashEvent::execSecondCrash(void)
+{
+/*
+	const Array< Pair<Object*> >& pairs = crashKeeper->getAttachedObjectsPairs();
+
+	for (short i = 0  ;  i < pairs.length()  ;  i++) {
+		Object* obj1 = pairs[i].getInstance1();
+		Object* obj2 = pairs[i].getInstance2();
+
+		if (reflectIfCrash(obj1, obj2)) {
+		}
+	}
+*/
+}
 
 bool Field::CrashEvent::canCrashObjSphere(Object* obj1, Object* obj2)
 {
@@ -128,16 +146,20 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 //			std::cerr << '_';
 		}
 
+		Vector vrtxVelocity = objVrtx->getOmega() % (objVrtx->getVertex(j) - objVrtx->getGravityCenter());
+
 		for (short i = 0  ;  i < plgnNum  ;  i++) {
 
 			if (objPlgn->isPolygonEmbody(i) == false) continue;
 
+			Vector relativeOmega = (objPlgn->getOmega() % (objPlgn->getPolygon1Vertex(i) - objPlgn->getGravityCenter())) - vrtxVelocity;
 			Vector solution;
 
 			if (Calculater::solveCubicEquation(
 				objPlgn->getPolygon2Vertex(i) - objPlgn->getPolygon1Vertex(i),
 				objPlgn->getPolygon3Vertex(i) - objPlgn->getPolygon1Vertex(i),
-				relativeVelocity,
+//				relativeVelocity,
+				relativeVelocity + relativeOmega,
 				objVrtx->getVertex(j) - objPlgn->getPolygon1Vertex(i),
 				&solution
 			)) {
@@ -166,12 +188,15 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 
 	for (short i = 0  ;  i < lineNum1  ;  i++) {
 		Vector obj1Line = obj1->getLineLVertex(i) - obj1->getLineRVertex(i);
+		Vector line1Velocity = obj1->getOmega() % (obj1->getLineLVertex(i) - obj1->getGravityCenter());//naming sense... and reduce calculation
 
 		for (short j = 0  ;  j < lineNum2  ;  j++) {
 			Vector solution;
+			Vector relativeOmega = line1Velocity - (obj2->getOmega() % (obj2->getLineLVertex(j) - obj2->getGravityCenter()));
 
 			if (Calculater::solveCubicEquation(
-				relativeVelocity,
+//				relativeVelocity,
+				relativeVelocity + relativeOmega,
 				obj1Line,
 				obj2->getLineRVertex(j) - obj2->getLineLVertex(j),
 				obj2->getLineRVertex(j) - obj1->getLineRVertex(i),
@@ -225,6 +250,11 @@ void Field::CrashEvent::reflectLineAndLine(Object* obj1, Object* obj2, CrashResu
 void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& p, const Vector& q, CrashResult* result)
 {
 	Vector n = p % q;
+
+	std::cerr << "repulstion\n";
+	Force* impulse = new Impulse(n / n.getMagnitude(), result->getCrashSpot(), obj1, obj2);
+	field->addForce(impulse);
+
 /*		migitekei or hidaritekei ??  you must confirm it
 	Vector degVelocity1 = obj1->getOmega() % (result->getCrashSpot() - obj1->getGravityCenter());
 	Vector degVelocity2 = obj2->getOmega() % (result->getCrashSpot() - obj2->getGravityCenter());
@@ -242,8 +272,11 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 	Calculater::rotate(&omega2, Vector(0, 0, 0), radiusVector2 / radius2, 90.0);
 	omega2 *= radius2;
 */
+
 //	float radius2 = (result->getCrashSpot() - obj2->getGravityCenter()).getMagnitude();
 //	Vector v = (obj1->getVelocity() + omega1) - (obj2->getVelocity() + omega2);
+
+/*
 	Vector v = obj1->getVelocity() - obj2->getVelocity();
 	Vector solution;
 
@@ -251,7 +284,6 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 //		Vector vector = n * solution.getZ() * (1 + e) * (m1 * m2 / (m1 + m2));
 		Vector rv = n * solution.getZ();
 
-//		if (vector.getMagnitude() > NEAR_ZERO) {
 			float m1 = obj1->getMass();
 			float m2 = obj2->getMass();
 			float e = 0.7;
@@ -260,14 +292,8 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 			rv *= -(1 + e) * (m1 * m2 / (m1 + m2));
 			Force* impulse = new Impulse(rv, result->getCrashSpot(), obj1, obj2);
 			field->addForce(impulse);
-/*
-		} else {
-			Force* force = new Force(vector, result->getCrashSpot(), obj2, obj1);//vector's size is not depended
-			force->set
-			field->addForce(force);
-		}
-*/
 	} else {
 		std::cerr << "through?\n";
 	}
+*/
 }

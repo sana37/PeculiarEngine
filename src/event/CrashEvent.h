@@ -18,7 +18,8 @@ public:
 	void exec(void);
 
 private:
-//	void execCrashInDetachedObjects();
+	void execFirstCrash(void);
+	void execSecondCrash(void);
 	bool canCrashObjSphere(Object*, Object*);
 	bool canCrashObjSphereAndVrtx(Object*, Vector);
 	bool reflectIfCrash(Object*, Object*);

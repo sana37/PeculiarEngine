@@ -15,6 +15,9 @@
 #define ATTACH_PAIR_MAX		100
 
 
+/*Object*/
+#define MOMENT_PER_MASS		5
+
 /*ObjectStatus*/
 #define FIRST_ATTACH_MAX	10
 
