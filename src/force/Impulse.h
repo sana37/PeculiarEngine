@@ -10,7 +10,6 @@ class Object;
 class Impulse : public Force
 {
 public:
-//	Impulse(Vector, Vector, Object*, Object*);
 	Impulse(const Vector&, const Vector&, Object*, Object*);
 	Impulse(const Impulse&);
 	virtual ~Impulse(void);
@@ -20,15 +19,12 @@ public:
 
 	void applyForceWithEnergy(void);
 	void applyDecomposedForce(Object*, const Vector&);
-	bool applySmallForce(void);
 	float kakikukeko(const Vector&, Object*);
-	float aiueo(const Vector&, Object*);
 //	Vector getForcePoint(void);
 
 private:
 	Object* obj1;
 	Object* obj2;
-	Vector rv0;
 	Vector base;
 	Vector forcePoint;
 	bool done;
