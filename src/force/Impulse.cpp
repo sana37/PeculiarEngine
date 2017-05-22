@@ -31,6 +31,7 @@ Impulse::Impulse(const Vector& vector, const Vector& point, Object* obj1, Object
 	rv0 = vector / ((1 + e) * (m1 * m2 / (m1 + m2)) * -1.0);//should be in exec() because relative velocity may have changed
 }
 */
+
 Impulse::Impulse(const Impulse& impulse) : Force::Force(dynamic_cast<const Force&>(impulse)), forcePoint(impulse.forcePoint), done(impulse.done)
 {
 	this->obj1 = impulse.obj1;
