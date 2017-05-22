@@ -56,24 +56,16 @@ void Impulse::applyForceWithEnergy(void)
 	Vector edw2 = (edv % r2) / r2.getMagnitude();
 	float m1 = obj1->getMass();
 	float m2 = obj2->getMass();
-	float m = m1 / m2;
 	float i1 = obj1->getInertiaMoment();
 	float i2 = obj2->getInertiaMoment();
 	float rcos01 = kakikukeko(edv, obj1);
 	float rcos02 = kakikukeko(edv, obj2);
-	float k1 = rcos01 * m1 / i1;			//k1, k2 = r * cos0 * m / I
-	float k2 = rcos02 * m2 / i2;			// whether + or - does not have relation. kakikukeko returns magnitude.
-	float dv1Abs = -2.0 * m1 * ((v1*edv) + rcos01*(w1*edw1) - (v2*edv) + rcos02*(w2*edw2)) / (m1 + i1*k1*k1 + m2*m*m + i2*k2*k2*m*m);
+	float F = -2.0 * ((v1*edv) + rcos01*(w1*edw1) - (v2*edv) + rcos02*(w2*edw2)) / (1/m1 + rcos01*rcos01/i1 + 1/m2 + rcos02*rcos02/i2);
 
-	Vector dv1 = edv * dv1Abs;
-	Vector dv2 = dv1 * (-1.0 * m);
-	Vector dw1 = edw1 * (k1 * dv1Abs);
-	Vector dw2 = edw2 * (k2 * dv1Abs * m);
-
-	obj1->push(dv1 * m1);
-	obj2->push(dv2 * m2);
-	obj1->applyTorque(dw1 * i1);
-	obj2->applyTorque(dw2 * i2);
+	obj1->push(edv * F);
+	obj2->push(edv * -F);
+	obj1->applyTorque(edw1 * (F * rcos01));
+	obj2->applyTorque(edw2 * (F * rcos02));
 }
 
 void Impulse::applyDecomposedForce(Object* obj, const Vector& force)
