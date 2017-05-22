@@ -16,15 +16,11 @@
 
 
 /*Object*/
-#define MOMENT_PER_MASS		5
+#define MOMENT_PER_MASS		2
 
 /*ObjectStatus*/
 #define FIRST_ATTACH_MAX	10
 
-
-/*Impulse*/
-#define LEAST_DIST	0.05
-#define K1			0.000001
 
 /*Gravity*/
 #define GRAVITY		0.004

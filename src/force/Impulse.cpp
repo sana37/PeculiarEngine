@@ -54,6 +54,9 @@ void Impulse::applyForceWithEnergy(void)
 	Vector edv = ((v2 - v1) * base >= 0) ? base : (base * -1.0);
 	Vector edw1 = (edv % r1) / -(r1.getMagnitude());
 	Vector edw2 = (edv % r2) / r2.getMagnitude();
+	float e = 0.85;
+	v1 *= e;
+	v2 *= e;
 	float m1 = obj1->getMass();
 	float m2 = obj2->getMass();
 	float i1 = obj1->getInertiaMoment();
