@@ -27,3 +27,8 @@ bool Gravity::isDone(void)
 {
 	return false;
 }
+
+Vector Gravity::getForcePoint(void)
+{
+	return Vector(0, 0, 0);//anything ok. this is not used
+}

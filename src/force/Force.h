@@ -12,6 +12,7 @@ public:
 
 	virtual void exec(void) = 0;
 	virtual bool isDone(void) = 0;
+	virtual Vector getForcePoint(void) = 0;
 
 };
 

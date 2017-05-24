@@ -9,7 +9,7 @@
 /*Sight*/
 #define SPEED		0.15
 #define DOMAIN_MAX	29.85
-#define OMEGA		0.01
+#define OMEGA		0.02
 
 /*CrashKeeper*/
 #define ATTACH_PAIR_MAX		100
@@ -28,7 +28,8 @@
 
 
 /*CrashEvent*/
-#define NEAR_ZERO	0.03
+#define ZERO_VELOCITY		0.01
+#define ZERO_ACCELERATION	0.0001
 
 /*MoveEvent*/
 #define WORLD		80

@@ -12,8 +12,8 @@ Impulse::Impulse(const Vector& base, const Vector& point, Object* obj1, Object* 
 	this->obj2 = obj2;
 	this->base = base;
 
-	obj1->getStatus()->attach(obj2);
-	obj2->getStatus()->attach(obj1);
+//	obj1->getStatus()->attach(obj2);
+//	obj2->getStatus()->attach(obj1);
 }
 
 Impulse::Impulse(const Impulse& impulse) : Force::Force(dynamic_cast<const Force&>(impulse)), forcePoint(impulse.forcePoint), done(impulse.done)
@@ -25,8 +25,8 @@ Impulse::Impulse(const Impulse& impulse) : Force::Force(dynamic_cast<const Force
 
 Impulse::~Impulse(void)
 {
-	obj1->getStatus()->detach(obj2);
-	obj2->getStatus()->detach(obj1);
+//	obj1->getStatus()->detach(obj2);
+//	obj2->getStatus()->detach(obj1);
 
 	obj1 = NULL;
 	obj2 = NULL;
@@ -54,7 +54,7 @@ void Impulse::applyForceWithEnergy(void)
 	Vector edv = ((v2 - v1) * base >= 0) ? base : (base * -1.0);
 	Vector edw1 = (edv % r1) / -(r1.getMagnitude());
 	Vector edw2 = (edv % r2) / r2.getMagnitude();
-	float e = 0.85;
+	float e = 0.8;
 	v1 *= e;
 	v2 *= e;
 	float m1 = obj1->getMass();
@@ -105,9 +105,7 @@ float Impulse::kakikukeko(const Vector& force, Object* obj)
 		return -cos0 * radius;
 }
 
-/*
 Vector Impulse::getForcePoint(void)
 {
 	return forcePoint;
 }
-*/

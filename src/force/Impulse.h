@@ -20,7 +20,7 @@ public:
 	void applyForceWithEnergy(void);
 	void applyDecomposedForce(Object*, const Vector&);
 	float kakikukeko(const Vector&, Object*);
-//	Vector getForcePoint(void);
+	Vector getForcePoint(void);
 
 private:
 	Object* obj1;

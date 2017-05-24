@@ -28,18 +28,16 @@ private:
 	void resizeGL(int, int);
 	void paintGL(void);
 	void paintObject(Object*);
-//	void paintCrashSpot(void);
+	void paintCrashSpot(void);
 	void keyPressEvent(QKeyEvent*);
 	void keyReleaseEvent(QKeyEvent*);
 	void rotateSelf(Vector*, Vector, float, float);
 
-//	short objectNum;
 	float X, Y, Z;
 	float omegaYaw;
 	float omegaPitch;
 	short dominatorIndex;
 	short possessFlag;
-//	Object** object;
 	Array<Object*>* object_p;
 	Array<Force*>* force_p;
 	Vector lookAt;

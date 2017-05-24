@@ -2,13 +2,13 @@
 #include "Object.h"
 #include "Gunner.h"
 #include "Calculater.h"
-//#include "Force.h"
+#include "Force.h"
 #include "Define.h"
 #include <QKeyEvent>
 #include <iostream>
 
 
-Sight::Sight(Array<Object*>* object_p,/* short originalObjectNum,*/ short originalDominatorIndex, Array<Force*>* force_p) :
+Sight::Sight(Array<Object*>* object_p, short originalDominatorIndex, Array<Force*>* force_p) :
 	lookAt(Vector(0, 0, -1)),
 	lookAtN(Vector(1, 0, 0)),
 	velocity(Vector(0, 0, 0))
@@ -24,11 +24,9 @@ Sight::Sight(Array<Object*>* object_p,/* short originalObjectNum,*/ short origin
 	omegaYaw = 0;
 	omegaPitch = 0;
 
-//	objectNum = originalObjectNum;
 	dominatorIndex = originalDominatorIndex;
 
 	this->object_p = object_p;
-//	object = originalObject;
 	dominatorSightPoint = new Vector[object_p->length()];
 		//sight and field are friends because of object_p !!!!
 	(*object_p)[dominatorIndex]->moveAbsolute(temp);
@@ -174,7 +172,7 @@ void Sight::paintGL(void)
 	for (short i = 0  ;  i < object_p->length()  ;  i++) {
 		paintObject((*object_p)[i]);
 	}
-//	paintCrashSpot();
+	paintCrashSpot();
 
 	glBegin(GL_LINES);
 	glColor3d(0.8, 0, 0);
@@ -215,7 +213,7 @@ void Sight::paintObject(Object* modelObject)
 	}
 	glEnd();
 }
-/*
+
 void Sight::paintCrashSpot(void)
 {
 	glPointSize(5.0);
@@ -223,15 +221,13 @@ void Sight::paintCrashSpot(void)
 	glColor3s(32767, 32767, 32767);
 
 	for (short i = 0  ;  i < force_p->length()  ;  i++) {
-		if (force_p->get(i)->isPermanent() == false) {
-			Vector crashSpot = force_p->get(i)->getForcePoint();
-			glVertex3d(crashSpot.getX(), crashSpot.getY(), crashSpot.getZ());
-		}
+		Vector crashSpot = force_p->get(i)->getForcePoint();
+		glVertex3d(crashSpot.getX(), crashSpot.getY(), crashSpot.getZ());
 	}
 
 	glEnd();
 }
-*/
+
 void Sight::keyPressEvent(QKeyEvent* keyboard)
 {
 	int ch;

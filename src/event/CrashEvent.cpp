@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "Force.h"
 #include "Impulse.h"
+#include "StickForce.h"
 #include "NumberBox.h"
 #include "Calculater.h"
 #include "CrashResult.h"
@@ -14,10 +15,6 @@ Field::CrashEvent::CrashEvent(void) : Field::Event::Event()
 {
 	crashKeeper = CrashKeeper::getInstance(&(field->object));
 }
-
-const char Field::CrashEvent::OVER = 1;
-const char Field::CrashEvent::SUCCESS = 0;
-const char Field::CrashEvent::FAILURE = -1;
 
 void Field::CrashEvent::exec(void)
 {
@@ -106,27 +103,42 @@ bool Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 	CrashResult result;
 
 	judgePlgnAndVrtx(obj1, obj2, &result);
+/*
 	if (result.getResult() == true) {
 		reflectPlgnAndVrtx(obj1, obj2, &result);
 //		std::cerr << "A";
 		return true;
 	}
-
+*/
 	judgePlgnAndVrtx(obj2, obj1, &result);
+/*
 	if (result.getResult() == true) {
 		reflectPlgnAndVrtx(obj2, obj1, &result);
 //		std::cerr << "B";
 		return true;
 	}
-
+*/
 	judgeLineAndLine(obj1, obj2, &result);
+/*
 	if (result.getResult() == true) {
 		reflectLineAndLine(obj1, obj2, &result);
 //		std::cerr << "C";
 		return true;
 	}
+*/
+	switch (result.getResult()) {
+	case CrashResult::FAIL :
+		return false;
+	case CrashResult::POLYGON_AND_VERTEX :
+		reflectPlgnAndVrtx(&result);
+		return true;
+	case CrashResult::LINE_AND_LINE :
+		reflectLineAndLine(&result);
+		return true;
+	default :
+		return false;
+	}
 
-	return false;
 }
 
 void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, CrashResult* result)
@@ -164,19 +176,23 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 				&solution
 			)) {
 				if (0 <= solution.getX()  &&  0 <= solution.getY()  &&  solution.getX() + solution.getY() <= 1) {
-					if (0 <= solution.getZ()  &&  solution.getZ() < 1) {
+					if (0 <= solution.getZ()  &&  solution.getZ() < result->getDist()) {
+						result->setObjPlgn(objPlgn);
+						result->setObjVrtx(objVrtx);
 						result->setPlgnIdx(i);
 						result->setVrtxIdx(j);
+						result->setDist(solution.getZ());
 						result->setCrashSpot(objVrtx->getVertex(j));
-						result->setResult(true);
-						return;
+						result->setRelativeVelocity(relativeVelocity + relativeOmega);
+						result->setResult(CrashResult::POLYGON_AND_VERTEX);
+//						return;
 					}
 				}
 			}
 		}
 	}
 
-	result->setResult(false);
+//	result->setResult(false);
 }
 
 void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult* result)
@@ -203,13 +219,17 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 				&solution
 			)) {
 				if ((0 <= solution.getY()  &&  solution.getY() <= 1)  &&  (0 <= solution.getZ()  &&  solution.getZ() <= 1)) {
-					if (0 <= solution.getX()  &&  solution.getX() < 1) {
+					if (0 <= solution.getX()  &&  solution.getX() < result->getDist()) {
 						Vector crashSpot = (obj1->getLineRVertex(i) * (1 - solution.getY())) + (obj1->getLineLVertex(i) * solution.getY());
+						result->setObjLine1(obj1);
+						result->setObjLine2(obj2);
 						result->setLine1Idx(i);
 						result->setLine2Idx(j);
+						result->setDist(solution.getX());
 						result->setCrashSpot(crashSpot);
-						result->setResult(true);
-						return;
+						result->setRelativeVelocity(relativeVelocity + relativeOmega);
+						result->setResult(CrashResult::LINE_AND_LINE);
+//						return;
 					}
 				}
 
@@ -217,12 +237,14 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 		}
 	}
 
-	result->setResult(false);
+//	result->setResult(false);
 }
 
-void Field::CrashEvent::reflectPlgnAndVrtx(Object* objPlgn, Object* objVrtx, CrashResult* result)
+void Field::CrashEvent::reflectPlgnAndVrtx(CrashResult* result)
 {
 	short plgnIdx = result->getPlgnIdx();
+	Object* objPlgn = result->getObjPlgn();
+	Object* objVrtx = result->getObjVrtx();
 
 	calcRepulsion(
 		objPlgn,
@@ -233,10 +255,12 @@ void Field::CrashEvent::reflectPlgnAndVrtx(Object* objPlgn, Object* objVrtx, Cra
 	);
 }
 
-void Field::CrashEvent::reflectLineAndLine(Object* obj1, Object* obj2, CrashResult* result)
+void Field::CrashEvent::reflectLineAndLine(CrashResult* result)
 {
 	short idx1 = result->getLine1Idx();
 	short idx2 = result->getLine2Idx();
+	Object* obj1 = result->getObjLine1();
+	Object* obj2 = result->getObjLine2();
 
 	calcRepulsion(
 		obj1,
@@ -249,11 +273,25 @@ void Field::CrashEvent::reflectLineAndLine(Object* obj1, Object* obj2, CrashResu
 
 void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& p, const Vector& q, CrashResult* result)
 {
-	Vector n = p % q;
+	Vector omega = field->object[3]->getOmega();
+	std::cerr << omega.getX() << " : " << omega.getY() << " : " << omega.getZ() << "\n";
+	std::cerr << "idx : " << result->getVrtxIdx() << "\n";
 
-	std::cerr << "repulstion\n";
-	Force* impulse = new Impulse(n / n.getMagnitude(), result->getCrashSpot(), obj1, obj2);
-	field->addForce(impulse);
+	Vector base = p % q;
+	base /= base.getMagnitude();
+
+	float relativeVelocity = result->getRelativeVelocity() * base;
+
+	if (-ZERO_VELOCITY < relativeVelocity  &&  relativeVelocity < ZERO_VELOCITY) {
+		std::cerr << "stick\n";
+		Force* stickForce = new StickForce(base, obj1, obj2, *result);
+		field->addForce(stickForce);
+	} else {
+		std::cerr << "repulstion\n";
+		Force* impulse = new Impulse(base, result->getCrashSpot(), obj1, obj2);
+		field->addForce(impulse);
+	}
+	field->timeControl();
 
 /*		migitekei or hidaritekei ??  you must confirm it
 	Vector degVelocity1 = obj1->getOmega() % (result->getCrashSpot() - obj1->getGravityCenter());

@@ -14,6 +14,7 @@ public:
 
 	void exec(void);
 	bool isDone(void);
+	Vector getForcePoint(void);
 
 private:
 	Object* obj;

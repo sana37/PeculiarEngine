@@ -25,13 +25,9 @@ private:
 	bool reflectIfCrash(Object*, Object*);
 	void judgePlgnAndVrtx(Object*, Object*, CrashResult*);
 	void judgeLineAndLine(Object*, Object*, CrashResult*);
-	void reflectPlgnAndVrtx(Object*, Object*, CrashResult*);
-	void reflectLineAndLine(Object*, Object*, CrashResult*);
+	void reflectPlgnAndVrtx(CrashResult*);
+	void reflectLineAndLine(CrashResult*);
 	void calcRepulsion(Object*, Object*, const Vector&, const Vector&, CrashResult*);
-
-	static const char OVER;
-	static const char SUCCESS;
-	static const char FAILURE;
 
 	CrashKeeper* crashKeeper;
 };
