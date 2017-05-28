@@ -177,10 +177,7 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 			)) {
 				if (0 <= solution.getX()  &&  0 <= solution.getY()  &&  solution.getX() + solution.getY() <= 1) {
 					if (0 <= solution.getZ()  &&  solution.getZ() < result->getDist()) {
-						result->setObjPlgn(objPlgn);
-						result->setObjVrtx(objVrtx);
-						result->setPlgnIdx(i);
-						result->setVrtxIdx(j);
+						result->setObjPlgnAndVrtx(objPlgn, objVrtx, i, j);
 						result->setDist(solution.getZ());
 						result->setCrashSpot(objVrtx->getVertex(j));
 						result->setRelativeVelocity(relativeVelocity + relativeOmega);
@@ -221,10 +218,7 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 				if ((0 <= solution.getY()  &&  solution.getY() <= 1)  &&  (0 <= solution.getZ()  &&  solution.getZ() <= 1)) {
 					if (0 <= solution.getX()  &&  solution.getX() < result->getDist()) {
 						Vector crashSpot = (obj1->getLineRVertex(i) * (1 - solution.getY())) + (obj1->getLineLVertex(i) * solution.getY());
-						result->setObjLine1(obj1);
-						result->setObjLine2(obj2);
-						result->setLine1Idx(i);
-						result->setLine2Idx(j);
+						result->setObjLineAndLine(obj1, obj2, i, j);
 						result->setDist(solution.getX());
 						result->setCrashSpot(crashSpot);
 						result->setRelativeVelocity(relativeVelocity + relativeOmega);
@@ -287,11 +281,11 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 		Force* stickForce = new StickForce(base, obj1, obj2, *result);
 		field->addForce(stickForce);
 	} else {
-		std::cerr << "repulstion\n";
+		std::cerr << "repulsion\n";
 		Force* impulse = new Impulse(base, result->getCrashSpot(), obj1, obj2);
 		field->addForce(impulse);
 	}
-	field->timeControl();
+//	field->timeControl();
 
 /*		migitekei or hidaritekei ??  you must confirm it
 	Vector degVelocity1 = obj1->getOmega() % (result->getCrashSpot() - obj1->getGravityCenter());

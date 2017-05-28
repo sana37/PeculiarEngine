@@ -16,15 +16,9 @@ public:
 
 	const CrashResult& operator=(const CrashResult&);
 
-	void setObjPlgn(Object*);
-	void setObjVrtx(Object*);
-	void setObjLine1(Object*);
-	void setObjLine2(Object*);
+	void setObjPlgnAndVrtx(Object*, Object*, short, short);
+	void setObjLineAndLine(Object*, Object*, short, short);
 	void setResult(ResultCode);
-	void setPlgnIdx(short);
-	void setVrtxIdx(short);
-	void setLine1Idx(short);
-	void setLine2Idx(short);
 	void setDist(float);
 	void setCrashSpot(const Vector&);
 	void setRelativeVelocity(const Vector&);

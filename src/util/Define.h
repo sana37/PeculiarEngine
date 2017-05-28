@@ -16,7 +16,7 @@
 
 
 /*Object*/
-#define MOMENT_PER_MASS		2
+#define MOMENT_PER_MASS		1	//2
 
 /*ObjectStatus*/
 #define FIRST_ATTACH_MAX	10

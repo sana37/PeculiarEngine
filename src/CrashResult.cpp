@@ -50,49 +50,25 @@ const Field::CrashEvent::CrashResult& Field::CrashEvent::CrashResult::operator=(
 	return *this;
 }
 
-void Field::CrashEvent::CrashResult::setObjPlgn(Object* obj)
+void Field::CrashEvent::CrashResult::setObjPlgnAndVrtx(Object* objPlgn, Object* objVrtx, short plgnIdx, short vrtxIdx)
 {
-	objPlgnOrLine1 = obj;
+	objPlgnOrLine1 = objPlgn;
+	objVrtxOrLine2 = objVrtx;
+	this->plgnIdx = plgnIdx;
+	this->vrtxIdx = vrtxIdx;
 }
 
-void Field::CrashEvent::CrashResult::setObjVrtx(Object* obj)
+void Field::CrashEvent::CrashResult::setObjLineAndLine(Object* objLine1, Object* objLine2, short line1Idx, short line2Idx)
 {
-	objVrtxOrLine2 = obj;
-}
-
-void Field::CrashEvent::CrashResult::setObjLine1(Object* obj)
-{
-	objPlgnOrLine1 = obj;
-}
-
-void Field::CrashEvent::CrashResult::setObjLine2(Object* obj)
-{
-	objVrtxOrLine2 = obj;
+	objPlgnOrLine1 = objLine1;
+	objVrtxOrLine2 = objLine2;
+	this->line1Idx = line1Idx;
+	this->line2Idx = line2Idx;
 }
 
 void Field::CrashEvent::CrashResult::setResult(ResultCode result)
 {
 	this->result = result;
-}
-
-void Field::CrashEvent::CrashResult::setPlgnIdx(short idx)
-{
-	plgnIdx = idx;
-}
-
-void Field::CrashEvent::CrashResult::setVrtxIdx(short idx)
-{
-	vrtxIdx = idx;
-}
-
-void Field::CrashEvent::CrashResult::setLine1Idx(short idx)
-{
-	line1Idx = idx;
-}
-
-void Field::CrashEvent::CrashResult::setLine2Idx(short idx)
-{
-	line2Idx = idx;
 }
 
 void Field::CrashEvent::CrashResult::setDist(float dist)

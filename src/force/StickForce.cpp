@@ -1,7 +1,6 @@
 #include "StickForce.h"
 #include "Object.h"
 #include "Define.h"
-#include "Sight.h"//
 
 StickForce::StickForce(const Vector& base, Object* obj1, Object* obj2, const Field::CrashEvent::CrashResult& result) :
 	Force::Force(Vector()),

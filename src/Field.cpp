@@ -43,7 +43,7 @@ Field::Field(void) : event(EVENT_NUM)
 
 	event.add(new SightMoveEvent());
 	event.add(new ForceEvent());
-	event.add(new MoveEvent());
+	event.add(new MoveEvent());		//it is recommended to swap moveEvent and crashEvent
 	event.add(new CrashEvent());
 
 ///
@@ -56,9 +56,6 @@ Field::Field(void) : event(EVENT_NUM)
 
 	object[0]->fix();
 	object[1]->fix();
-
-//	object[3]->setInertiaMoment(object[3]->getMass() * 2 / 5);
-	object[3]->setInertiaMoment(object[3]->getMass() * 40 / 5);
 
 	object[3]->moveAbsolute(8, 12, 0);
 //	object[3]->setVelocity(0.03, 0.05, 0);

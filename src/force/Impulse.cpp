@@ -57,6 +57,8 @@ void Impulse::applyForceWithEnergy(void)
 	float e = 0.8;
 	v1 *= e;
 	v2 *= e;
+	w1 *= e;
+	w2 *= e;
 	float m1 = obj1->getMass();
 	float m2 = obj2->getMass();
 	float i1 = obj1->getInertiaMoment();
