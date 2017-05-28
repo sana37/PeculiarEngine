@@ -1,5 +1,6 @@
 #include "StickForce.h"
 #include "Object.h"
+#include "ObjectStatus.h"
 #include "Define.h"
 
 StickForce::StickForce(const Vector& base, Object* obj1, Object* obj2, const Field::CrashEvent::CrashResult& result) :
@@ -11,7 +12,8 @@ StickForce::StickForce(const Vector& base, Object* obj1, Object* obj2, const Fie
 {
 	this->obj1 = obj1;
 	this->obj2 = obj2;
-	std::cerr << "stick start.\n";
+	obj1->getStatus()->setReadyCrash();
+	obj2->getStatus()->setReadyCrash();
 	if (obj1->isFixed() == true  &&  obj2->isFixed() == false) {
 		obj2->back();
 		obj2->accelerate(base * -(obj2->getVelocity() * base));
@@ -36,7 +38,8 @@ StickForce::StickForce(const StickForce& stickForce) : Force::Force(Vector())
 
 StickForce::~StickForce(void)
 {
-	std::cerr << "stick end.\n";
+	obj1->getStatus()->setDoneCrash();
+	obj2->getStatus()->setDoneCrash();
 	obj1 = NULL;
 	obj2 = NULL;
 }

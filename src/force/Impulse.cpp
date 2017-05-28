@@ -12,6 +12,8 @@ Impulse::Impulse(const Vector& base, const Vector& point, Object* obj1, Object* 
 	this->obj2 = obj2;
 	this->base = base;
 
+	obj1->getStatus()->setReadyCrash();
+	obj2->getStatus()->setReadyCrash();
 //	obj1->getStatus()->attach(obj2);
 //	obj2->getStatus()->attach(obj1);
 }
@@ -24,7 +26,9 @@ Impulse::Impulse(const Impulse& impulse) : Force::Force(dynamic_cast<const Force
 }
 
 Impulse::~Impulse(void)
-{
+{// if multiple objects crash the object, setdonecrash release all crash.  this is bad.  modify later.  attach can be used efficiently
+	obj1->getStatus()->setDoneCrash();
+	obj2->getStatus()->setDoneCrash();
 //	obj1->getStatus()->detach(obj2);
 //	obj2->getStatus()->detach(obj1);
 

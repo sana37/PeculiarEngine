@@ -19,9 +19,9 @@ public:
 	short getPolygonNum(void) const;
 	short getLineNum(void) const;
 
-	const Vector& getVertex(short) const;
-
 	const Vector& getGravityCenter(void) const;
+
+	const Vector& getVertex(short) const;
 
 	const Vector& getPolygon1Vertex(short) const;
 	const Vector& getPolygon2Vertex(short) const;
@@ -29,6 +29,10 @@ public:
 
 	const Vector& getLineLVertex(short) const;
 	const Vector& getLineRVertex(short) const;
+
+	Vector getVrtxBasedOnG(short);
+	Vector getPlgnBasedOnG(short);
+	Vector getLineBasedOnG(short);
 
 	float getRadius(void) const;
 	float getMass(void);

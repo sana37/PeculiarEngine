@@ -18,9 +18,13 @@ public:
 	void attach(Object*);
 	void detach(Object*);
 
+	bool isReadyCrash(void);
+	void setReadyCrash(void);
+	void setDoneCrash(void);
+
 private:
 	Array<Object*> attachedObjects;
-
+	bool readyCrash;
 };
 
 #endif

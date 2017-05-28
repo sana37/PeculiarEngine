@@ -318,39 +318,70 @@ short Object::getLineNum(void) const
 }
 
 
-const Vector& Object::getVertex(short vertexIndex) const
-{
-	return vertex[vertexIndex];
-}
-
 const Vector& Object::getGravityCenter(void) const
 {
 	return gravityCenter;
 }
 
+const Vector& Object::getVertex(short vertexIndex) const
+{
+	return vertex[vertexIndex];
+}
+
 const Vector& Object::getPolygon1Vertex(short polygonIndex) const
 {
-	return this->getVertex(polygon1VertexIndex[polygonIndex]);
+	return vertex[polygon1VertexIndex[polygonIndex]];
 }
 
 const Vector& Object::getPolygon2Vertex(short polygonIndex) const
 {
-	return this->getVertex(polygon2VertexIndex[polygonIndex]);
+	return vertex[polygon2VertexIndex[polygonIndex]];
 }
 
 const Vector& Object::getPolygon3Vertex(short polygonIndex) const
 {
-	return this->getVertex(polygon3VertexIndex[polygonIndex]);
+	return vertex[polygon3VertexIndex[polygonIndex]];
 }
 
 const Vector& Object::getLineLVertex(short lineIndex) const
 {
-	return this->getVertex(lineLVertexIndex[lineIndex]);
+	return vertex[lineLVertexIndex[lineIndex]];
 }
 
 const Vector& Object::getLineRVertex(short lineIndex) const
 {
-	return this->getVertex(lineRVertexIndex[lineIndex]);
+	return vertex[lineRVertexIndex[lineIndex]];
+}
+
+
+Vector Object::getVrtxBasedOnG(short vrtxIdx)
+{
+	return vertex[vrtxIdx] - gravityCenter;
+}
+
+Vector Object::getPlgnBasedOnG(short plgnIdx)
+{
+//	here is more exact one.  however computer must calculate more and more.
+	return (
+		vertex[polygon1VertexIndex[plgnIdx]]
+		+ vertex[polygon2VertexIndex[plgnIdx]]
+		+ vertex[polygon3VertexIndex[plgnIdx]]
+		) / 3.0 - gravityCenter;
+
+//	approximately one
+//	return vertex[polygon1VertexIndex[plgnIdx]] - gravityCenter;
+}
+
+Vector Object::getLineBasedOnG(short lineIdx)
+{
+//	here is more exact one.  however computer must calculate more and more.
+	return (
+		vertex[lineLVertexIndex[lineIdx]]
+		+ vertex[lineRVertexIndex[lineIdx]]
+		) / 2.0 - gravityCenter;
+
+//	approximately one
+//	return vertex[lineLVertexIndex[lineIdx]] - gravityCenter;
 }
 
 

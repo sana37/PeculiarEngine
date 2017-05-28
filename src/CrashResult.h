@@ -21,7 +21,8 @@ public:
 	void setResult(ResultCode);
 	void setDist(float);
 	void setCrashSpot(const Vector&);
-	void setRelativeVelocity(const Vector&);
+//	void setRelativeVelocity(const Vector&);
+	void addTangency(void);
 
 	Object* getObjPlgn(void);
 	Object* getObjVrtx(void);
@@ -34,7 +35,9 @@ public:
 	short getLine2Idx(void);
 	float getDist(void);
 	Vector getCrashSpot(void);
-	Vector getRelativeVelocity(void);
+//	Vector getRelativeVelocity(void);
+	short getTangencyNum(void);
+	float getRelativeSpeed(void);
 
 private:
 	Object* objPlgnOrLine1;
@@ -46,7 +49,8 @@ private:
 	short line2Idx;
 	float dist;
 	Vector crashSpot;
-	Vector relativeVelocity;
+	short tangencyNum;
+//	Vector relativeVelocity;
 };
 
 #endif

@@ -43,8 +43,8 @@ Field::Field(void) : event(EVENT_NUM)
 
 	event.add(new SightMoveEvent());
 	event.add(new ForceEvent());
-	event.add(new MoveEvent());		//it is recommended to swap moveEvent and crashEvent
 	event.add(new CrashEvent());
+	event.add(new MoveEvent());
 
 ///
 //	for (short i = 3  ;  i < 7  ;  i++) {

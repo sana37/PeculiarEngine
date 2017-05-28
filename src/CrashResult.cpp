@@ -1,4 +1,5 @@
 #include "CrashResult.h"
+#include "Object.h"
 
 Field::CrashEvent::CrashResult::CrashResult(void) :
 	objPlgnOrLine1(NULL),
@@ -10,7 +11,8 @@ Field::CrashEvent::CrashResult::CrashResult(void) :
 	line2Idx(-1),
 	dist(1.0),
 	crashSpot(),
-	relativeVelocity()
+	tangencyNum(0)
+//	relativeVelocity()
 {
 }
 
@@ -25,7 +27,8 @@ Field::CrashEvent::CrashResult::CrashResult(const Field::CrashEvent::CrashResult
 	line2Idx = crashResult.line2Idx;
 	dist = crashResult.dist;
 	crashSpot = crashResult.crashSpot;
-	relativeVelocity = crashResult.relativeVelocity;
+	tangencyNum = crashResult.tangencyNum;
+//	relativeVelocity = crashResult.relativeVelocity;
 }
 
 Field::CrashEvent::CrashResult::~CrashResult(void)
@@ -45,7 +48,8 @@ const Field::CrashEvent::CrashResult& Field::CrashEvent::CrashResult::operator=(
 	line2Idx = crashResult.line2Idx;
 	dist = crashResult.dist;
 	crashSpot = crashResult.crashSpot;
-	relativeVelocity = crashResult.relativeVelocity;
+	tangencyNum = crashResult.tangencyNum;
+//	relativeVelocity = crashResult.relativeVelocity;
 
 	return *this;
 }
@@ -80,10 +84,15 @@ void Field::CrashEvent::CrashResult::setCrashSpot(const Vector& vector)
 {
 	crashSpot = vector;
 }
-
+/*
 void Field::CrashEvent::CrashResult::setRelativeVelocity(const Vector& vector)
 {
 	relativeVelocity = vector;
+}
+*/
+void Field::CrashEvent::CrashResult::addTangency(void)
+{
+	tangencyNum++;
 }
 
 
@@ -154,7 +163,20 @@ Vector Field::CrashEvent::CrashResult::getCrashSpot(void)
 	return crashSpot;
 }
 
+short Field::CrashEvent::CrashResult::getTangencyNum(void)
+{
+	return tangencyNum;
+}
+
+float Field::CrashEvent::CrashResult::getRelativeSpeed(void)
+{
+	return (objPlgnOrLine1->getVelocity() - objVrtxOrLine2->getVelocity()).getMagnitude()
+		+ objPlgnOrLine1->getOmega().getMagnitude()
+		+ objVrtxOrLine2->getOmega().getMagnitude();
+}
+/*
 Vector Field::CrashEvent::CrashResult::getRelativeVelocity(void)
 {
 	return relativeVelocity;
 }
+*/

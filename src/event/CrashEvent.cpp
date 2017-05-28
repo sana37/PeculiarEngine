@@ -158,13 +158,13 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 //			std::cerr << '_';
 		}
 
-		Vector vrtxVelocity = objVrtx->getOmega() % (objVrtx->getVertex(j) - objVrtx->getGravityCenter());
+		Vector vrtxVelocity = objVrtx->getOmega() % objVrtx->getVrtxBasedOnG(j);
 
 		for (short i = 0  ;  i < plgnNum  ;  i++) {
 
 			if (objPlgn->isPolygonEmbody(i) == false) continue;
 
-			Vector relativeOmega = (objPlgn->getOmega() % (objPlgn->getPolygon1Vertex(i) - objPlgn->getGravityCenter())) - vrtxVelocity;
+			Vector relativeOmega = (objPlgn->getOmega() % objPlgn->getPlgnBasedOnG(i)) - vrtxVelocity;
 			Vector solution;
 
 			if (Calculater::solveCubicEquation(
@@ -176,20 +176,21 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 				&solution
 			)) {
 				if (0 <= solution.getX()  &&  0 <= solution.getY()  &&  solution.getX() + solution.getY() <= 1) {
-					if (0 <= solution.getZ()  &&  solution.getZ() < result->getDist()) {
-						result->setObjPlgnAndVrtx(objPlgn, objVrtx, i, j);
-						result->setDist(solution.getZ());
-						result->setCrashSpot(objVrtx->getVertex(j));
-						result->setRelativeVelocity(relativeVelocity + relativeOmega);
-						result->setResult(CrashResult::POLYGON_AND_VERTEX);
-//						return;
+					if (0.0 <= solution.getZ()  &&  solution.getZ() < 1.0) {
+						if (solution.getZ() < result->getDist()) {
+							result->setObjPlgnAndVrtx(objPlgn, objVrtx, i, j);
+							result->setDist(solution.getZ());
+							result->setCrashSpot(objVrtx->getVertex(j));
+			//			result->setRelativeVelocity(relativeVelocity + relativeOmega);
+							result->setResult(CrashResult::POLYGON_AND_VERTEX);
+						}
+						result->addTangency();
 					}
 				}
 			}
 		}
 	}
 
-//	result->setResult(false);
 }
 
 void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult* result)
@@ -201,11 +202,11 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 
 	for (short i = 0  ;  i < lineNum1  ;  i++) {
 		Vector obj1Line = obj1->getLineLVertex(i) - obj1->getLineRVertex(i);
-		Vector line1Velocity = obj1->getOmega() % (obj1->getLineLVertex(i) - obj1->getGravityCenter());//naming sense... and reduce calculation
+		Vector line1Velocity = obj1->getOmega() % obj1->getLineBasedOnG(i);//naming sense... and reduce calculation
 
 		for (short j = 0  ;  j < lineNum2  ;  j++) {
 			Vector solution;
-			Vector relativeOmega = line1Velocity - (obj2->getOmega() % (obj2->getLineLVertex(j) - obj2->getGravityCenter()));
+			Vector relativeOmega = line1Velocity - (obj2->getOmega() % obj2->getLineBasedOnG(j));
 
 			if (Calculater::solveCubicEquation(
 //				relativeVelocity,
@@ -216,14 +217,16 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 				&solution
 			)) {
 				if ((0 <= solution.getY()  &&  solution.getY() <= 1)  &&  (0 <= solution.getZ()  &&  solution.getZ() <= 1)) {
-					if (0 <= solution.getX()  &&  solution.getX() < result->getDist()) {
-						Vector crashSpot = (obj1->getLineRVertex(i) * (1 - solution.getY())) + (obj1->getLineLVertex(i) * solution.getY());
-						result->setObjLineAndLine(obj1, obj2, i, j);
-						result->setDist(solution.getX());
-						result->setCrashSpot(crashSpot);
-						result->setRelativeVelocity(relativeVelocity + relativeOmega);
-						result->setResult(CrashResult::LINE_AND_LINE);
-//						return;
+					if (0.0 <= solution.getX()  &&  solution.getX() < 1.0) {
+						if (solution.getX() < result->getDist()) {
+							Vector crashSpot = (obj1->getLineRVertex(i) * (1 - solution.getY())) + (obj1->getLineLVertex(i) * solution.getY());
+							result->setObjLineAndLine(obj1, obj2, i, j);
+							result->setDist(solution.getX());
+							result->setCrashSpot(crashSpot);
+//						result->setRelativeVelocity(relativeVelocity + relativeOmega);
+							result->setResult(CrashResult::LINE_AND_LINE);
+						}
+						result->addTangency();
 					}
 				}
 
@@ -231,7 +234,6 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 		}
 	}
 
-//	result->setResult(false);
 }
 
 void Field::CrashEvent::reflectPlgnAndVrtx(CrashResult* result)
@@ -268,20 +270,33 @@ void Field::CrashEvent::reflectLineAndLine(CrashResult* result)
 void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& p, const Vector& q, CrashResult* result)
 {
 	Vector omega = field->object[3]->getOmega();
-	std::cerr << omega.getX() << " : " << omega.getY() << " : " << omega.getZ() << "\n";
-	std::cerr << "idx : " << result->getVrtxIdx() << "\n";
 
 	Vector base = p % q;
 	base /= base.getMagnitude();
 
-	float relativeVelocity = result->getRelativeVelocity() * base;
+//	float relativeVelocity = result->getRelativeVelocity() * base;
 
-	if (-ZERO_VELOCITY < relativeVelocity  &&  relativeVelocity < ZERO_VELOCITY) {
-		std::cerr << "stick\n";
-		Force* stickForce = new StickForce(base, obj1, obj2, *result);
-		field->addForce(stickForce);
+	if (result->getRelativeSpeed() < ZERO_VELOCITY) {//relative vellocity should be calculated more exactly
+		Force* stickForce;
+		switch (result->getTangencyNum()) {
+		case 2 :
+//			std::cerr << "undefined\n";
+		case 1 :
+//			std::cerr << "stick\n";
+			stickForce = new StickForce(base, obj1, obj2, *result);
+			field->addForce(stickForce);
+			break;
+		case 0 :
+//			std::cerr << "undefined more\n";
+			break;
+		default :
+			std::cerr << "coming!!!!!!!!!!!!!!!!!!!!!!!\n";
+			obj1->stop();
+			obj2->stop();
+			break;
+		}
 	} else {
-		std::cerr << "repulsion\n";
+//		std::cerr << "repulsion\n";
 		Force* impulse = new Impulse(base, result->getCrashSpot(), obj1, obj2);
 		field->addForce(impulse);
 	}

@@ -1,6 +1,7 @@
 #include "MoveEvent.h"
 #include "Sight.h"
 #include "Object.h"
+#include "ObjectStatus.h"
 #include "Player.h"
 #include "Gunner.h"
 #include "Define.h"
@@ -13,7 +14,9 @@ void Field::MoveEvent::exec(void)
 {
 	bool signal;
 
-	for (short i = 0  ;  i < field->object.length()  ;  i++) {
+	for (short i = 0; i < field->object.length(); i++) {
+		if (field->object[i]->getStatus()->isReadyCrash())
+			continue;
 		switch (field->object[i]->whichClass()) {
 			case 'G' : {
 				Gunner* gunner = dynamic_cast<Gunner*> (field->object[i]);

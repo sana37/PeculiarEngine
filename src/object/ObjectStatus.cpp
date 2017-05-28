@@ -2,11 +2,11 @@
 #include "Object.h"
 #include "Define.h"
 
-ObjectStatus::ObjectStatus(void) : attachedObjects(FIRST_ATTACH_MAX)
+ObjectStatus::ObjectStatus(void) : attachedObjects(FIRST_ATTACH_MAX), readyCrash(false)
 {
 }
 
-ObjectStatus::ObjectStatus(const ObjectStatus& status) : attachedObjects(status.attachedObjects)
+ObjectStatus::ObjectStatus(const ObjectStatus& status) : attachedObjects(status.attachedObjects), readyCrash(status.readyCrash)
 {
 }
 
@@ -30,4 +30,19 @@ void ObjectStatus::detach(Object* object)
 			break;
 		}
 	}
+}
+
+bool ObjectStatus::isReadyCrash(void)
+{
+	return readyCrash;
+}
+
+void ObjectStatus::setReadyCrash(void)
+{
+	readyCrash = true;
+}
+
+void ObjectStatus::setDoneCrash(void)
+{
+	readyCrash = false;
 }
