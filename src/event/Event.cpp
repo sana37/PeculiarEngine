@@ -5,6 +5,12 @@ Field::Event::Event(void)
 	execFlag = true;
 }
 
+void Field::Event::execIfEnabled(void)
+{
+	if (execFlag)
+		exec();
+}
+
 void Field::Event::enable(void)
 {
 	execFlag = true;

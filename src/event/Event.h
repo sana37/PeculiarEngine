@@ -9,6 +9,7 @@ public:
 	Event(void);
 
 	virtual void exec(void) = 0;
+	void execIfEnabled(void);
 	void enable(void);
 	void disable(void);
 	bool isEnabled(void);

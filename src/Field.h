@@ -50,7 +50,10 @@ private:
 	QTimer* autoGeneration;
 	Array<Object*> object;
 	Array<Force*> force;
-	Array<Event*> event;
+	Event* sightMoveEvent;
+	Event* forceEvent;
+	Event* crashEvent;
+	Event* moveEvent;
 
 
 	short deadObjectIndex[100];

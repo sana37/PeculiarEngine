@@ -21,7 +21,7 @@
 #include <QTimer>
 #include <iostream>
 
-Field::Field(void) : event(EVENT_NUM)
+Field::Field(void)
 {
 	std::cerr << "Hello world\n";
 
@@ -41,10 +41,10 @@ Field::Field(void) : event(EVENT_NUM)
 
 	CrashKeeper::getInstance(&object);
 
-	event.add(new SightMoveEvent());
-	event.add(new ForceEvent());
-	event.add(new CrashEvent());
-	event.add(new MoveEvent());
+	sightMoveEvent = new SightMoveEvent();
+	forceEvent = new ForceEvent();
+	crashEvent = new CrashEvent();
+	moveEvent = new MoveEvent();
 
 ///
 //	for (short i = 3  ;  i < 7  ;  i++) {
@@ -125,24 +125,25 @@ void Field::open(void)
 
 void Field::execTimeEvent(void)
 {
-	for (short i = 0  ;  i < event.length()  ;  i++) {
-		if (event[i]->isEnabled())
-			event[i]->exec();
-	}
+	sightMoveEvent->execIfEnabled();
+	forceEvent->execIfEnabled();
+	crashEvent->execIfEnabled();
+	moveEvent->execIfEnabled();
+
 	sight->updateGL();
 }
 
 void Field::timeControl(void)
 {
-//event[0] is always enabled
-	if (event[1]->isEnabled()) {
-		for (short i = 1; i < EVENT_NUM; i++) {
-			event[i]->disable();
-		}
+//sightMoveEvent is always enabled
+	if (forceEvent->isEnabled()) {
+		forceEvent->disable();
+		crashEvent->disable();
+		moveEvent->disable();
 	} else {
-		for (short i = 1; i < EVENT_NUM; i++) {
-			event[i]->enable();
-		}
+		forceEvent->enable();
+		crashEvent->enable();
+		moveEvent->enable();
 	}
 }
 

@@ -3,7 +3,6 @@
 
 /*Field*/
 //#define OBJECT_NUM	7
-#define EVENT_NUM	4
 #define TIME_UNIT	10	//depended on by GRAVITY
 
 /*Sight*/
