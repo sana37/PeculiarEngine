@@ -140,7 +140,43 @@ bool Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 	}
 
 }
+/*
+void Field::CrashEvent::judgePlgnAndLine(Object* objPlgn, Object* objLine, CrashResult* result)
+{
+	short plgnNum = objPlgn->getPolygonNum();
+	short lineNum = objLine->getLineNum();
 
+	Vector solution;
+
+	for (short j = 0; j < lineNum; j++) {
+		short count = 0;
+
+		for (short i = 0; i < plgnNum; i++) {
+			if (Calculater::solveCubicEquation(
+				objLine->getLineRVertex(j) - objLine->getLineLVertex(j),
+				objPlgn->getPolygon1Vertex(i) - objPlgn->getPolygon3Vertex(i),
+				objPlgn->getPolygon2Vertex(i) - objPlgn->getPolygon3Vertex(i),
+				objLine->getLineRVertex(j) - objPlgn->getPolygon3Vertex(i),
+				&solution
+			)) {
+				if ((0 <= solution.getX()  &&  solution.getX() <= 1)  &&
+					(0 <= solution.getY()  &&  solution.getY() <= 1)  &&
+					(0 <= solution.getZ()  &&  solution.getZ() <= 1)
+				) {
+					count++;
+				}
+			}
+		}
+
+		switch (count) {
+		case 0:
+			break;
+		case 1:
+			
+		}
+	}
+}
+*/
 void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, CrashResult* result)
 {
 	short plgnNum = objPlgn->getPolygonNum();
@@ -283,11 +319,11 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 //			std::cerr << "undefined\n";
 		case 1 :
 //			std::cerr << "stick\n";
-			stickForce = new StickForce(base, obj1, obj2, *result);
+			stickForce = new StickForce(base, obj1, obj2, *result);//copying result costs too much
 			field->addForce(stickForce);
 			break;
-		case 0 :
-//			std::cerr << "undefined more\n";
+		case 0 ://this is not needed
+			std::cerr << "undefined more\n";
 			break;
 		default :
 			std::cerr << "coming!!!!!!!!!!!!!!!!!!!!!!!\n";

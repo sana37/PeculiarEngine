@@ -47,8 +47,7 @@ Field::Field(void) : event(EVENT_NUM)
 	event.add(new MoveEvent());
 
 ///
-//	for (short i = 3  ;  i < 7  ;  i++) {
-	for (short i = 3  ;  i < 4  ;  i++) {
+	for (short i = 3; i < object.length(); i++) {
 		Force* gravity = new Gravity(object[i]);
 		addForce(gravity);
 	}
@@ -67,6 +66,7 @@ Field::Field(void) : event(EVENT_NUM)
 /*
 	object[4]->moveAbsolute(6, 16, 6);
 //	object[4]->setVelocity(-0.03, 0.03, 0.08);
+	object[4]->setOmega(0.01, 0.01, 0);
 	object[4]->setVelocity(0, 0, 0);
 
 	object[5]->moveAbsolute(3, 13, 3);

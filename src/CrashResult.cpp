@@ -11,6 +11,7 @@ Field::CrashEvent::CrashResult::CrashResult(void) :
 	line2Idx(-1),
 	dist(1.0),
 	crashSpot(),
+	crashSpotSum(),
 	tangencyNum(0)
 //	relativeVelocity()
 {
@@ -27,6 +28,7 @@ Field::CrashEvent::CrashResult::CrashResult(const Field::CrashEvent::CrashResult
 	line2Idx = crashResult.line2Idx;
 	dist = crashResult.dist;
 	crashSpot = crashResult.crashSpot;
+	crashSpotSum = crashResult.crashSpotSum;
 	tangencyNum = crashResult.tangencyNum;
 //	relativeVelocity = crashResult.relativeVelocity;
 }
@@ -48,6 +50,7 @@ const Field::CrashEvent::CrashResult& Field::CrashEvent::CrashResult::operator=(
 	line2Idx = crashResult.line2Idx;
 	dist = crashResult.dist;
 	crashSpot = crashResult.crashSpot;
+	crashSpotSum = crashResult.crashSpotSum;
 	tangencyNum = crashResult.tangencyNum;
 //	relativeVelocity = crashResult.relativeVelocity;
 
@@ -83,6 +86,7 @@ void Field::CrashEvent::CrashResult::setDist(float dist)
 void Field::CrashEvent::CrashResult::setCrashSpot(const Vector& vector)
 {
 	crashSpot = vector;
+	crashSpotSum += crashSpot;
 }
 /*
 void Field::CrashEvent::CrashResult::setRelativeVelocity(const Vector& vector)
@@ -161,6 +165,11 @@ float Field::CrashEvent::CrashResult::getDist(void)
 Vector Field::CrashEvent::CrashResult::getCrashSpot(void)
 {
 	return crashSpot;
+}
+
+Vector Field::CrashEvent::CrashResult::getCrashCenter(void)
+{
+	return crashSpotSum / tangencyNum;
 }
 
 short Field::CrashEvent::CrashResult::getTangencyNum(void)

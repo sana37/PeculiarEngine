@@ -73,8 +73,8 @@ void StickForce::applyStaticForce(Object* attachedObj, Object* detachedObj)
 	if (relativeAcceleration < -ZERO_ACCELERATION  ||  ZERO_ACCELERATION < relativeAcceleration) {
 //		std::cerr << "static force is executed.\n";
 		Vector force = base * (detachedObj->getMass() * -relativeAcceleration);
-		applyDecomposedForce(detachedObj, force, result.getCrashSpot());
-		applyDecomposedForce(attachedObj, force * -1.0, result.getCrashSpot());
+		applyDecomposedForce(detachedObj, force, result.getCrashCenter());
+		applyDecomposedForce(attachedObj, force * -1.0, result.getCrashCenter());
 //		detachedObj->push(force);
 //		attachedObj->push(force * -1.0);
 		Vector velocity = detachedObj->getVelocity();
@@ -104,5 +104,5 @@ void StickForce::applyDecomposedForce(Object* obj, const Vector& force, const Ve
 
 Vector StickForce::getForcePoint(void)
 {
-	return result.getCrashSpot();
+	return result.getCrashCenter();
 }

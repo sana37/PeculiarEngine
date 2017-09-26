@@ -35,6 +35,7 @@ public:
 	short getLine2Idx(void);
 	float getDist(void);
 	Vector getCrashSpot(void);
+	Vector getCrashCenter(void);
 //	Vector getRelativeVelocity(void);
 	short getTangencyNum(void);
 	float getRelativeSpeed(void);
@@ -49,6 +50,7 @@ private:
 	short line2Idx;
 	float dist;
 	Vector crashSpot;
+	Vector crashSpotSum;
 	short tangencyNum;
 //	Vector relativeVelocity;
 };
