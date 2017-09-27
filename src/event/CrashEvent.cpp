@@ -24,44 +24,68 @@ void Field::CrashEvent::exec(void)
 
 void Field::CrashEvent::execFirstCrash(void)
 {
-	const Array< Pair<Object*> >& pairs = crashKeeper->getDetachedObjectsPairs();
+//	const Array< Pair<Object*> >& pairs = crashKeeper->getDetachedObjectsPairs();
+	int objectNum = field->object.length();
+	Array<Object*> crashedObjects;
 
-	for (short i = 0  ;  i < pairs.length()  ;  i++) {
+/*
+	for (short i = 0; i < pairs.length(); i++) {
 		Object* obj1 = pairs[i].getInstance1();
 		Object* obj2 = pairs[i].getInstance2();
-
-		if (obj1->isActive() == false  &&  obj2->isActive() == false)
-			continue;
-
-		if (canCrashObjSphere(obj1, obj2) == false)
-			continue;
-
-		if (reflectIfCrash(obj1, obj2)) {
-/*
-			short result = -1;
-			if (obj1->whichClass() == 'N'  &&  obj2->whichClass() == 'O'  &&  j >= 3) {
-				std::cerr << j << '\n';
-				NumberBox* numberBox = dynamic_cast<NumberBox*> (obj1);
-				Object* object = obj2;
-				result = NumberBox::decompose(&numberBox, &object);
-//				obj1 = numberBox;
-				field->object.set(i, numberBox);
-				field->object.set(j, object);
-				std::cerr << "change end\n";
-				field->reportScore(result);
-			}
-			if (obj1->whichClass() == 'O'  &&  obj2->whichClass() == 'N'  &&  i >= 3) {
-				std::cerr << i << '\n';
-				NumberBox* numberBox = dynamic_cast<NumberBox*> (obj2);
-				Object* object = obj1;
-				result = NumberBox::decompose(&numberBox, &object);
-//				obj2 = numberBox;
-				field->object.set(j, numberBox);
-				field->object.set(i, object);
-				std::cerr << "change end\n";
-				field->reportScore(result);
-			}
 */
+	for (short i = 0; i < (objectNum - 1); i++) {
+		Object* obj1 = field->object[i];
+
+		for (short j = i + 1; j < objectNum; j++) {
+			Object* obj2 = field->object[j];
+
+			if (obj1->isActive() == false  &&  obj2->isActive() == false)
+				continue;
+
+			if (canCrashObjSphere(obj1, obj2) == false)
+				continue;
+
+			short rejudgeCount = reflectIfCrash(obj1, obj2);
+			if (rejudgeCount > 0) {
+				std::cerr << "rejudge:" << rejudgeCount << "\n";
+
+				if (obj1->isFixed() == false  &&  crashedObjects.has(obj1) == false)	//should reduce calculation
+					crashedObjects.add(obj1);
+				if (obj2->isFixed() == false  &&  crashedObjects.has(obj2) == false)
+					crashedObjects.add(obj2);
+			}
+		}
+	}
+
+	for (short i = 0; i < crashedObjects.length(); i++) {
+		Object* obj1 = crashedObjects[i];
+		bool recrashed = false;
+
+		for (short j = 0; j < objectNum; j++) {
+			Object* obj2 = field->object[j];
+
+			if (obj1 == obj2)
+				continue;
+
+			if (obj1->isActive() == false  &&  obj2->isActive() == false)
+				continue;
+
+			if (canCrashObjSphere(obj1, obj2) == false)
+				continue;
+
+			short rejudgeCount = reflectIfCrash(obj1, obj2);
+			if (rejudgeCount > 0) {
+				std::cerr << "rejudge:" << rejudgeCount << "\n";
+				recrashed = true;
+
+				if (obj2->isFixed() == false  &&  crashedObjects.has(obj2) == false)	//should reduce calculation
+					crashedObjects.add(obj2);
+			}
+		}
+
+		if (recrashed == false) {
+			crashedObjects.remove(i);
+			i--;
 		}
 	}
 }
@@ -98,47 +122,28 @@ bool Field::CrashEvent::canCrashObjSphereAndVrtx(Object* obj, Vector vrtx)
 	return dist.getMagnitude() <= obj->getRadius();
 }
 
-bool Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
+short Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 {
 	CrashResult result;
 
 	judgePlgnAndVrtx(obj1, obj2, &result);
-/*
-	if (result.getResult() == true) {
-		reflectPlgnAndVrtx(obj1, obj2, &result);
-//		std::cerr << "A";
-		return true;
-	}
-*/
 	judgePlgnAndVrtx(obj2, obj1, &result);
-/*
-	if (result.getResult() == true) {
-		reflectPlgnAndVrtx(obj2, obj1, &result);
-//		std::cerr << "B";
-		return true;
-	}
-*/
 	judgeLineAndLine(obj1, obj2, &result);
-/*
-	if (result.getResult() == true) {
-		reflectLineAndLine(obj1, obj2, &result);
-//		std::cerr << "C";
-		return true;
-	}
-*/
+
 	switch (result.getResult()) {
 	case CrashResult::FAIL :
-		return false;
+		return 0;
 	case CrashResult::POLYGON_AND_VERTEX :
 		reflectPlgnAndVrtx(&result);
-		return true;
+		break;
 	case CrashResult::LINE_AND_LINE :
 		reflectLineAndLine(&result);
-		return true;
+		break;
 	default :
-		return false;
+		return 0;
 	}
 
+	return reflectIfCrash(obj1, obj2) + 1;
 }
 
 void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, CrashResult* result)
@@ -301,7 +306,6 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 //		std::cerr << "repulsion\n";
 		Impulse impulse(base, result->getCrashSpot(), obj1, obj2);
 		impulse.exec();
-		std::cerr << "one more:" << reflectIfCrash(obj1, obj2) << "\n";
 	}
 //	field->timeControl();
 

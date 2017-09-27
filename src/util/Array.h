@@ -22,6 +22,7 @@ public:
 	void removeIfMatchOnce(T);
 	void removeIfMatchAll(T);//if int == T ??
 	void removeDuplicated(void);
+	bool has(T);
 	int length(void) const;
 
 private:
@@ -176,6 +177,17 @@ void Array<T>::removeDuplicated(void)
 			}
 		}
 	}
+}
+
+template<typename T>
+bool Array<T>::has(T t)
+{
+	for (int i = 0; i < size; i++) {
+		if (array[i] == t)
+			return true;
+	}
+
+	return false;
 }
 
 template<typename T>
