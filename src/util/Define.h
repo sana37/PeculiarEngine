@@ -27,7 +27,7 @@
 
 
 /*CrashEvent*/
-#define ZERO_VELOCITY		0.05//too big
+#define ZERO_VELOCITY		0//0.05//too big
 #define ZERO_ACCELERATION	0.0001
 
 /*MoveEvent*/

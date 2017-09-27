@@ -43,7 +43,7 @@ public slots:
 private:
 	void addObject(Object*);
 	void addForce(Force*);
-	void finishForce(short);
+//	void finishForce(short);
 
 	Sight* sight;
 	QTimer* time;

@@ -271,11 +271,11 @@ void Field::addForce(Force* force)
 {
 	this->force.add(force);
 }
-
+/*
 void Field::finishForce(short idx)
 {
 	delete force[idx];
 	force.remove(idx);
 }
-
+*/
 Field* Field::field = NULL;

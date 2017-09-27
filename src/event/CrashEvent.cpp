@@ -277,6 +277,7 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 //	float relativeVelocity = result->getRelativeVelocity() * base;
 
 	if (result->getRelativeSpeed() < ZERO_VELOCITY) {//relative vellocity should be calculated more exactly
+		std::cerr << "stick\n";
 		Force* stickForce;
 		switch (result->getTangencyNum()) {
 		case 2 :
@@ -284,7 +285,8 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 		case 1 :
 //			std::cerr << "stick\n";
 			stickForce = new StickForce(base, obj1, obj2, *result);
-			field->addForce(stickForce);
+			stickForce->exec();
+			delete stickForce;
 			break;
 		case 0 :
 //			std::cerr << "undefined more\n";
@@ -297,8 +299,9 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 		}
 	} else {
 //		std::cerr << "repulsion\n";
-		Force* impulse = new Impulse(base, result->getCrashSpot(), obj1, obj2);
-		field->addForce(impulse);
+		Impulse impulse(base, result->getCrashSpot(), obj1, obj2);
+		impulse.exec();
+		std::cerr << "one more:" << reflectIfCrash(obj1, obj2) << "\n";
 	}
 //	field->timeControl();
 
