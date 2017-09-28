@@ -7,7 +7,10 @@
 
 /*Sight*/
 #define SPEED		0.15
-#define DOMAIN_MAX	29.85
+#define DOMAIN_MAX	45//29.85
+#define CEILING		60
+#define FLOOR		-5//0.15
+#define BAR_POS		29.85
 #define OMEGA		0.02
 
 /*CrashKeeper*/

@@ -54,6 +54,7 @@ public:
 	bool isFixed(void);
 	bool isVertexEmbody(short) const;
 	bool isPolygonEmbody(short) const;
+	bool isPolygonInside(short) const;
 
 
 	void setVertex(short, const Vector&);
@@ -116,12 +117,14 @@ private:
 	short* polygonG;
 	short* polygonB;
 
+
 	float radius;
 	float mass;
 	float inertiaMoment;
 	bool fixed;
 	bool* vertexEmbodyFlag;
 	bool* polygonEmbodyFlag;
+	bool* polygonInsideFlag;
 
 	ObjectStatus* status;
 

@@ -92,6 +92,7 @@ Object::Object(const char* fileName) :
 		polygonG = new short[polygonNum];
 		polygonB = new short[polygonNum];
 		polygonEmbodyFlag = new bool[polygonNum];
+		polygonInsideFlag = new bool[polygonNum];
 
 		while (fgetc(fp) != '+') ;
 		for (short i = 0  ;  i < polygonNum  ;  i++) {
@@ -118,6 +119,42 @@ Object::Object(const char* fileName) :
 				if (ch == '|')
 					polygonEmbodyFlag[i] = false;
 			}
+		}
+
+		for (short i = 0; i < polygonNum; i++) {
+			short penetratedPlgnNum = 0;
+			const Vector a1 = getPolygon1Vertex(i);
+			const Vector a2 = getPolygon2Vertex(i);
+			const Vector a3 = getPolygon3Vertex(i);
+			Vector n = (a2 - a1) % (a3 - a1);
+
+			for (short j = 0; j < polygonNum; j++) {
+				if (i == j)
+					continue;
+
+				const Vector b1 = getPolygon1Vertex(j);
+				const Vector b2 = getPolygon2Vertex(j);
+				const Vector b3 = getPolygon3Vertex(j);
+				Vector solution;
+
+				if (Calculater::solveCubicEquation(
+					b2 - b1,
+					b3 - b1,
+					n * -1.0,
+					(a1 + a2 + a3) / 3.0 - b1,
+					&solution
+				)) {
+					if ((0 <= solution.getX()  &&  solution.getX() <= 1)  &&
+						(0 <= solution.getY()  &&  solution.getY() <= 1)  &&
+						(0 < solution.getZ())
+					) {
+						penetratedPlgnNum++;
+					}
+				}
+			}
+
+			polygonInsideFlag[i] = penetratedPlgnNum % 2;
+
 		}
 
 
@@ -197,6 +234,7 @@ Object::Object(const Object& object)
 	polygonG = new short[polygonNum];
 	polygonB = new short[polygonNum];
 	polygonEmbodyFlag = new bool[polygonNum];
+	polygonInsideFlag = new bool[polygonNum];
 
 	for (short i = 0  ;  i < polygonNum  ;  i++) {
 		polygon1VertexIndex[i] = object.polygon1VertexIndex[i];
@@ -206,6 +244,7 @@ Object::Object(const Object& object)
 		polygonG[i] = object.polygonG[i];
 		polygonB[i] = object.polygonB[i];
 		polygonEmbodyFlag[i] = object.polygonEmbodyFlag[i];
+		polygonInsideFlag[i] = object.polygonInsideFlag[i];
 	}
 
 
@@ -234,6 +273,7 @@ Object::~Object(void)
 	delete[] polygonB;
 	delete[] vertexEmbodyFlag;
 	delete[] polygonEmbodyFlag;
+	delete[] polygonInsideFlag;
 	delete status;
 }
 
@@ -464,6 +504,11 @@ bool Object::isVertexEmbody(short vertexIndex) const
 bool Object::isPolygonEmbody(short polygonIndex) const
 {
 	return polygonEmbodyFlag[polygonIndex];
+}
+
+bool Object::isPolygonInside(short index) const
+{
+	return polygonInsideFlag[index];
 }
 
 

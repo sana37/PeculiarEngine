@@ -49,7 +49,7 @@ void Sight::update(void)
 
 	if ((-DOMAIN_MAX < X  &&  velocity.getX() < 0)  ||  (X < DOMAIN_MAX  &&  velocity.getX() > 0))
 		X += velocity.getX();
-	if ((0.15 < Y  &&  velocity.getY() < 0)  ||  (Y < 2 * DOMAIN_MAX  &&  velocity.getY() > 0))
+	if ((FLOOR < Y  &&  velocity.getY() < 0)  ||  (Y < CEILING  &&  velocity.getY() > 0))
 		Y += velocity.getY();
 	if ((-DOMAIN_MAX < Z  &&  velocity.getZ() < 0)  ||  (Z < DOMAIN_MAX  &&  velocity.getZ() > 0))
 		Z += velocity.getZ();
@@ -182,14 +182,14 @@ void Sight::paintGL(void)
 	glVertex3d(X + lookAt.getX() - (lookAtN.getX() / 50), Y + lookAt.getY() - (lookAtN.getY() / 50), Z + lookAt.getZ() - (lookAtN.getZ() / 50));
 
 	glColor3d(0, 0, 0);
-	glVertex3d( DOMAIN_MAX,  0,  DOMAIN_MAX);
-	glVertex3d( DOMAIN_MAX, 2 * DOMAIN_MAX,  DOMAIN_MAX);
-	glVertex3d( DOMAIN_MAX,  0, -DOMAIN_MAX);
-	glVertex3d( DOMAIN_MAX, 2 * DOMAIN_MAX, -DOMAIN_MAX);
-	glVertex3d(-DOMAIN_MAX,  0,  DOMAIN_MAX);
-	glVertex3d(-DOMAIN_MAX, 2 * DOMAIN_MAX,  DOMAIN_MAX);
-	glVertex3d(-DOMAIN_MAX,  0, -DOMAIN_MAX);
-	glVertex3d(-DOMAIN_MAX, 2 * DOMAIN_MAX, -DOMAIN_MAX);
+	glVertex3d( BAR_POS,  0,  BAR_POS);
+	glVertex3d( BAR_POS, 2 * BAR_POS,  BAR_POS);
+	glVertex3d( BAR_POS,  0, -BAR_POS);
+	glVertex3d( BAR_POS, 2 * BAR_POS, -BAR_POS);
+	glVertex3d(-BAR_POS,  0,  BAR_POS);
+	glVertex3d(-BAR_POS, 2 * BAR_POS,  BAR_POS);
+	glVertex3d(-BAR_POS,  0, -BAR_POS);
+	glVertex3d(-BAR_POS, 2 * BAR_POS, -BAR_POS);
 	glEnd();
 
 }

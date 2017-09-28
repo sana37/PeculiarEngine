@@ -28,13 +28,17 @@ Field::Field(void)
 	time = new QTimer;
 	autoGeneration = new QTimer;
 
+	std::cerr << "now, make objects\n";
+
 	object.add(new Object("res/ground0"));
 	object.add(new Object("res/sky1"));
 	object.add(new Gunner("res/player", "res/bullet"));
 
-	object.add(new Object("res/object2"));
+//	object.add(new Object("res/object2"));
 	object.add(new Object("res/object1"));
 //	object.add(new Object("res/object0"));
+
+	std::cerr << "object creation have done.\n";
 
 	sight = new Sight(&object, 2, &force);
 
@@ -62,14 +66,14 @@ Field::Field(void)
 	for (short i = 0; i < 10; i++)
 		object[3]->rotate();
 	object[3]->setOmega(0, 0, 0);
-
+/*
 	object[4]->moveAbsolute(6, 16, 6);
 	object[4]->setVelocity(0, 0, 0);
 	object[4]->setOmega(1, 1, 0);
 	for (short i = 0; i < 5; i++)
 		object[4]->rotate();
 	object[4]->setOmega(0, 0, 0);
-
+*/
 /*
 	object[5]->moveAbsolute(3, 13, 3);
 //	object[5]->setVelocity(0, -0.05, 0.03);

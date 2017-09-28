@@ -49,7 +49,7 @@ void Field::CrashEvent::execFirstCrash(void)
 				continue;
 
 			short rejudgeCount = reflectIfCrash(obj1, obj2);
-			if (rejudgeCount > 0) {
+			if (rejudgeCount != 0) {
 //				std::cerr << "rejudge:" << rejudgeCount << "\n";
 
 				if (obj1->isFixed() == false  &&  crashedObjects.has(obj1) == false)	//should reduce calculation
@@ -144,14 +144,10 @@ int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 		judgePlgnAndVrtx(obj2, obj1, &result);
 		judgeLineAndLine(obj1, obj2, &result);
 
-		if (count >= 5) {
-			std::cerr << "cannot reflect any more\n";
-			resolveCaught(obj1, obj2, &result);
-			break;
-		}
-
 		switch (result.getResult()) {
 		case CrashResult::FAIL :
+			if (count >= 5)
+				std::cerr << "success resolve!! 1\n";
 			return count;
 		case CrashResult::POLYGON_AND_VERTEX :
 			reflectPlgnAndVrtx(&result);
@@ -160,10 +156,20 @@ int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 			reflectLineAndLine(&result);
 			break;
 		default :
+			if (count >= 5)
+				std::cerr << "success resolve!! 2\n";
 			return count;
 		}
 
 		count++;
+		if (count >= 8) {
+			std::cerr << "cannot reflect any more\n";
+			break;
+		}
+		if (count >= 5) {
+			std::cerr << "let's resolve\n";
+			resolveCaught(obj1, obj2, &result);
+		}
 	}
 
 	return -1;
@@ -171,6 +177,95 @@ int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 
 void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* result)
 {
+	Vector v12 = calcCaughtDist(obj1, obj2);
+	Vector v21 = calcCaughtDist(obj2, obj1);
+	float absV12 = v12.getMagnitude();
+	float absV21 = v21.getMagnitude();
+
+	if (absV12 == 0  &&  absV21 == 0) {
+		if (obj1->isFixed() == false)
+			obj1->back();
+		if (obj2->isFixed() == false)
+			obj2->back();
+
+		std::cerr << "zero back\n";
+		return;
+	}
+
+	if (absV12 > absV21) {
+		if (obj2->isFixed() == false)
+			obj2->moveRelative(v12 * 1.1);
+		else
+			obj1->moveRelative(v12 * -1.1);
+	} else {
+		if (obj1->isFixed() == false)
+			obj1->moveRelative(v21 * 1.1);
+		else
+			obj2->moveRelative(v21 * -1.1);
+	}
+}
+
+Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
+{
+	short plgnNum = objPlgn->getPolygonNum();
+	short lineNum = objLine->getLineNum();
+
+	Vector solution;
+	Vector maxDist;
+
+	std::cerr << "penetrated:";
+
+	for (short j = 0; j < lineNum; j++) {
+		short count = 0;
+		const Vector vl = objLine->getLineLVertex(j);
+		const Vector vr = objLine->getLineRVertex(j);
+		Vector toOutside;
+
+		for (short i = 0; i < plgnNum; i++) {
+
+			if (objPlgn->isPolygonEmbody(i) == false) continue;
+
+			const Vector p1 = objPlgn->getPolygon1Vertex(i);
+			const Vector p2 = objPlgn->getPolygon2Vertex(i);
+			const Vector p3 = objPlgn->getPolygon3Vertex(i);
+
+			if (Calculater::solveCubicEquation(
+				vr - vl,
+				p1 - p3,
+				p2 - p3,
+				vr - p3,
+				&solution
+			)) {
+				if ((0 <= solution.getX()  &&  solution.getX() <= 1)  &&
+					(0 <= solution.getY()  &&  solution.getY() <= 1)  &&
+					(0 <= solution.getZ()  &&  solution.getZ() <= 1)
+				) {
+					count++;
+					Vector inside = (p2 - p1) % (p3 - p1);
+					inside *= (objPlgn->isPolygonInside(i) ? 1.0 : -1.0);
+
+					// () ? inside is vr : inside is vl;
+					toOutside = (inside * (vr - vl) >= 0) ? (vl - vr) * solution.getX() : (vr - vl) * (1 - solution.getX());
+				}
+			}
+		}
+
+		switch (count) {
+		case 0:
+			break;
+		case 1:
+			if (maxDist.getMagnitude() < toOutside.getMagnitude())
+				maxDist = toOutside;
+			break;
+		default:
+			break;
+		}
+		std::cerr << count << ", ";
+	}
+
+	std::cerr << "\n";
+
+	return maxDist;
 }
 
 void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, CrashResult* result)
