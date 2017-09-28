@@ -26,7 +26,7 @@ void Field::CrashEvent::execFirstCrash(void)
 {
 //	const Array< Pair<Object*> >& pairs = crashKeeper->getDetachedObjectsPairs();
 	int objectNum = field->object.length();
-	Array<Object*> crashedObjects;
+	Array<Object*> crashedObjects(objectNum);
 
 /*
 	for (short i = 0; i < pairs.length(); i++) {
@@ -39,6 +39,9 @@ void Field::CrashEvent::execFirstCrash(void)
 		for (short j = i + 1; j < objectNum; j++) {
 			Object* obj2 = field->object[j];
 
+			if (obj1->isFixed()  &&  obj2->isFixed())
+				continue;
+
 			if (obj1->isActive() == false  &&  obj2->isActive() == false)
 				continue;
 
@@ -47,7 +50,7 @@ void Field::CrashEvent::execFirstCrash(void)
 
 			short rejudgeCount = reflectIfCrash(obj1, obj2);
 			if (rejudgeCount > 0) {
-				std::cerr << "rejudge:" << rejudgeCount << "\n";
+//				std::cerr << "rejudge:" << rejudgeCount << "\n";
 
 				if (obj1->isFixed() == false  &&  crashedObjects.has(obj1) == false)	//should reduce calculation
 					crashedObjects.add(obj1);
@@ -57,37 +60,45 @@ void Field::CrashEvent::execFirstCrash(void)
 		}
 	}
 
-	for (short i = 0; i < crashedObjects.length(); i++) {
-		Object* obj1 = crashedObjects[i];
-		bool recrashed = false;
+	while (1) {
+		for (short i = 0; i < crashedObjects.length(); i++) {
+			Object* obj1 = crashedObjects[i];
+			bool recrashed = false;
 
-		for (short j = 0; j < objectNum; j++) {
-			Object* obj2 = field->object[j];
+			for (short j = 0; j < objectNum; j++) {
+				Object* obj2 = field->object[j];
 
-			if (obj1 == obj2)
-				continue;
+				if (obj1 == obj2)
+					continue;
 
-			if (obj1->isActive() == false  &&  obj2->isActive() == false)
-				continue;
+				if (obj1->isActive() == false  &&  obj2->isActive() == false)
+					continue;
 
-			if (canCrashObjSphere(obj1, obj2) == false)
-				continue;
+				if (canCrashObjSphere(obj1, obj2) == false)
+					continue;
 
-			short rejudgeCount = reflectIfCrash(obj1, obj2);
-			if (rejudgeCount > 0) {
-				std::cerr << "rejudge:" << rejudgeCount << "\n";
-				recrashed = true;
+				short rejudgeCount = reflectIfCrash(obj1, obj2);
+				if (rejudgeCount > 0) {
+	//				std::cerr << "rejudge:" << rejudgeCount << "\n";
+					recrashed = true;
 
-				if (obj2->isFixed() == false  &&  crashedObjects.has(obj2) == false)	//should reduce calculation
-					crashedObjects.add(obj2);
+					if (obj2->isFixed() == false  &&  crashedObjects.has(obj2) == false)	//should reduce calculation
+						crashedObjects.add(obj2);
+				}
+			}
+
+			if (recrashed == false) {
+				crashedObjects.remove(i);
+				i--;
 			}
 		}
 
-		if (recrashed == false) {
-			crashedObjects.remove(i);
-			i--;
-		}
+		if (crashedObjects.length() == 0)
+			break;
+		else
+			std::cerr << ".";
 	}
+
 }
 
 void Field::CrashEvent::execSecondCrash(void)
@@ -122,28 +133,44 @@ bool Field::CrashEvent::canCrashObjSphereAndVrtx(Object* obj, Vector vrtx)
 	return dist.getMagnitude() <= obj->getRadius();
 }
 
-short Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
+int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 {
-	CrashResult result;
+	int count = 0;
 
-	judgePlgnAndVrtx(obj1, obj2, &result);
-	judgePlgnAndVrtx(obj2, obj1, &result);
-	judgeLineAndLine(obj1, obj2, &result);
+	while (1) {
+		CrashResult result;
 
-	switch (result.getResult()) {
-	case CrashResult::FAIL :
-		return 0;
-	case CrashResult::POLYGON_AND_VERTEX :
-		reflectPlgnAndVrtx(&result);
-		break;
-	case CrashResult::LINE_AND_LINE :
-		reflectLineAndLine(&result);
-		break;
-	default :
-		return 0;
+		judgePlgnAndVrtx(obj1, obj2, &result);
+		judgePlgnAndVrtx(obj2, obj1, &result);
+		judgeLineAndLine(obj1, obj2, &result);
+
+		if (count >= 5) {
+			std::cerr << "cannot reflect any more\n";
+			resolveCaught(obj1, obj2, &result);
+			break;
+		}
+
+		switch (result.getResult()) {
+		case CrashResult::FAIL :
+			return count;
+		case CrashResult::POLYGON_AND_VERTEX :
+			reflectPlgnAndVrtx(&result);
+			break;
+		case CrashResult::LINE_AND_LINE :
+			reflectLineAndLine(&result);
+			break;
+		default :
+			return count;
+		}
+
+		count++;
 	}
 
-	return reflectIfCrash(obj1, obj2) + 1;
+	return -1;
+}
+
+void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* result)
+{
 }
 
 void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, CrashResult* result)

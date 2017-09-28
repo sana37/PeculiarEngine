@@ -38,7 +38,7 @@ Array<T>::Array(void)
 	array = new T[INITIAL_MAX];
 	max = INITIAL_MAX;
 	size = 0;
-	std::cerr << "Array: start " << max << "\n";
+//	std::cerr << "Array: start " << max << "\n";
 }
 
 template<typename T>
@@ -49,7 +49,7 @@ Array<T>::Array(int initialMax)
 	array = new T[initialMax];
 	max = initialMax;
 	size = 0;
-	std::cerr << "Array: start " << max << "\n";
+//	std::cerr << "Array: start " << max << "\n";
 }
 
 template<typename T>
@@ -62,7 +62,7 @@ Array<T>::Array(const Array<T>& ary)
 	for (int i = 0  ;  i < size  ;  i++) {
 		array[i] = ary.array[i];
 	}
-	std::cerr << "Array:   copy " << max << "\n";
+//	std::cerr << "Array:   copy " << max << "\n";
 }
 
 template<typename T>
@@ -70,7 +70,7 @@ Array<T>::~Array(void)
 {
 	delete[] array;
 //	if (size != max  &&  size != 0)
-		std::cerr << "Array: size " << size << " , max " << max << "\n";
+//		std::cerr << "Array: size " << size << " , max " << max << "\n";
 }
 
 template<typename T>

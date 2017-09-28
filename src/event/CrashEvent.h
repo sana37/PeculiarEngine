@@ -22,7 +22,8 @@ private:
 	void execSecondCrash(void);
 	bool canCrashObjSphere(Object*, Object*);
 	bool canCrashObjSphereAndVrtx(Object*, Vector);
-	short reflectIfCrash(Object*, Object*);
+	int reflectIfCrash(Object*, Object*);
+	void resolveCaught(Object*, Object*, CrashResult*);
 	void judgePlgnAndVrtx(Object*, Object*, CrashResult*);
 	void judgeLineAndLine(Object*, Object*, CrashResult*);
 	void reflectPlgnAndVrtx(CrashResult*);
