@@ -457,10 +457,12 @@ Vector Object::getDeltaLine(short idx)
 
 Vector Object::getPlgnInside(short idx)
 {
-	return (
+	Vector inside = (
 		(vertex[polygon2VertexIndex[idx]] - vertex[polygon1VertexIndex[idx]])
 		% (vertex[polygon3VertexIndex[idx]] - vertex[polygon1VertexIndex[idx]])
 		) * (isPolygonInside(idx) ? 1.0 : -1.0);
+
+	return inside / inside.getMagnitude();
 }
 
 

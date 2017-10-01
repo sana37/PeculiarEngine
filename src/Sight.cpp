@@ -199,7 +199,7 @@ void Sight::paintObject(Object* modelObject)
 	short num = modelObject->getPolygonNum();
 
 	glBegin(GL_TRIANGLES);//time loss?
-	for (short i = 0  ;  i < num  ;  i++) {
+	for (short i = 0; i < num; i++) {
 		Vector temp;
 
 		glColor3s(modelObject->getPolygonR(i), modelObject->getPolygonG(i), modelObject->getPolygonB(i));
@@ -212,6 +212,18 @@ void Sight::paintObject(Object* modelObject)
 		glVertex3d(temp.getX(), temp.getY(), temp.getZ());
 	}
 	glEnd();
+/*
+	glColor3s(0, 0, 0);
+	glBegin(GL_LINES);
+	for (short i = 0; i < num; i++) {
+		Vector p1 = (modelObject->getPolygon1Vertex(i) + modelObject->getPolygon2Vertex(i) + modelObject->getPolygon3Vertex(i)) / 3.0;
+		Vector p2 = p1 - (modelObject->getPlgnInside(i));
+
+		glVertex3d(p1.getX(), p1.getY(), p1.getZ());
+		glVertex3d(p2.getX(), p2.getY(), p2.getZ());
+	}
+	glEnd();
+*/
 }
 
 void Sight::paintCrashSpot(void)

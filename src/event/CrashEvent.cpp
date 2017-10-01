@@ -167,7 +167,7 @@ int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 			break;
 		}
 		if (count >= 5) {
-			std::cerr << "let's resolve\n";
+//			std::cerr << "let's resolve\n";
 			resolveCaught(obj1, obj2, &result);
 		}
 	}
@@ -188,7 +188,7 @@ void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* r
 		if (obj2->isFixed() == false)
 			obj2->back();
 */
-		std::cerr << "zero back\n";
+//		std::cerr << "zero back\n";
 //		field->timeControl();//
 		return;
 	}
@@ -264,7 +264,10 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 			Vector inside = objPlgn->getPlgnInside(plgnIdList[0]);
 
 			// () ? inside is R : inside is L;
-			Vector dist = (inside * lr >= 0) ? (lr * (-1.0 * distList[0])) : (lr * (1 - distList[0]));
+//			Vector dist = (inside * lr >= 0) ? (lr * (-1.0 * distList[0])) : (lr * (1 - distList[0]));
+			Vector insideOfLine = (inside * lr >= 0) ? (lr * (-1.0 * distList[0])) : (lr * (1 - distList[0]));
+			Vector dist = inside * (insideOfLine * inside);
+			std::cerr << dist.getMagnitude() << ", ";
 
 			if (maxDist.getMagnitude() < dist.getMagnitude())
 				maxDist = dist;
@@ -283,7 +286,7 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 //		std::cerr << count << ", ";
 	}
 
-//	std::cerr << "\n";
+	std::cerr << "\n";
 
 	return maxDist;
 }
