@@ -167,7 +167,6 @@ int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 			break;
 		}
 		if (count >= 5) {
-//			std::cerr << "let's resolve\n";
 			resolveCaught(obj1, obj2, &result);
 		}
 	}
@@ -196,21 +195,16 @@ void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* r
 	if (absV12 > absV21) {
 		if (obj2->isFixed() == false) {
 			obj2->moveRelative(v12 * 1.1);
-			std::cerr << "1\n";
 		} else {
 			obj1->moveRelative(v12 * -1.1);
-			std::cerr << "2\n";
 		}
 	} else {
 		if (obj1->isFixed() == false) {
 			obj1->moveRelative(v21 * 1.1);
-			std::cerr << "3\n";
 		} else {
 			obj2->moveRelative(v21 * -1.1);
-			std::cerr << "4\n";
 		}
 	}
-	field->timeControl();//
 	std::cerr << obj1->getName() << ", " << obj2->getName() << "\n";
 }
 
@@ -222,14 +216,12 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 	Vector solution;
 	Vector maxDist;
 
-//	std::cerr << "penetrated:";
-
 	for (short j = 0; j < lineNum; j++) {
 		short count = 0;
 		const Vector vr = objLine->getLineRVertex(j);
 		Vector lr = objLine->getLineRVertex(j) - objLine->getLineLVertex(j);
 		Array<int> plgnIdList;
-		Array<int> distList;
+		Array<float> distList;
 
 		for (short i = 0; i < plgnNum; i++) {
 
@@ -264,10 +256,8 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 			Vector inside = objPlgn->getPlgnInside(plgnIdList[0]);
 
 			// () ? inside is R : inside is L;
-//			Vector dist = (inside * lr >= 0) ? (lr * (-1.0 * distList[0])) : (lr * (1 - distList[0]));
 			Vector insideOfLine = (inside * lr >= 0) ? (lr * (-1.0 * distList[0])) : (lr * (1 - distList[0]));
 			Vector dist = inside * (insideOfLine * inside);
-			std::cerr << dist.getMagnitude() << ", ";
 
 			if (maxDist.getMagnitude() < dist.getMagnitude())
 				maxDist = dist;
@@ -283,10 +273,7 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 		default:
 			break;
 		}
-//		std::cerr << count << ", ";
 	}
-
-	std::cerr << "\n";
 
 	return maxDist;
 }
