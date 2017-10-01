@@ -10,13 +10,15 @@ Object::Object(const char* fileName) :
 	omegaVector(Vector(0, 1, 0)),
 	omega(0),
 	gravityCenter(Vector()),
-	fixed(false)
+	fixed(false),
+	name(fileName)
 {
 	radius = 0;
 	isDominated = false;
 	status = new ObjectStatus();
 
 	FILE* fp = fopen(fileName, "r");
+//	printf(fileName);
 
 	if (fp != NULL) {
 		while (fgetc(fp) != ':') ;
@@ -141,12 +143,13 @@ Object::Object(const char* fileName) :
 					b2 - b1,
 					b3 - b1,
 					n * -1.0,
-					(a1 + a2 + a3) / 3.0 - b1,
+					(a1 + (a2 * 2) + (a3 * 3)) / 6.0 - b1,
 					&solution
 				)) {
-					if ((0 <= solution.getX()  &&  solution.getX() <= 1)  &&
-						(0 <= solution.getY()  &&  solution.getY() <= 1)  &&
-						(0 < solution.getZ())
+					if (0 <= solution.getX()  &&
+						0 <= solution.getY()  &&
+						solution.getX() + solution.getY() <= 1  &&
+						0 < solution.getZ()
 					) {
 						penetratedPlgnNum++;
 					}
@@ -154,8 +157,10 @@ Object::Object(const char* fileName) :
 			}
 
 			polygonInsideFlag[i] = penetratedPlgnNum % 2;
-
+//			printf("%d: %d\n", i, polygonInsideFlag[i]);
 		}
+
+//		printf("\n");
 
 
 		while (fgetc(fp) != '*') ;
@@ -203,7 +208,7 @@ Object::Object(const char* fileName) :
 	}
 }
 
-Object::Object(const Object& object)
+Object::Object(const Object& object) : name(object.name)
 {
 	vertexNum = object.vertexNum;
 	lineNum = object.lineNum;
@@ -424,6 +429,32 @@ Vector Object::getLineBasedOnG(short lineIdx)
 //	return vertex[lineLVertexIndex[lineIdx]] - gravityCenter;
 }
 
+Vector Object::getDeltaVertex(short idx)
+{
+	Vector nextVertex = vertex[idx];
+	Calculater::rotateRad(&nextVertex, gravityCenter, omegaVector, omega);
+
+	return velocity + (nextVertex - vertex[idx]);
+}
+
+Vector Object::getDeltaPolygon(short idx)
+{
+	Vector R = getPlgnBasedOnG(idx);
+	Vector nextR = R;
+	Calculater::rotateRad(&nextR, Vector(0, 0, 0), omegaVector, omega);
+
+	return velocity + (nextR - R);
+}
+
+Vector Object::getDeltaLine(short idx)
+{
+	Vector R = getLineBasedOnG(idx);
+	Vector nextR = R;
+	Calculater::rotateRad(&nextR, Vector(0, 0, 0), omegaVector, omega);
+
+	return velocity + (nextR - R);
+}
+
 Vector Object::getPlgnInside(short idx)
 {
 	return (
@@ -492,6 +523,11 @@ char Object::whichClass(void)
 ObjectStatus* Object::getStatus(void)
 {
 	return status;
+}
+
+const char* Object::getName(void)
+{
+	return name;
 }
 
 bool Object::isActive(void)

@@ -183,27 +183,35 @@ void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* r
 	float absV21 = v21.getMagnitude();
 
 	if (absV12 == 0  &&  absV21 == 0) {
-		if (obj1->isFixed() == false)
+/*		if (obj1->isFixed() == false)
 			obj1->back();
 		if (obj2->isFixed() == false)
 			obj2->back();
-
+*/
 		std::cerr << "zero back\n";
 //		field->timeControl();//
 		return;
 	}
 
 	if (absV12 > absV21) {
-		if (obj2->isFixed() == false)
+		if (obj2->isFixed() == false) {
 			obj2->moveRelative(v12 * 1.1);
-		else
+			std::cerr << "1\n";
+		} else {
 			obj1->moveRelative(v12 * -1.1);
+			std::cerr << "2\n";
+		}
 	} else {
-		if (obj1->isFixed() == false)
+		if (obj1->isFixed() == false) {
 			obj1->moveRelative(v21 * 1.1);
-		else
+			std::cerr << "3\n";
+		} else {
 			obj2->moveRelative(v21 * -1.1);
+			std::cerr << "4\n";
+		}
 	}
+	field->timeControl();//
+	std::cerr << obj1->getName() << ", " << obj2->getName() << "\n";
 }
 
 Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
@@ -214,7 +222,7 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 	Vector solution;
 	Vector maxDist;
 
-	std::cerr << "penetrated:";
+//	std::cerr << "penetrated:";
 
 	for (short j = 0; j < lineNum; j++) {
 		short count = 0;
@@ -239,8 +247,7 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 				&solution
 			)) {
 				if ((0 <= solution.getX()  &&  solution.getX() <= 1)  &&
-					(0 <= solution.getY()  &&  solution.getY() <= 1)  &&
-					(0 <= solution.getZ()  &&  solution.getZ() <= 1)  &&
+					(0 <= solution.getY()  &&  0 <= solution.getZ())  &&
 					(solution.getY() + solution.getZ() <= 1)
 				) {
 					count++;
@@ -257,7 +264,7 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 			Vector inside = objPlgn->getPlgnInside(plgnIdList[0]);
 
 			// () ? inside is R : inside is L;
-			Vector dist = (inside * lr >= 0) ? lr * (-1.0 * distList[0]) : lr * (1 - distList[0]);
+			Vector dist = (inside * lr >= 0) ? (lr * (-1.0 * distList[0])) : (lr * (1 - distList[0]));
 
 			if (maxDist.getMagnitude() < dist.getMagnitude())
 				maxDist = dist;
@@ -273,10 +280,10 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 		default:
 			break;
 		}
-		std::cerr << count << ", ";
+//		std::cerr << count << ", ";
 	}
 
-	std::cerr << "\n";
+//	std::cerr << "\n";
 
 	return maxDist;
 }
@@ -285,8 +292,6 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 {
 	short plgnNum = objPlgn->getPolygonNum();
 	short vrtxNum = objVrtx->getVertexNum();
-
-	Vector relativeVelocity = objPlgn->getVelocity() - objVrtx->getVelocity();
 
 	for (short j = 0; j < vrtxNum; j++) {
 
@@ -298,20 +303,19 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 //			std::cerr << '_';
 		}
 
-		Vector vrtxVelocity = objVrtx->getOmega() % objVrtx->getVrtxBasedOnG(j);
+		Vector deltaVertex = objVrtx->getDeltaVertex(j);
 
 		for (short i = 0; i < plgnNum; i++) {
 
 			if (objPlgn->isPolygonEmbody(i) == false) continue;
 
-			Vector relativeOmega = (objPlgn->getOmega() % objPlgn->getPlgnBasedOnG(i)) - vrtxVelocity;
+			Vector deltaPolygon = objPlgn->getDeltaPolygon(i);
 			Vector solution;
 
 			if (Calculater::solveCubicEquation(
 				objPlgn->getPolygon2Vertex(i) - objPlgn->getPolygon1Vertex(i),
 				objPlgn->getPolygon3Vertex(i) - objPlgn->getPolygon1Vertex(i),
-//				relativeVelocity,
-				relativeVelocity + relativeOmega,
+				deltaPolygon - deltaVertex,
 				objVrtx->getVertex(j) - objPlgn->getPolygon1Vertex(i),
 				&solution
 			)) {
@@ -321,7 +325,6 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 							result->setObjPlgnAndVrtx(objPlgn, objVrtx, i, j);
 							result->setDist(solution.getZ());
 							result->setCrashSpot(objVrtx->getVertex(j));
-			//			result->setRelativeVelocity(relativeVelocity + relativeOmega);
 							result->setResult(CrashResult::POLYGON_AND_VERTEX);
 						}
 						result->addTangency();
@@ -338,19 +341,16 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 	short lineNum1 = obj1->getLineNum();
 	short lineNum2 = obj2->getLineNum();
 
-	Vector relativeVelocity = obj1->getVelocity() - obj2->getVelocity();
-
 	for (short i = 0; i < lineNum1; i++) {
 		Vector obj1Line = obj1->getLineLVertex(i) - obj1->getLineRVertex(i);
-		Vector line1Velocity = obj1->getOmega() % obj1->getLineBasedOnG(i);//naming sense... and reduce calculation
+		Vector deltaLine1 = obj1->getDeltaLine(i);
 
 		for (short j = 0; j < lineNum2; j++) {
 			Vector solution;
-			Vector relativeOmega = line1Velocity - (obj2->getOmega() % obj2->getLineBasedOnG(j));
+			Vector deltaLine2 = obj2->getDeltaLine(j);
 
 			if (Calculater::solveCubicEquation(
-//				relativeVelocity,
-				relativeVelocity + relativeOmega,
+				deltaLine1 - deltaLine2,
 				obj1Line,
 				obj2->getLineRVertex(j) - obj2->getLineLVertex(j),
 				obj2->getLineRVertex(j) - obj1->getLineRVertex(i),
@@ -363,7 +363,6 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 							result->setObjLineAndLine(obj1, obj2, i, j);
 							result->setDist(solution.getX());
 							result->setCrashSpot(crashSpot);
-//						result->setRelativeVelocity(relativeVelocity + relativeOmega);
 							result->setResult(CrashResult::LINE_AND_LINE);
 						}
 						result->addTangency();

@@ -34,6 +34,10 @@ public:
 	Vector getPlgnBasedOnG(short);
 	Vector getLineBasedOnG(short);
 
+	Vector getDeltaVertex(short);
+	Vector getDeltaPolygon(short);
+	Vector getDeltaLine(short);
+
 	Vector getPlgnInside(short);
 
 	float getRadius(void) const;
@@ -51,6 +55,7 @@ public:
 
 	virtual char whichClass(void);
 	ObjectStatus* getStatus(void);
+	const char* getName(void);
 
 	bool isActive(void);
 	bool isFixed(void);
@@ -129,6 +134,7 @@ private:
 	bool* polygonInsideFlag;
 
 	ObjectStatus* status;
+	const char* name;
 
 };
 
