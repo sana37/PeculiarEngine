@@ -18,7 +18,6 @@ Object::Object(const char* fileName) :
 	status = new ObjectStatus();
 
 	FILE* fp = fopen(fileName, "r");
-//	printf(fileName);
 
 	if (fp != NULL) {
 		while (fgetc(fp) != ':') ;
@@ -157,10 +156,8 @@ Object::Object(const char* fileName) :
 			}
 
 			polygonInsideFlag[i] = penetratedPlgnNum % 2;
-//			printf("%d: %d\n", i, polygonInsideFlag[i]);
 		}
 
-//		printf("\n");
 
 
 		while (fgetc(fp) != '*') ;

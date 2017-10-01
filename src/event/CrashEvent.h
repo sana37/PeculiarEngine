@@ -23,7 +23,7 @@ private:
 	bool canCrashObjSphere(Object*, Object*);
 	bool canCrashObjSphereAndVrtx(Object*, Vector);
 	int reflectIfCrash(Object*, Object*);
-	void resolveCaught(Object*, Object*, CrashResult*);
+	bool resolveCaught(Object*, Object*);
 	Vector calcCaughtDist(Object*, Object*);
 	void judgePlgnAndVrtx(Object*, Object*, CrashResult*);
 	void judgeLineAndLine(Object*, Object*, CrashResult*);

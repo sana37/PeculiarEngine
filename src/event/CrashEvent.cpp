@@ -137,6 +137,8 @@ int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 {
 	int count = 0;
 
+	resolveCaught(obj1, obj2);
+
 	while (1) {
 		CrashResult result;
 
@@ -146,8 +148,6 @@ int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 
 		switch (result.getResult()) {
 		case CrashResult::FAIL :
-			if (count >= 5)
-				std::cerr << "success resolve!! 1\n";
 			return count;
 		case CrashResult::POLYGON_AND_VERTEX :
 			reflectPlgnAndVrtx(&result);
@@ -155,26 +155,21 @@ int Field::CrashEvent::reflectIfCrash(Object* obj1, Object* obj2)
 		case CrashResult::LINE_AND_LINE :
 			reflectLineAndLine(&result);
 			break;
-		default :
-			if (count >= 5)
-				std::cerr << "success resolve!! 2\n";
-			return count;
 		}
 
 		count++;
 		if (count >= 8) {
-			std::cerr << "cannot reflect any more\n";
+//			std::cerr << "cannot reflect any more\n";
 			break;
 		}
-		if (count >= 5) {
-			resolveCaught(obj1, obj2, &result);
-		}
+		if (count >= 4)
+			resolveCaught(obj1, obj2);
 	}
 
 	return -1;
 }
 
-void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* result)
+bool Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2)
 {
 	Vector v12 = calcCaughtDist(obj1, obj2);
 	Vector v21 = calcCaughtDist(obj2, obj1);
@@ -189,7 +184,7 @@ void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* r
 */
 //		std::cerr << "zero back\n";
 //		field->timeControl();//
-		return;
+		return false;
 	}
 
 	if (absV12 > absV21) {
@@ -205,7 +200,8 @@ void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* r
 			obj2->moveRelative(v21 * -1.1);
 		}
 	}
-	std::cerr << obj1->getName() << ", " << obj2->getName() << "\n";
+//	std::cerr << obj1->getName() << ", " << obj2->getName() << "\n";
+	return true;
 }
 
 Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)

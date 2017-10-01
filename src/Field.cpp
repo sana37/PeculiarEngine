@@ -35,8 +35,8 @@ Field::Field(void)
 	object.add(new Gunner("res/player", "res/bullet"));
 
 	object.add(new Object("res/object2"));
-//	object.add(new Object("res/object2"));
-//	object.add(new Object("res/object1"));
+	object.add(new Object("res/object1"));
+	object.add(new Object("res/object2"));
 //	object.add(new Object("res/object0"));
 
 	std::cerr << "object creation have done.\n";
@@ -67,14 +67,14 @@ Field::Field(void)
 	for (short i = 0; i < 10; i++)
 		object[3]->rotate();
 	object[3]->setOmega(0, 0, 0);
-/*
+
 	object[4]->moveAbsolute(8, 10, 0);
 	object[4]->setVelocity(0, 0, 0);
 	object[4]->setOmega(0.1, 0.1, 0);
 	for (short i = 0; i < 1; i++)
 		object[4]->rotate();
 	object[4]->setOmega(0, 0, 0);
-*/
+
 /*
 	object[5]->moveAbsolute(3, 13, 3);
 //	object[5]->setVelocity(0, -0.05, 0.03);
