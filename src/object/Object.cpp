@@ -424,6 +424,14 @@ Vector Object::getLineBasedOnG(short lineIdx)
 //	return vertex[lineLVertexIndex[lineIdx]] - gravityCenter;
 }
 
+Vector Object::getPlgnInside(short idx)
+{
+	return (
+		(vertex[polygon2VertexIndex[idx]] - vertex[polygon1VertexIndex[idx]])
+		% (vertex[polygon3VertexIndex[idx]] - vertex[polygon1VertexIndex[idx]])
+		) * (isPolygonInside(idx) ? 1.0 : -1.0);
+}
+
 
 float Object::getRadius(void) const
 {

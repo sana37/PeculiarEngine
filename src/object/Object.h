@@ -34,6 +34,8 @@ public:
 	Vector getPlgnBasedOnG(short);
 	Vector getLineBasedOnG(short);
 
+	Vector getPlgnInside(short);
+
 	float getRadius(void) const;
 	float getMass(void);
 	float getInertiaMoment(void);

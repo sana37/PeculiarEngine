@@ -189,6 +189,7 @@ void Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2, CrashResult* r
 			obj2->back();
 
 		std::cerr << "zero back\n";
+//		field->timeControl();//
 		return;
 	}
 
@@ -217,9 +218,10 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 
 	for (short j = 0; j < lineNum; j++) {
 		short count = 0;
-		const Vector vl = objLine->getLineLVertex(j);
 		const Vector vr = objLine->getLineRVertex(j);
-		Vector toOutside;
+		Vector lr = objLine->getLineRVertex(j) - objLine->getLineLVertex(j);
+		Array<int> plgnIdList;
+		Array<int> distList;
 
 		for (short i = 0; i < plgnNum; i++) {
 
@@ -230,7 +232,7 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 			const Vector p3 = objPlgn->getPolygon3Vertex(i);
 
 			if (Calculater::solveCubicEquation(
-				vr - vl,
+				lr,
 				p1 - p3,
 				p2 - p3,
 				vr - p3,
@@ -238,14 +240,12 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 			)) {
 				if ((0 <= solution.getX()  &&  solution.getX() <= 1)  &&
 					(0 <= solution.getY()  &&  solution.getY() <= 1)  &&
-					(0 <= solution.getZ()  &&  solution.getZ() <= 1)
+					(0 <= solution.getZ()  &&  solution.getZ() <= 1)  &&
+					(solution.getY() + solution.getZ() <= 1)
 				) {
 					count++;
-					Vector inside = (p2 - p1) % (p3 - p1);
-					inside *= (objPlgn->isPolygonInside(i) ? 1.0 : -1.0);
-
-					// () ? inside is vr : inside is vl;
-					toOutside = (inside * (vr - vl) >= 0) ? (vl - vr) * solution.getX() : (vr - vl) * (1 - solution.getX());
+					plgnIdList.add(i);
+					distList.add(solution.getX());
 				}
 			}
 		}
@@ -253,9 +253,22 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 		switch (count) {
 		case 0:
 			break;
-		case 1:
-			if (maxDist.getMagnitude() < toOutside.getMagnitude())
-				maxDist = toOutside;
+		case 1: {
+			Vector inside = objPlgn->getPlgnInside(plgnIdList[0]);
+
+			// () ? inside is R : inside is L;
+			Vector dist = (inside * lr >= 0) ? lr * (-1.0 * distList[0]) : lr * (1 - distList[0]);
+
+			if (maxDist.getMagnitude() < dist.getMagnitude())
+				maxDist = dist;
+			break;
+		}
+		case 2:
+/*
+			if (distList[0] < distList[1]) {
+				(inside[0] * lr >= 0) ? lr
+			}
+*/
 			break;
 		default:
 			break;
@@ -275,7 +288,7 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 
 	Vector relativeVelocity = objPlgn->getVelocity() - objVrtx->getVelocity();
 
-	for (short j = 0  ;  j < vrtxNum  ;  j++) {
+	for (short j = 0; j < vrtxNum; j++) {
 
 		if (objVrtx->isVertexEmbody(j) == false) continue;
 		if (canCrashObjSphereAndVrtx(objPlgn, objVrtx->getVertex(j)) == false) {
@@ -287,7 +300,7 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 
 		Vector vrtxVelocity = objVrtx->getOmega() % objVrtx->getVrtxBasedOnG(j);
 
-		for (short i = 0  ;  i < plgnNum  ;  i++) {
+		for (short i = 0; i < plgnNum; i++) {
 
 			if (objPlgn->isPolygonEmbody(i) == false) continue;
 
@@ -327,11 +340,11 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 
 	Vector relativeVelocity = obj1->getVelocity() - obj2->getVelocity();
 
-	for (short i = 0  ;  i < lineNum1  ;  i++) {
+	for (short i = 0; i < lineNum1; i++) {
 		Vector obj1Line = obj1->getLineLVertex(i) - obj1->getLineRVertex(i);
 		Vector line1Velocity = obj1->getOmega() % obj1->getLineBasedOnG(i);//naming sense... and reduce calculation
 
-		for (short j = 0  ;  j < lineNum2  ;  j++) {
+		for (short j = 0; j < lineNum2; j++) {
 			Vector solution;
 			Vector relativeOmega = line1Velocity - (obj2->getOmega() % obj2->getLineBasedOnG(j));
 
