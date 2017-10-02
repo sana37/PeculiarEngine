@@ -25,6 +25,8 @@ HEADERS += src/CrashKeeper.h \
            src/force/Gravity.h \
            src/force/Impulse.h \
            src/force/StickForce.h \
+           src/force/UniversalForce.h \
+           src/force/UniversalTorque.h \
            src/object/Gunner.h \
            src/object/NumberBox.h \
            src/object/Object.h \
@@ -50,6 +52,8 @@ SOURCES += src/CrashKeeper.cpp \
            src/force/Gravity.cpp \
            src/force/Impulse.cpp \
            src/force/StickForce.cpp \
+           src/force/UniversalForce.cpp \
+           src/force/UniversalTorque.cpp \
            src/object/Gunner.cpp \
            src/object/NumberBox.cpp \
            src/object/Object.cpp \

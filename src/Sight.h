@@ -9,13 +9,15 @@
 
 class Object;
 class Force;
+class UniversalForce;
+class UniversalTorque;
 class QKeyEvent;
 
 class Sight : public QGLWidget
 {
 	Q_OBJECT
 public:
-	Sight(Array<Object*>*, short, Array<Force*>*);
+	Sight(Array<Object*>*, short, Array<Force*>*, UniversalForce*, UniversalTorque*);
 
 	void update(void);
 //	void updateObject(Object**, short);
@@ -40,6 +42,8 @@ private:
 	short possessFlag;
 	Array<Object*>* object_p;
 	Array<Force*>* force_p;
+	UniversalForce* accel;
+	UniversalTorque* torque;
 	Vector lookAt;
 	Vector lookAtN;
 	Vector velocity;

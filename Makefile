@@ -59,6 +59,8 @@ SOURCES       = src/CrashKeeper.cpp \
 		src/force/Gravity.cpp \
 		src/force/Impulse.cpp \
 		src/force/StickForce.cpp \
+		src/force/UniversalForce.cpp \
+		src/force/UniversalTorque.cpp \
 		src/object/Gunner.cpp \
 		src/object/NumberBox.cpp \
 		src/object/Object.cpp \
@@ -82,6 +84,8 @@ OBJECTS       = generated/CrashKeeper.o \
 		generated/Gravity.o \
 		generated/Impulse.o \
 		generated/StickForce.o \
+		generated/UniversalForce.o \
+		generated/UniversalTorque.o \
 		generated/Gunner.o \
 		generated/NumberBox.o \
 		generated/Object.o \
@@ -213,6 +217,8 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		src/force/Gravity.cpp \
 		src/force/Impulse.cpp \
 		src/force/StickForce.cpp \
+		src/force/UniversalForce.cpp \
+		src/force/UniversalTorque.cpp \
 		src/object/Gunner.cpp \
 		src/object/NumberBox.cpp \
 		src/object/Object.cpp \
@@ -486,7 +492,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d generated/PrimeNumberGame1.0.0 || mkdir -p generated/PrimeNumberGame1.0.0
-	$(COPY_FILE) --parents $(DIST) generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.h src/CrashResult.h src/Field.h src/Sight.h src/event/CrashEvent.h src/event/Event.h src/event/ForceEvent.h src/event/MoveEvent.h src/event/SightMoveEvent.h src/force/Force.h src/force/Gravity.h src/force/Impulse.h src/force/StickForce.h src/object/Gunner.h src/object/NumberBox.h src/object/Object.h src/object/ObjectStatus.h src/object/Player.h src/object/PlayerNeo.h src/util/Array.h src/util/Calculater.h src/util/Define.h src/util/Pair.h src/util/Vector.h generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.cpp src/CrashResult.cpp src/Field.cpp src/main.cpp src/Sight.cpp src/event/CrashEvent.cpp src/event/Event.cpp src/event/ForceEvent.cpp src/event/MoveEvent.cpp src/event/SightMoveEvent.cpp src/force/Force.cpp src/force/Gravity.cpp src/force/Impulse.cpp src/force/StickForce.cpp src/object/Gunner.cpp src/object/NumberBox.cpp src/object/Object.cpp src/object/ObjectStatus.cpp src/object/Player.cpp src/object/PlayerNeo.cpp src/util/Calculater.cpp src/util/Vector.cpp generated/PrimeNumberGame1.0.0/ && (cd `dirname generated/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname generated/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r generated/PrimeNumberGame1.0.0
+	$(COPY_FILE) --parents $(DIST) generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.h src/CrashResult.h src/Field.h src/Sight.h src/event/CrashEvent.h src/event/Event.h src/event/ForceEvent.h src/event/MoveEvent.h src/event/SightMoveEvent.h src/force/Force.h src/force/Gravity.h src/force/Impulse.h src/force/StickForce.h src/force/UniversalForce.h src/force/UniversalTorque.h src/object/Gunner.h src/object/NumberBox.h src/object/Object.h src/object/ObjectStatus.h src/object/Player.h src/object/PlayerNeo.h src/util/Array.h src/util/Calculater.h src/util/Define.h src/util/Pair.h src/util/Vector.h generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.cpp src/CrashResult.cpp src/Field.cpp src/main.cpp src/Sight.cpp src/event/CrashEvent.cpp src/event/Event.cpp src/event/ForceEvent.cpp src/event/MoveEvent.cpp src/event/SightMoveEvent.cpp src/force/Force.cpp src/force/Gravity.cpp src/force/Impulse.cpp src/force/StickForce.cpp src/force/UniversalForce.cpp src/force/UniversalTorque.cpp src/object/Gunner.cpp src/object/NumberBox.cpp src/object/Object.cpp src/object/ObjectStatus.cpp src/object/Player.cpp src/object/PlayerNeo.cpp src/util/Calculater.cpp src/util/Vector.cpp generated/PrimeNumberGame1.0.0/ && (cd `dirname generated/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname generated/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r generated/PrimeNumberGame1.0.0
 
 
 clean:compiler_clean 
@@ -889,10 +895,13 @@ generated/Field.o: src/Field.cpp src/Field.h \
 		src/force/Force.h \
 		src/force/Impulse.h \
 		src/force/Gravity.h \
+		src/force/UniversalForce.h \
+		src/force/UniversalTorque.h \
 		src/object/Object.h \
-		src/object/Player.h \
+		src/object/PlayerNeo.h \
 		src/object/NumberBox.h \
 		src/object/Gunner.h \
+		src/object/Player.h \
 		src/event/MoveEvent.h \
 		src/event/Event.h \
 		src/event/SightMoveEvent.h \
@@ -1139,6 +1148,7 @@ generated/Sight.o: src/Sight.cpp src/Sight.h \
 		src/object/Player.h \
 		src/util/Calculater.h \
 		src/force/Force.h \
+		src/force/UniversalForce.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QKeyEvent
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Sight.o src/Sight.cpp
 
@@ -1654,6 +1664,18 @@ generated/StickForce.o: src/force/StickForce.cpp src/force/StickForce.h \
 		src/object/Object.h \
 		src/object/ObjectStatus.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/StickForce.o src/force/StickForce.cpp
+
+generated/UniversalForce.o: src/force/UniversalForce.cpp src/force/UniversalForce.h \
+		src/force/Force.h \
+		src/util/Vector.h \
+		src/object/Object.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/UniversalForce.o src/force/UniversalForce.cpp
+
+generated/UniversalTorque.o: src/force/UniversalTorque.cpp src/force/UniversalTorque.h \
+		src/force/Force.h \
+		src/util/Vector.h \
+		src/object/Object.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/UniversalTorque.o src/force/UniversalTorque.cpp
 
 generated/Gunner.o: src/object/Gunner.cpp src/object/Gunner.h \
 		src/object/Player.h \

@@ -4,9 +4,11 @@
 #include "Force.h"
 #include "Impulse.h"
 #include "Gravity.h"
+#include "UniversalForce.h"
+#include "UniversalTorque.h"
 
 #include "Object.h"
-#include "Player.h"
+#include "PlayerNeo.h"
 #include "NumberBox.h"
 #include "Gunner.h"
 
@@ -32,7 +34,8 @@ Field::Field(void)
 
 	object.add(new Object("res/ground0"));
 	object.add(new Object("res/sky1"));
-	object.add(new Gunner("res/player", "res/bullet"));
+//	object.add(new Gunner("res/player", "res/bullet"));
+	object.add(new PlayerNeo("res/object2"));
 
 	object.add(new Object("res/object2"));
 	object.add(new Object("res/object1"));
@@ -41,7 +44,18 @@ Field::Field(void)
 
 	std::cerr << "object creation have done.\n";
 
-	sight = new Sight(&object, 2, &force);
+///
+	for (short i = 2; i < object.length(); i++) {
+		Force* gravity = new Gravity(object[i]);
+		addForce(gravity);
+	}
+///
+	UniversalForce* accel = new UniversalForce(object[2]);
+	UniversalTorque* torque = new UniversalTorque(object[2]);
+	addForce(accel);
+	addForce(torque);
+
+	sight = new Sight(&object, 2, &force, accel, torque);
 
 	CrashKeeper::getInstance(&object);
 
@@ -50,12 +64,6 @@ Field::Field(void)
 	crashEvent = new CrashEvent();
 	moveEvent = new MoveEvent();
 
-///
-	for (short i = 3; i < object.length(); i++) {
-		Force* gravity = new Gravity(object[i]);
-		addForce(gravity);
-	}
-///
 
 	object[0]->fix();
 	object[1]->fix();
@@ -132,10 +140,10 @@ void Field::open(void)
 
 void Field::execTimeEvent(void)
 {
-	sightMoveEvent->execIfEnabled();
 	forceEvent->execIfEnabled();
 	crashEvent->execIfEnabled();
 	moveEvent->execIfEnabled();
+	sightMoveEvent->execIfEnabled();
 
 	sight->updateGL();
 }

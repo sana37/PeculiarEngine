@@ -7,6 +7,7 @@
 
 /*Sight*/
 #define SPEED		0.15
+#define ACCEL		0.1
 #define DOMAIN_MAX	45//29.85
 #define CEILING		60
 #define FLOOR		-5//0.15

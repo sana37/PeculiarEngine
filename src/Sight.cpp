@@ -3,12 +3,13 @@
 #include "Gunner.h"
 #include "Calculater.h"
 #include "Force.h"
+#include "UniversalForce.h"
 #include "Define.h"
 #include <QKeyEvent>
 #include <iostream>
 
 
-Sight::Sight(Array<Object*>* object_p, short originalDominatorIndex, Array<Force*>* force_p) :
+Sight::Sight(Array<Object*>* object_p, short originalDominatorIndex, Array<Force*>* force_p, UniversalForce* accel, UniversalTorque* torque) :
 	lookAt(Vector(0, 0, -1)),
 	lookAtN(Vector(1, 0, 0)),
 	velocity(Vector(0, 0, 0))
@@ -32,13 +33,15 @@ Sight::Sight(Array<Object*>* object_p, short originalDominatorIndex, Array<Force
 	(*object_p)[dominatorIndex]->moveAbsolute(temp);
 //////////////////////////////////////////////////////////////////////////////// koudaisai only
 	(*object_p)[dominatorIndex]->stop();
-	dominatorSightPoint[originalDominatorIndex].setVector(0, 0.1, -0.1);
+	dominatorSightPoint[originalDominatorIndex].setVector(0, 2.0, 2.0);
 
 	possessFlag = 2;
 	(*object_p)[dominatorIndex]->setDomination(true);
 	std::cerr << "possessing\n";
 //////////////////////////////////////////////////////////////////////////////// koudaisai only
 	this->force_p = force_p;
+	this->accel = accel;
+	this->torque = torque;
 
 	updateGL();
 }
@@ -46,14 +49,14 @@ Sight::Sight(Array<Object*>* object_p, short originalDominatorIndex, Array<Force
 void Sight::update(void)
 {
 	Vector zero(0, 0, 0);
-
+/*
 	if ((-DOMAIN_MAX < X  &&  velocity.getX() < 0)  ||  (X < DOMAIN_MAX  &&  velocity.getX() > 0))
 		X += velocity.getX();
 	if ((FLOOR < Y  &&  velocity.getY() < 0)  ||  (Y < CEILING  &&  velocity.getY() > 0))
 		Y += velocity.getY();
 	if ((-DOMAIN_MAX < Z  &&  velocity.getZ() < 0)  ||  (Z < DOMAIN_MAX  &&  velocity.getZ() > 0))
 		Z += velocity.getZ();
-
+*/
 	if (possessFlag == 1) {
 		dominatorSightPoint[dominatorIndex] += velocity;
 	}
@@ -67,13 +70,22 @@ void Sight::update(void)
 	rotateSelf(&lookAtN, zero, omegaYaw, 0);
 
 	if (possessFlag == 2) {
+/*
 		Vector basePoint(X, Y, Z);
 		Vector vertex;
 
 		vertex = basePoint - dominatorSightPoint[dominatorIndex];
 		(*object_p)[dominatorIndex]->moveAbsolute(vertex);
+*/
+		dominatorSightPoint[dominatorIndex] = lookAt * -2.0 + Vector(0, 2, 0);
+
+		Vector temp = (*object_p)[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
+		X = temp.getX();
+		Y = temp.getY();
+		Z = temp.getZ();
 
 		if (omegaYaw != 0  ||  omegaPitch != 0) {
+/*
 			short vertexNum = (*object_p)[dominatorIndex]->getVertexNum();
 
 			for (short i = 0  ;  i < vertexNum  ;  i++) {
@@ -87,7 +99,7 @@ void Sight::update(void)
 			(*object_p)[dominatorIndex]->setGravityCenter(vertex);
 
 			rotateSelf(&dominatorSightPoint[dominatorIndex], zero, omegaYaw, omegaPitch);
-
+*/
 			if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
 				Gunner* gunner = (Gunner*) (*object_p)[dominatorIndex];
 
@@ -277,23 +289,27 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 		}
 
 		case 'W' : {//go
-			velocity = lookAt * SPEED;
-			gbFlag = 1;
+			accel->setVector(lookAt * ACCEL);
+//			velocity = lookAt * SPEED;
+//			gbFlag = 1;
 			break;
 		}
 		case 'S' : {//back
-			velocity = lookAt * -SPEED;
-			gbFlag = -1;
+			accel->setVector(lookAt * -ACCEL);
+//			velocity = lookAt * -SPEED;
+//			gbFlag = -1;
 			break;
 		}
 
 
 		case 'I' : {//up
-			velocity.setVector(0, SPEED, 0);
+			accel->setVector(0, ACCEL, 0);
+//			velocity.setVector(0, SPEED, 0);
 			break;
 		}
 		case 'K' : {
-			velocity.setVector(0, -SPEED, 0);
+			accel->setVector(0, -ACCEL, 0);
+//			velocity.setVector(0, -SPEED, 0);
 			break;
 		}
 
@@ -408,8 +424,11 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 
 		case 'W' ://go
 		case 'S' : {//back
-			velocity.setVector(0, 0, 0);
-			gbFlag = 0;
+			accel->setVector(0, 0, 0);
+			(*object_p)[dominatorIndex]->stop();
+			
+//			velocity.setVector(0, 0, 0);
+//			gbFlag = 0;
 			break;
 		}
 
