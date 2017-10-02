@@ -77,7 +77,7 @@ public:
 	void setDomination(bool);
 	void fix(void);
 	void release(void);
-	bool update(void);
+	virtual void update(void);
 
 	void run(void);
 	void back(void);

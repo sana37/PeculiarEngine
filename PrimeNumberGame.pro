@@ -30,6 +30,7 @@ HEADERS += src/CrashKeeper.h \
            src/object/Object.h \
            src/object/ObjectStatus.h \
            src/object/Player.h \
+           src/object/PlayerNeo.h \
            src/util/Array.h \
            src/util/Calculater.h \
            src/util/Define.h \
@@ -54,5 +55,6 @@ SOURCES += src/CrashKeeper.cpp \
            src/object/Object.cpp \
            src/object/ObjectStatus.cpp \
            src/object/Player.cpp \
+           src/object/PlayerNeo.cpp \
            src/util/Calculater.cpp \
            src/util/Vector.cpp

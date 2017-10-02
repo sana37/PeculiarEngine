@@ -1,5 +1,6 @@
 #include "Gunner.h"
 #include "Object.h"
+#include "Field.h"
 //#include <iostream>
 
 Gunner::Gunner(const char* fileName, const char* bulletFileName) :
@@ -19,7 +20,7 @@ Gunner::Gunner(const Gunner& gunner) : Player::Player(gunner)
 	gunsight = gunner.gunsight;
 }
 
-bool Gunner::updateGunner(void)
+void Gunner::update(void)
 {
 	this->decelerate();
 	if (isDominated == false)
@@ -31,9 +32,8 @@ bool Gunner::updateGunner(void)
 
 	if (bulletCount >= 200) {
 		bulletCount = 0;
-		return true;
-	} else {
-		return false;
+		Object* bullet = fire();
+		Field::getInstance()->addObject(bullet);
 	}
 }
 

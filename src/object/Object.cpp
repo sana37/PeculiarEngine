@@ -621,11 +621,10 @@ void Object::release(void)
 	fixed = false;
 }
 
-bool Object::update(void)
+void Object::update(void)
 {
 	this->run();
 	this->rotate();
-	return false;//whether velocity changes or not
 }
 
 void Object::run(void)

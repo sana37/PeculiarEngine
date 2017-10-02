@@ -40,11 +40,11 @@ public slots:
 	void timeControl(void);
 	void autoGenerate(void);
 
-private:
 	void addObject(Object*);
 	void addForce(Force*);
 //	void finishForce(short);
 
+private:
 	Sight* sight;
 	QTimer* time;
 	QTimer* autoGeneration;
