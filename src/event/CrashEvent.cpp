@@ -188,13 +188,19 @@ bool Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2)
 	}
 
 	if (absV12 > absV21) {
-		if (obj2->isFixed() == false) {
+		if (obj1->isFixed() == false  &&  obj2->isFixed() == false) {
+			obj1->moveRelative(v12 * -0.55);
+			obj2->moveRelative(v12 * 0.55);
+		} else if (obj2->isFixed() == false) {
 			obj2->moveRelative(v12 * 1.1);
-		} else {
+		} else if (obj1->isFixed() == false) {
 			obj1->moveRelative(v12 * -1.1);
 		}
 	} else {
-		if (obj1->isFixed() == false) {
+		if (obj1->isFixed() == false  &&  obj2->isFixed() == false) {
+			obj1->moveRelative(v21 * 0.55);
+			obj2->moveRelative(v21 * -0.55);
+		} else if (obj1->isFixed() == false) {
 			obj1->moveRelative(v21 * 1.1);
 		} else {
 			obj2->moveRelative(v21 * -1.1);
