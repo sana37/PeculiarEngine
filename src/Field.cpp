@@ -34,7 +34,7 @@ Field::Field(void)
 	object.add(new Object("res/ground0"));
 	object.add(new Object("res/sky1"));
 //	object.add(new Gunner("res/player", "res/bullet"));
-	object.add(new PlayerNeo("res/object2"));
+	object.add(new PlayerNeo("res/playerneo"));
 
 	object.add(new Object("res/object2"));
 	object.add(new Object("res/object1"));

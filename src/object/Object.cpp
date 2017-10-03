@@ -130,7 +130,7 @@ Object::Object(const char* fileName) :
 			Vector n = (a2 - a1) % (a3 - a1);
 
 			for (short j = 0; j < polygonNum; j++) {
-				if (i == j)
+				if (i == j  ||  polygonEmbodyFlag[j] == false)
 					continue;
 
 				const Vector b1 = getPolygon1Vertex(j);

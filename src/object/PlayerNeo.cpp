@@ -1,9 +1,9 @@
 #include "PlayerNeo.h"
 #include "Calculater.h"
 
-PlayerNeo::PlayerNeo(const char* fileName) : Object::Object(fileName), sightPoint(0, 3, 3), lookAt(0, 0, -1), lookAtN(1, 0, 0)
+PlayerNeo::PlayerNeo(const char* fileName) : Object::Object(fileName), sightPoint(0, 4, 8), lookAt(0, 0, -1), lookAtN(1, 0, 0)
 {
-	moveAbsolute(Vector(0, 3, 0));
+	moveAbsolute(Vector(0, 1.5, 0));
 	stop();
 }
 
