@@ -20,7 +20,6 @@ HEADERS += src/CrashKeeper.h \
            src/event/Event.h \
            src/event/ForceEvent.h \
            src/event/MoveEvent.h \
-           src/event/SightMoveEvent.h \
            src/force/Force.h \
            src/force/Gravity.h \
            src/force/Impulse.h \
@@ -47,7 +46,6 @@ SOURCES += src/CrashKeeper.cpp \
            src/event/Event.cpp \
            src/event/ForceEvent.cpp \
            src/event/MoveEvent.cpp \
-           src/event/SightMoveEvent.cpp \
            src/force/Force.cpp \
            src/force/Gravity.cpp \
            src/force/Impulse.cpp \

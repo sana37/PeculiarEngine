@@ -1,5 +1,6 @@
 #include "UniversalForce.h"
 #include "Object.h"
+#include "Define.h"
 #include <iostream>
 
 UniversalForce::UniversalForce(Object* obj) : Force::Force(Vector(0, 0, 0))
@@ -19,7 +20,8 @@ UniversalForce::~UniversalForce(void)
 
 void UniversalForce::exec(void)
 {
-	object->push(*this);
+	if (object->getVelocity().getMagnitude() < SPEED_MAX)
+		object->push(*this);
 }
 
 bool UniversalForce::isDone(void)

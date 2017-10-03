@@ -3,6 +3,8 @@
 
 #include "Object.h"
 
+class Vector;
+
 class PlayerNeo : public Object
 {
 public:
@@ -12,6 +14,15 @@ public:
 
 	virtual void update(void);
 	virtual char whichClass(void);
+
+	Vector getSightPointAbsolute(void);
+	const Vector& getLookAt(void);
+	const Vector& getLookAtN(void);
+
+private:
+	Vector sightPoint;
+	Vector lookAt;
+	Vector lookAtN;
 };
 
 #endif

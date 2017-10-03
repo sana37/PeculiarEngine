@@ -4,11 +4,10 @@
 #include <GL/glu.h>
 #include <QGLWidget>
 #include "Vector.h"
-#include "Array.h"
 
 
 class Object;
-class Force;
+class PlayerNeo;
 class UniversalForce;
 class UniversalTorque;
 class QKeyEvent;
@@ -17,12 +16,9 @@ class Sight : public QGLWidget
 {
 	Q_OBJECT
 public:
-	Sight(Array<Object*>*, short, Array<Force*>*, UniversalForce*, UniversalTorque*);
+	Sight(PlayerNeo*, UniversalForce*, UniversalTorque*);
 
-	void update(void);
-//	void updateObject(Object**, short);
-	void receiveMovement(void);
-	short getDominatorIndex(void);
+//	void update(void);
 signals:
 	void timeCall(void);
 private:
@@ -30,26 +26,17 @@ private:
 	void resizeGL(int, int);
 	void paintGL(void);
 	void paintObject(Object*);
-	void paintCrashSpot(void);
+//	void paintCrashSpot(void);
 	void keyPressEvent(QKeyEvent*);
 	void keyReleaseEvent(QKeyEvent*);
-	void rotateSelf(Vector*, Vector, float, float);
+//	void rotateSelf(Vector*, Vector, float, float);
 
-	float X, Y, Z;
 	float omegaYaw;
 	float omegaPitch;
-	short dominatorIndex;
-	short possessFlag;
-	Array<Object*>* object_p;
-	Array<Force*>* force_p;
+	PlayerNeo* playerNeo;
 	UniversalForce* accel;
 	UniversalTorque* torque;
-	Vector lookAt;
-	Vector lookAtN;
-	Vector velocity;
-	Vector* dominatorSightPoint;
 
-	short gbFlag;
 };
 
 #endif

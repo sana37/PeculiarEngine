@@ -1,5 +1,4 @@
 #include "MoveEvent.h"
-#include "Sight.h"
 #include "Object.h"
 #include "ObjectStatus.h"
 #include "Player.h"
@@ -29,5 +28,4 @@ void Field::MoveEvent::exec(void)
 		}
 	}
 
-	field->sight->receiveMovement();//I want to replace this function
 }

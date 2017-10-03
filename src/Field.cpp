@@ -13,7 +13,6 @@
 #include "Gunner.h"
 
 #include "MoveEvent.h"
-#include "SightMoveEvent.h"
 #include "CrashEvent.h"
 #include "ForceEvent.h"
 
@@ -55,11 +54,10 @@ Field::Field(void)
 	addForce(accel);
 	addForce(torque);
 
-	sight = new Sight(&object, 2, &force, accel, torque);
+	sight = new Sight(dynamic_cast<PlayerNeo*>(object[2]), accel, torque);
 
 	CrashKeeper::getInstance(&object);
 
-	sightMoveEvent = new SightMoveEvent();
 	forceEvent = new ForceEvent();
 	crashEvent = new CrashEvent();
 	moveEvent = new MoveEvent();
@@ -138,19 +136,27 @@ void Field::open(void)
 	sight->show();
 }
 
+Object* Field::getObject(int idx)
+{
+	return object[idx];
+}
+
+int Field::getObjectNum(void)
+{
+	return object.length();
+}
+
 void Field::execTimeEvent(void)
 {
 	forceEvent->execIfEnabled();
 	crashEvent->execIfEnabled();
 	moveEvent->execIfEnabled();
-	sightMoveEvent->execIfEnabled();
 
 	sight->updateGL();
 }
 
 void Field::timeControl(void)
 {
-//sightMoveEvent is always enabled
 	if (forceEvent->isEnabled()) {
 		forceEvent->disable();
 		crashEvent->disable();

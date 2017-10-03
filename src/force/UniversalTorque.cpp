@@ -1,5 +1,6 @@
 #include "UniversalTorque.h"
 #include "Object.h"
+#include "Define.h"
 #include <iostream>
 
 UniversalTorque::UniversalTorque(Object* obj) : Force::Force(Vector(0, 0, 0))
@@ -19,7 +20,8 @@ UniversalTorque::~UniversalTorque(void)
 
 void UniversalTorque::exec(void)
 {
-	object->applyTorque(*this);
+	if (object->getOmega().getMagnitude() < OMEGA_MAX)
+		object->applyTorque(*this);
 }
 
 bool UniversalTorque::isDone(void)
