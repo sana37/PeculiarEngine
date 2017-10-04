@@ -15,15 +15,31 @@ public:
 	virtual void update(void);
 	virtual char whichClass(void);
 
-	Vector getSightPointAbsolute(void);
+	void moveShoulder(float);
+	void hold(float);
+
+	Vector getSightPoint(void);
+	Vector getSightPointN(void);
 	const Vector& getLookAt(void);
 	const Vector& getLookAtN(void);
 
+	Vector getDeltaVertex(short);
+	Vector getDeltaPolygon(short);
+	Vector getDeltaLine(short);
+
 private:
-	Object* rightHand;
-	Object* leftHand;
-	Object* shoulder;
+	Vector leftStartIdx;
+	Vector rightStartIdx;
+	Vector shoulderStartIdx;
+
+	Vector leftHandDirection;
+	Vector shoulderDirection;
+
+	float leftHandVelocity;
+	float shoulderVelocity;
+
 	Vector sightPoint;
+	Vector sightPointN;
 	Vector lookAt;
 	Vector lookAtN;
 };

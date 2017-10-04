@@ -11,6 +11,8 @@
 //#define OMEGA		0.02
 #define TORQUE		0.1
 #define OMEGA_MAX	0.02
+#define SHOULDER_SPEED	0.05
+#define HAND_SPEED		0.05
 #define DOMAIN_MAX	45//29.85
 #define CEILING		60
 #define FLOOR		-5//0.15

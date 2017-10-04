@@ -82,14 +82,22 @@ void Sight::paintGL(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	Vector sightPoint = this->playerNeo->getSightPointAbsolute();
-	Vector lookAt = this->playerNeo->getLookAt();
-//	Vector lookAtN = this->playerNeo->getLookAtN();
-	float X = sightPoint.getX();
-	float Y = sightPoint.getY();
-	float Z = sightPoint.getZ();
+	Vector sightPoint = playerNeo->getGravityCenter() + playerNeo->getSightPoint();
+	Vector sightPointN = playerNeo->getGravityCenter() + playerNeo->getSightPointN();
+	Vector lookAt = playerNeo->getLookAt();
+	Vector lookAtN = playerNeo->getLookAtN();
 
-	gluLookAt(X, Y, Z, X + lookAt.getX(), Y + lookAt.getY(), Z + lookAt.getZ(), 0, 1, 0);
+	switch (0) {
+	case 0:
+		setGluLookAt(sightPoint, lookAt);
+		break;
+	case 1:
+		setGluLookAt(sightPointN, lookAtN);
+		break;
+	case 2:
+		setGluLookAt(Vector(-12, 8, 15), Vector(1, -0.2, -0.2));
+		break;
+	}
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -121,6 +129,15 @@ void Sight::paintGL(void)
 	glVertex3d(-BAR_POS, 2 * BAR_POS, -BAR_POS);
 	glEnd();
 
+}
+
+void Sight::setGluLookAt(const Vector& sightPoint, const Vector& direction)
+{
+	float X = sightPoint.getX();
+	float Y = sightPoint.getY();
+	float Z = sightPoint.getZ();
+
+	gluLookAt(X, Y, Z, X + direction.getX(), Y + direction.getY(), Z + direction.getZ(), 0, 1, 0);
 }
 
 void Sight::paintObject(Object* modelObject)
@@ -194,15 +211,14 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 		}
 /*
 		case 16777235 : {//look up
-//			torque->setVector(lookAtN * TORQUE);
 //			omegaPitch = OMEGA;
 			break;
 		}
 		case 16777237 : {//look down
-//			torque->setVector(lookAtN * -TORQUE);
 //			omegaPitch = -OMEGA;
 			break;
 		}
+
 		case ' ' : {
 			if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
 				Gunner* gunner = dynamic_cast<Gunner*>((*object_p)[dominatorIndex]);
@@ -221,16 +237,24 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 			break;
 		}
 
-/*
+
 		case 'I' : {//up
-			accel->setVector(0, ACCEL, 0);
+			playerNeo->moveShoulder(SHOULDER_SPEED);
 			break;
 		}
 		case 'K' : {
-			accel->setVector(0, -ACCEL, 0);
+			playerNeo->moveShoulder(-SHOULDER_SPEED);
 			break;
 		}
-*/
+		case 'J' : {//hand close
+			playerNeo->hold(HAND_SPEED);
+			break;
+		}
+		case 'L' : {//hand open
+			playerNeo->hold(-HAND_SPEED);
+			break;
+		}
+
 		case 16777220 : {
 			timeCall();
 			break;
@@ -264,10 +288,19 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 //			omegaPitch = 0;
 			break;
 		}
-
-		case 'I' ://up
-		case 'K' ://down
 */
+		case 'I'://up
+		case 'K': {//down
+			playerNeo->moveShoulder(0);
+			break;
+		}
+
+		case 'J':
+		case 'L': {
+			playerNeo->hold(0);
+			break;
+		}
+
 		case 'W' ://go
 		case 'S' : {//back
 			accel->setVector(0, 0, 0);

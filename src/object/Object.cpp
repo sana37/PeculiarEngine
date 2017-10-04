@@ -188,12 +188,7 @@ Object::Object(const char* fileName) :
 
 		fclose(fp);
 
-		for (short i = 0  ;  i < vertexNum  ;  i++) {
-			if (vertexEmbodyFlag[i] == false)
-				continue;
-			if (radius < (vertex[i] - gravityCenter).getMagnitude())
-				radius = (vertex[i] - gravityCenter).getMagnitude();
-		}
+		reloadRadius();
 	} else {
 		printf("I cannot open such a file\n");
 		vertexNum = -1;
@@ -336,9 +331,9 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 			tempPolygon1VertexIndex[i] = vertexNum + material->polygon1VertexIndex[i - polygonNum];
 			tempPolygon2VertexIndex[i] = vertexNum + material->polygon2VertexIndex[i - polygonNum];
 			tempPolygon3VertexIndex[i] = vertexNum + material->polygon3VertexIndex[i - polygonNum];
-			tempPolygonR[i] = 0;
-			tempPolygonG[i] = 0;
-			tempPolygonB[i] = 0;
+			tempPolygonR[i] = material->polygonR[i - polygonNum];
+			tempPolygonG[i] = material->polygonG[i - polygonNum];
+			tempPolygonB[i] = material->polygonB[i - polygonNum];
 			tempPolygonEmbodyFlag[i] = material->isPolygonEmbody(i - polygonNum);
 			tempPolygonInsideFlag[i] = material->isPolygonInside(i - polygonNum);
 		}
@@ -366,6 +361,15 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 //	radius change??
 }
 
+void Object::reloadRadius(void)
+{
+	for (short i = 0; i < vertexNum; i++) {
+		if (vertexEmbodyFlag[i] == false)
+			continue;
+		if (radius < (vertex[i] - gravityCenter).getMagnitude())
+			radius = (vertex[i] - gravityCenter).getMagnitude();
+	}
+}
 
 
 short Object::getVertexNum(void) const

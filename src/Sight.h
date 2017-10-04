@@ -25,6 +25,7 @@ private:
 	void initializeGL(void);
 	void resizeGL(int, int);
 	void paintGL(void);
+	void setGluLookAt(const Vector&, const Vector&);
 	void paintObject(Object*);
 //	void paintCrashSpot(void);
 	void keyPressEvent(QKeyEvent*);
