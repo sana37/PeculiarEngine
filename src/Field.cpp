@@ -34,7 +34,10 @@ Field::Field(void)
 	object.add(new Object("res/ground0"));
 	object.add(new Object("res/sky1"));
 //	object.add(new Gunner("res/player", "res/bullet"));
-	object.add(new PlayerNeo("res/playerneo"));
+
+	PlayerNeo* playerNeo = new PlayerNeo("res/playerneo");
+
+	object.add(playerNeo);
 
 	object.add(new Object("res/object2"));
 	object.add(new Object("res/object1"));
@@ -49,12 +52,12 @@ Field::Field(void)
 		addForce(gravity);
 	}
 ///
-	UniversalForce* accel = new UniversalForce(object[2]);
-	UniversalTorque* torque = new UniversalTorque(object[2]);
+	UniversalForce* accel = new UniversalForce(playerNeo);
+	UniversalTorque* torque = new UniversalTorque(playerNeo);
 	addForce(accel);
 	addForce(torque);
 
-	sight = new Sight(dynamic_cast<PlayerNeo*>(object[2]), accel, torque);
+	sight = new Sight(playerNeo, accel, torque);
 
 	CrashKeeper::getInstance(&object);
 
@@ -286,6 +289,12 @@ void Field::addObject(Object* newObject)
 */
 	object.add(newObject);
 //	syncObject();
+}
+
+void Field::deleteObject(Object* oldObject)
+{
+	object.removeIfMatchOnce(oldObject);
+	delete oldObject;
 }
 
 void Field::addForce(Force* force)

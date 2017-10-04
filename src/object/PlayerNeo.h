@@ -20,6 +20,9 @@ public:
 	const Vector& getLookAtN(void);
 
 private:
+	Object* rightHand;
+	Object* leftHand;
+	Object* shoulder;
 	Vector sightPoint;
 	Vector lookAt;
 	Vector lookAtN;

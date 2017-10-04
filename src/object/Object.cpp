@@ -282,6 +282,8 @@ Object::~Object(void)
 void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga dokuritusitamama unndouno eikyouwo tomoni ukeru sikumini sitai
 {
 	Vector* tempVertex = new Vector[vertexNum + material->getVertexNum()];
+	short* tempLineLVertexIndex = new short[lineNum + material->getLineNum()];
+	short* tempLineRVertexIndex = new short[lineNum + material->getLineNum()];
 	short* tempPolygon1VertexIndex = new short[polygonNum + material->getPolygonNum()];
 	short* tempPolygon2VertexIndex = new short[polygonNum + material->getPolygonNum()];
 	short* tempPolygon3VertexIndex = new short[polygonNum + material->getPolygonNum()];
@@ -290,14 +292,15 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 	short* tempPolygonB = new short[polygonNum + material->getPolygonNum()];
 	bool* tempVertexEmbodyFlag = new bool[vertexNum + material->getVertexNum()];
 	bool* tempPolygonEmbodyFlag = new bool[polygonNum + material->getPolygonNum()];
+	bool* tempPolygonInsideFlag = new bool[polygonNum + material->getPolygonNum()];
 
-	for (short i = 0  ;  i < vertexNum + material->getVertexNum()  ;  i++) {
+	for (short i = 0; i < vertexNum + material->getVertexNum(); i++) {
 		if (i < vertexNum) {
 			tempVertex[i] = vertex[i];
 			tempVertexEmbodyFlag[i] = vertexEmbodyFlag[i];
 		} else {
 			tempVertex[i] = material->getVertex(i - vertexNum);
-			tempVertexEmbodyFlag[i] = false;//////////////
+			tempVertexEmbodyFlag[i] = material->isVertexEmbody(i - vertexNum);
 		}
 	}
 	delete[] vertex;
@@ -305,7 +308,21 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 	vertex = tempVertex;
 	vertexEmbodyFlag = tempVertexEmbodyFlag;
 
-	for (short i = 0  ;  i < polygonNum + material->getPolygonNum()  ;  i++) {
+	for (short i = 0; i < lineNum + material->getLineNum(); i++) {
+		if (i < lineNum) {
+			tempLineLVertexIndex[i] = lineLVertexIndex[i];
+			tempLineRVertexIndex[i] = lineRVertexIndex[i];
+		} else {
+			tempLineLVertexIndex[i] = vertexNum + material->lineLVertexIndex[i - lineNum];
+			tempLineRVertexIndex[i] = vertexNum + material->lineRVertexIndex[i - lineNum];
+		}
+	}
+	delete[] lineLVertexIndex;
+	delete[] lineRVertexIndex;
+	lineLVertexIndex = tempLineLVertexIndex;
+	lineRVertexIndex = tempLineRVertexIndex;
+
+	for (short i = 0; i < polygonNum + material->getPolygonNum(); i++) {
 		if (i < polygonNum) {
 			tempPolygon1VertexIndex[i] = polygon1VertexIndex[i];
 			tempPolygon2VertexIndex[i] = polygon2VertexIndex[i];
@@ -314,6 +331,7 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 			tempPolygonG[i] = polygonG[i];
 			tempPolygonB[i] = polygonB[i];
 			tempPolygonEmbodyFlag[i] = polygonEmbodyFlag[i];
+			tempPolygonInsideFlag[i] = polygonInsideFlag[i];
 		} else {
 			tempPolygon1VertexIndex[i] = vertexNum + material->polygon1VertexIndex[i - polygonNum];
 			tempPolygon2VertexIndex[i] = vertexNum + material->polygon2VertexIndex[i - polygonNum];
@@ -321,10 +339,12 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 			tempPolygonR[i] = 0;
 			tempPolygonG[i] = 0;
 			tempPolygonB[i] = 0;
-			tempPolygonEmbodyFlag[i] = false;/////////////
+			tempPolygonEmbodyFlag[i] = material->isPolygonEmbody(i - polygonNum);
+			tempPolygonInsideFlag[i] = material->isPolygonInside(i - polygonNum);
 		}
 	}
 	vertexNum += material->getVertexNum();
+	lineNum += material->getLineNum();
 	polygonNum += material->getPolygonNum();
 	delete[] polygon1VertexIndex;
 	delete[] polygon2VertexIndex;
@@ -333,6 +353,7 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 	delete[] polygonG;
 	delete[] polygonB;
 	delete[] polygonEmbodyFlag;
+	delete[] polygonInsideFlag;
 	polygon1VertexIndex = tempPolygon1VertexIndex;
 	polygon2VertexIndex = tempPolygon2VertexIndex;
 	polygon3VertexIndex = tempPolygon3VertexIndex;
@@ -340,6 +361,9 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 	polygonG = tempPolygonG;
 	polygonB = tempPolygonB;
 	polygonEmbodyFlag = tempPolygonEmbodyFlag;
+	polygonInsideFlag = tempPolygonInsideFlag;
+//	gravity center is not change??
+//	radius change??
 }
 
 

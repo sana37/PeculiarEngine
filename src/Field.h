@@ -42,6 +42,7 @@ public slots:
 	void autoGenerate(void);
 
 	void addObject(Object*);
+	void deleteObject(Object*);
 	void addForce(Force*);
 //	void finishForce(short);
 
