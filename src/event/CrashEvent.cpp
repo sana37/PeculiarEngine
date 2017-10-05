@@ -219,11 +219,10 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 	Vector maxDist;
 
 	for (short j = 0; j < lineNum; j++) {
-		short count = 0;
 		const Vector vr = objLine->getLineRVertex(j);
 		Vector lr = objLine->getLineRVertex(j) - objLine->getLineLVertex(j);
-		Array<int> plgnIdList;
-		Array<float> distList;
+		Array<int> plgnIdList(10);
+		Array<float> distList(10);
 
 		for (short i = 0; i < plgnNum; i++) {
 
@@ -244,33 +243,25 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 					(0 <= solution.getY()  &&  0 <= solution.getZ())  &&
 					(solution.getY() + solution.getZ() <= 1)
 				) {
-					count++;
 					plgnIdList.add(i);
 					distList.add(solution.getX());
 				}
 			}
 		}
 
-		switch (count) {
+		Vector dist;
+		switch (plgnIdList.length()) {
 		case 0:
 			break;
-		case 1: {
-			Vector inside = objPlgn->getPlgnInside(plgnIdList[0]);
-
-			// () ? inside is R : inside is L;
-			Vector insideOfLine = (inside * lr >= 0) ? (lr * (-1.0 * distList[0])) : (lr * (1 - distList[0]));
-			Vector dist = inside * (insideOfLine * inside);
-
+		case 1:
+			dist = getLineToPolygonPenetration1(objPlgn, lr, plgnIdList[0], distList[0]);
 			if (maxDist.getMagnitude() < dist.getMagnitude())
 				maxDist = dist;
 			break;
-		}
 		case 2:
-/*
-			if (distList[0] < distList[1]) {
-				(inside[0] * lr >= 0) ? lr
-			}
-*/
+			dist = getLineToPolygonPenetration2(objPlgn, objLine, plgnIdList[0], plgnIdList[1], j);
+			if (maxDist.getMagnitude() < dist.getMagnitude())
+				maxDist = dist;
 			break;
 		default:
 			break;
@@ -278,6 +269,62 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 	}
 
 	return maxDist;
+}
+
+Vector Field::CrashEvent::getLineToPolygonPenetration1(Object* objPlgn, const Vector& lineLR, short plgnId, float lineParam)
+{
+	Vector inside = objPlgn->getPlgnInside(plgnId);
+
+	// () ? inside is R : inside is L;
+	Vector insideOfLine = (inside * lineLR >= 0) ? (lineLR * (-1.0 * lineParam)) : (lineLR * (1 - lineParam));
+	return inside * (insideOfLine * inside);
+}
+
+Vector Field::CrashEvent::getLineToPolygonPenetration2(Object* objPlgn, Object* objLine, short plgnId1, short plgnId2, short lineId)
+{
+	Array< Pair<int> > vrtxPairList = objPlgn->getCommonVertexIdxInPolygons(plgnId1, plgnId2);
+	switch (vrtxPairList.length()) {
+	case 2: {
+		short vrtxIdx1 = vrtxPairList[0].getInstance1();
+		short vrtxIdx2 = vrtxPairList[1].getInstance1();
+
+		Vector b1, b2;
+		switch (vrtxIdx1) {
+		case 1: b1 = objPlgn->getPolygon1Vertex(plgnId1);	break;
+		case 2: b1 = objPlgn->getPolygon2Vertex(plgnId1);	break;
+		case 3: b1 = objPlgn->getPolygon3Vertex(plgnId1);	break;
+		}
+		switch (vrtxIdx2) {
+		case 1: b2 = objPlgn->getPolygon1Vertex(plgnId1);	break;
+		case 2: b2 = objPlgn->getPolygon2Vertex(plgnId1);	break;
+		case 3: b2 = objPlgn->getPolygon3Vertex(plgnId1);	break;
+		}
+		Vector b12 = b2 - b1;
+
+		Vector a1 = objLine->getLineRVertex(lineId);
+		Vector a2 = objLine->getLineLVertex(lineId);
+		Vector a12 = a2 - a1;
+
+		Vector dist = a12 % b12;
+		Vector solution;
+		if (Calculater::solveCubicEquation(
+			a12,
+			b12,
+			dist,
+			b1 - a1,
+			&solution
+		)) {
+			std::cerr << "common polygon: execute\n";
+			return dist * solution.getZ();
+		}
+		break;
+	}
+	default:
+//				std::cerr << "common polygon: undefined error\n";
+		break;
+	}
+
+	return Vector();
 }
 
 void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, CrashResult* result)

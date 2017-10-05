@@ -2,6 +2,8 @@
 #define OBJECT_H
 
 #include "Vector.h"
+#include "Array.h"
+#include "Pair.h"
 
 class ObjectStatus;
 
@@ -39,6 +41,8 @@ public:
 	Vector getDeltaLine(short);
 
 	Vector getPlgnInside(short);
+
+	Array< Pair<int> > getCommonVertexIdxInPolygons(short, short);
 
 	float getRadius(void) const;
 	float getMass(void);

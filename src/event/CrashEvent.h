@@ -25,6 +25,8 @@ private:
 	int reflectIfCrash(Object*, Object*);
 	bool resolveCaught(Object*, Object*);
 	Vector calcCaughtDist(Object*, Object*);
+	Vector getLineToPolygonPenetration1(Object*, const Vector&, short, float);
+	Vector getLineToPolygonPenetration2(Object*, Object*, short, short, short);
 	void judgePlgnAndVrtx(Object*, Object*, CrashResult*);
 	void judgeLineAndLine(Object*, Object*, CrashResult*);
 	void reflectPlgnAndVrtx(CrashResult*);

@@ -462,6 +462,36 @@ Vector Object::getPlgnInside(short idx)
 	return inside / inside.getMagnitude();
 }
 
+Array< Pair<int> > Object::getCommonVertexIdxInPolygons(short plgnIdx1, short plgnIdx2)
+{
+	Array< Pair<int> > pairList(3);
+
+	for (short i = 0; i < 3; i++) {
+		short vertexIdx1;
+		switch (i) {
+		case 0: vertexIdx1 = polygon1VertexIndex[plgnIdx1];	break;
+		case 1: vertexIdx1 = polygon2VertexIndex[plgnIdx1];	break;
+		case 2: vertexIdx1 = polygon3VertexIndex[plgnIdx1];	break;
+		}
+
+		for (short j = 0; j < 3; j++) {
+			short vertexIdx2;
+			switch (j) {
+			case 0: vertexIdx2 = polygon1VertexIndex[plgnIdx2];	break;
+			case 1: vertexIdx2 = polygon2VertexIndex[plgnIdx2];	break;
+			case 2: vertexIdx2 = polygon3VertexIndex[plgnIdx2];	break;
+			}
+
+			if (vertexIdx1 == vertexIdx2) {
+				pairList.add(Pair<int>(i + 1, j + 1));
+				break;
+			}
+		}
+	}
+
+	return pairList;
+}
+
 
 float Object::getRadius(void) const
 {

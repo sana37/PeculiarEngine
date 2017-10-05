@@ -760,7 +760,8 @@ generated/CrashResult.o: src/CrashResult.cpp src/CrashResult.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
 		src/util/Array.h \
 		src/util/Define.h \
-		src/util/Vector.h
+		src/util/Vector.h \
+		src/object/Object.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/CrashResult.o src/CrashResult.cpp
 
 generated/Field.o: src/Field.cpp src/Field.h \
@@ -1134,6 +1135,7 @@ generated/Sight.o: src/Sight.cpp src/Sight.h \
 		src/object/Gunner.h \
 		src/object/Player.h \
 		src/util/Calculater.h \
+		src/force/Force.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/QKeyEvent
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/Sight.o src/Sight.cpp
 
@@ -1439,6 +1441,7 @@ generated/MoveEvent.o: src/event/MoveEvent.cpp src/event/MoveEvent.h \
 		/opt/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
 		src/util/Vector.h \
 		src/object/Object.h \
+		src/object/ObjectStatus.h \
 		src/object/Player.h \
 		src/object/Gunner.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/MoveEvent.o src/event/MoveEvent.cpp
@@ -1644,7 +1647,9 @@ generated/StickForce.o: src/force/StickForce.cpp src/force/StickForce.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
 		src/util/Array.h \
-		src/util/Define.h
+		src/util/Define.h \
+		src/object/Object.h \
+		src/object/ObjectStatus.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/StickForce.o src/force/StickForce.cpp
 
 generated/Gunner.o: src/object/Gunner.cpp src/object/Gunner.h \
