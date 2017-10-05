@@ -54,14 +54,12 @@ Player::Player(const Player& player) : Object::Object(player)
 		route[i] = player.route[i];
 }
 
-bool Player::updatePlayer(void)
+void Player::update(void)
 {
 	this->decelerate();
 	if (isDominated == false)
 		this->autoMove();
-	this->run();
-
-	return true;
+	this->Object::update();
 }
 
 void Player::decelerate(void)

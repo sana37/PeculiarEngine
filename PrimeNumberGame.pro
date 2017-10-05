@@ -20,16 +20,18 @@ HEADERS += src/CrashKeeper.h \
            src/event/Event.h \
            src/event/ForceEvent.h \
            src/event/MoveEvent.h \
-           src/event/SightMoveEvent.h \
            src/force/Force.h \
            src/force/Gravity.h \
            src/force/Impulse.h \
            src/force/StickForce.h \
+           src/force/UniversalForce.h \
+           src/force/UniversalTorque.h \
            src/object/Gunner.h \
            src/object/NumberBox.h \
            src/object/Object.h \
            src/object/ObjectStatus.h \
            src/object/Player.h \
+           src/object/PlayerNeo.h \
            src/util/Array.h \
            src/util/Calculater.h \
            src/util/Define.h \
@@ -44,15 +46,17 @@ SOURCES += src/CrashKeeper.cpp \
            src/event/Event.cpp \
            src/event/ForceEvent.cpp \
            src/event/MoveEvent.cpp \
-           src/event/SightMoveEvent.cpp \
            src/force/Force.cpp \
            src/force/Gravity.cpp \
            src/force/Impulse.cpp \
            src/force/StickForce.cpp \
+           src/force/UniversalForce.cpp \
+           src/force/UniversalTorque.cpp \
            src/object/Gunner.cpp \
            src/object/NumberBox.cpp \
            src/object/Object.cpp \
            src/object/ObjectStatus.cpp \
            src/object/Player.cpp \
+           src/object/PlayerNeo.cpp \
            src/util/Calculater.cpp \
            src/util/Vector.cpp

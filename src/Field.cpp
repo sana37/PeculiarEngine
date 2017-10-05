@@ -4,14 +4,15 @@
 #include "Force.h"
 #include "Impulse.h"
 #include "Gravity.h"
+#include "UniversalForce.h"
+#include "UniversalTorque.h"
 
 #include "Object.h"
-#include "Player.h"
+#include "PlayerNeo.h"
 #include "NumberBox.h"
 #include "Gunner.h"
 
 #include "MoveEvent.h"
-#include "SightMoveEvent.h"
 #include "CrashEvent.h"
 #include "ForceEvent.h"
 
@@ -32,7 +33,11 @@ Field::Field(void)
 
 	object.add(new Object("res/ground0"));
 	object.add(new Object("res/sky1"));
-	object.add(new Gunner("res/player", "res/bullet"));
+//	object.add(new Gunner("res/player", "res/bullet"));
+
+	PlayerNeo* playerNeo = new PlayerNeo("res/playerneo");
+
+	object.add(playerNeo);
 
 	object.add(new Object("res/object2"));
 	object.add(new Object("res/object1"));
@@ -41,21 +46,25 @@ Field::Field(void)
 
 	std::cerr << "object creation have done.\n";
 
-	sight = new Sight(&object, 2, &force);
-
-	CrashKeeper::getInstance(&object);
-
-	sightMoveEvent = new SightMoveEvent();
-	forceEvent = new ForceEvent();
-	crashEvent = new CrashEvent();
-	moveEvent = new MoveEvent();
-
 ///
-	for (short i = 3; i < object.length(); i++) {
+	for (short i = 2; i < object.length(); i++) {
 		Force* gravity = new Gravity(object[i]);
 		addForce(gravity);
 	}
 ///
+	UniversalForce* accel = new UniversalForce(playerNeo);
+	UniversalTorque* torque = new UniversalTorque(playerNeo);
+	addForce(accel);
+	addForce(torque);
+
+	sight = new Sight(playerNeo, accel, torque);
+
+	CrashKeeper::getInstance(&object);
+
+	forceEvent = new ForceEvent();
+	crashEvent = new CrashEvent();
+	moveEvent = new MoveEvent();
+
 
 	object[0]->fix();
 	object[1]->fix();
@@ -130,9 +139,18 @@ void Field::open(void)
 	sight->show();
 }
 
+Object* Field::getObject(int idx)
+{
+	return object[idx];
+}
+
+int Field::getObjectNum(void)
+{
+	return object.length();
+}
+
 void Field::execTimeEvent(void)
 {
-	sightMoveEvent->execIfEnabled();
 	forceEvent->execIfEnabled();
 	crashEvent->execIfEnabled();
 	moveEvent->execIfEnabled();
@@ -142,7 +160,6 @@ void Field::execTimeEvent(void)
 
 void Field::timeControl(void)
 {
-//sightMoveEvent is always enabled
 	if (forceEvent->isEnabled()) {
 		forceEvent->disable();
 		crashEvent->disable();
@@ -272,6 +289,12 @@ void Field::addObject(Object* newObject)
 */
 	object.add(newObject);
 //	syncObject();
+}
+
+void Field::deleteObject(Object* oldObject)
+{
+	object.removeIfMatchOnce(oldObject);
+	delete oldObject;
 }
 
 void Field::addForce(Force* force)

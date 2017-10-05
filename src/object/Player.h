@@ -11,7 +11,7 @@ public:
 	explicit Player(const char*);
 	Player(const Player&);
 
-	bool updatePlayer(void);
+	virtual void update(void);
 	char whichClass(void);
 
 protected:

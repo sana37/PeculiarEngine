@@ -15,7 +15,6 @@ class Field : public QObject
 public:
 	class Event;
 	class MoveEvent;
-	class SightMoveEvent;
 	class CrashEvent;
 	class ForceEvent;
 
@@ -30,6 +29,8 @@ public:
 	static Field* getInstance(void);
 	static void deleteInstance(void);
 	void open(void);
+	Object* getObject(int);
+	int getObjectNum(void);
 
 signals:
 //	void syncObject(void);
@@ -40,17 +41,17 @@ public slots:
 	void timeControl(void);
 	void autoGenerate(void);
 
-private:
 	void addObject(Object*);
+	void deleteObject(Object*);
 	void addForce(Force*);
 //	void finishForce(short);
 
+private:
 	Sight* sight;
 	QTimer* time;
 	QTimer* autoGeneration;
 	Array<Object*> object;
 	Array<Force*> force;
-	Event* sightMoveEvent;
 	Event* forceEvent;
 	Event* crashEvent;
 	Event* moveEvent;

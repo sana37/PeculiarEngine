@@ -1,48 +1,28 @@
 #include "Sight.h"
+#include "Field.h"
 #include "Object.h"
 #include "Gunner.h"
+#include "PlayerNeo.h"
 #include "Calculater.h"
-#include "Force.h"
+#include "UniversalForce.h"
+#include "UniversalTorque.h"
 #include "Define.h"
 #include <QKeyEvent>
 #include <iostream>
 
 
-Sight::Sight(Array<Object*>* object_p, short originalDominatorIndex, Array<Force*>* force_p) :
-	lookAt(Vector(0, 0, -1)),
-	lookAtN(Vector(1, 0, 0)),
-	velocity(Vector(0, 0, 0))
+Sight::Sight(PlayerNeo* playerNeo, UniversalForce* accel, UniversalTorque* torque)
 {
-	gbFlag = 0;
-	Vector temp(0, 30, 25);
-//	Vector temp(0, 0, 25);
-
-	X = temp.getX();
-	Y = temp.getY();
-	Z = temp.getZ();
-
 	omegaYaw = 0;
 	omegaPitch = 0;
 
-	dominatorIndex = originalDominatorIndex;
-
-	this->object_p = object_p;
-	dominatorSightPoint = new Vector[object_p->length()];
-		//sight and field are friends because of object_p !!!!
-	(*object_p)[dominatorIndex]->moveAbsolute(temp);
-//////////////////////////////////////////////////////////////////////////////// koudaisai only
-	(*object_p)[dominatorIndex]->stop();
-	dominatorSightPoint[originalDominatorIndex].setVector(0, 0.1, -0.1);
-
-	possessFlag = 2;
-	(*object_p)[dominatorIndex]->setDomination(true);
-	std::cerr << "possessing\n";
-//////////////////////////////////////////////////////////////////////////////// koudaisai only
-	this->force_p = force_p;
+	this->playerNeo = playerNeo;
+	this->accel = accel;
+	this->torque = torque;
 
 	updateGL();
 }
-
+/*
 void Sight::update(void)
 {
 	Vector zero(0, 0, 0);
@@ -54,9 +34,6 @@ void Sight::update(void)
 	if ((-DOMAIN_MAX < Z  &&  velocity.getZ() < 0)  ||  (Z < DOMAIN_MAX  &&  velocity.getZ() > 0))
 		Z += velocity.getZ();
 
-	if (possessFlag == 1) {
-		dominatorSightPoint[dominatorIndex] += velocity;
-	}
 
 	if (lookAt.getY() > 0.97  &&  omegaPitch > 0)
 		omegaPitch = 0;
@@ -66,81 +43,21 @@ void Sight::update(void)
 	rotateSelf(&lookAt, zero, omegaYaw, omegaPitch);
 	rotateSelf(&lookAtN, zero, omegaYaw, 0);
 
-	if (possessFlag == 2) {
-		Vector basePoint(X, Y, Z);
-		Vector vertex;
+	if (omegaYaw != 0  ||  omegaPitch != 0) {
+		if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
+			Gunner* gunner = (Gunner*) (*object_p)[dominatorIndex];
 
-		vertex = basePoint - dominatorSightPoint[dominatorIndex];
-		(*object_p)[dominatorIndex]->moveAbsolute(vertex);
-
-		if (omegaYaw != 0  ||  omegaPitch != 0) {
-			short vertexNum = (*object_p)[dominatorIndex]->getVertexNum();
-
-			for (short i = 0  ;  i < vertexNum  ;  i++) {
-				vertex = (*object_p)[dominatorIndex]->getVertex(i);
-				rotateSelf(&vertex, basePoint, omegaYaw, omegaPitch);
-				(*object_p)[dominatorIndex]->setVertex(i, vertex);
-			}
-
-			vertex = (*object_p)[dominatorIndex]->getGravityCenter();
-			rotateSelf(&vertex, basePoint, omegaYaw, omegaPitch);
-			(*object_p)[dominatorIndex]->setGravityCenter(vertex);
-
-			rotateSelf(&dominatorSightPoint[dominatorIndex], zero, omegaYaw, omegaPitch);
-
-			if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
-				Gunner* gunner = (Gunner*) (*object_p)[dominatorIndex];
-
-				Vector omega(0, omegaYaw, 0);
-				gunner->rotateBullet(omega);
-				omega = lookAtN * omegaPitch;
-				gunner->rotateBullet(omega);
-			}
-
-			if (gbFlag != 0)
-				velocity = lookAt * SPEED * gbFlag;
+			Vector omega(0, omegaYaw, 0);
+			gunner->rotateBullet(omega);
+			omega = lookAtN * omegaPitch;
+			gunner->rotateBullet(omega);
 		}
 
+		if (gbFlag != 0)
+			velocity = lookAt * SPEED * gbFlag;
 	}
-}
-/*
-void Sight::updateObject(Object** originalObject, short originalObjectNum)
-{
-	short preObjectNum = objectNum;
-
-	object = originalObject;
-	objectNum = originalObjectNum;
-
-	Vector* temp = new Vector[objectNum];
-
-	for (short i = 0  ;  i < objectNum  ;  i++) {
-		if (i < preObjectNum)
-			temp[i].setVector(&dominatorSightPoint[i]);
-		else
-			temp[i].setVector(0, 0, 0);
-	}
-
-	delete[] dominatorSightPoint;
-	dominatorSightPoint = temp;
 }
 */
-//// dominatorSightPoint's size should be extended!!
-void Sight::receiveMovement(void)
-{
-	if (possessFlag > 0) {
-		Vector temp = (*object_p)[dominatorIndex]->getVelocity();
-
-		X += temp.getX();
-		Y += temp.getY();
-		Z += temp.getZ();
-	}
-}
-
-short Sight::getDominatorIndex(void)
-{
-	return dominatorIndex;
-}
-
 void Sight::initializeGL(void)
 {
 	glClearColor(1, 1, 1, 1);
@@ -164,23 +81,43 @@ void Sight::paintGL(void)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(X, Y, Z, X + lookAt.getX(), Y + lookAt.getY(), Z + lookAt.getZ(), 0, 1, 0);
+
+	Vector sightPoint = playerNeo->getGravityCenter() + playerNeo->getSightPoint();
+	Vector sightPointN = playerNeo->getGravityCenter() + playerNeo->getSightPointN();
+	Vector lookAt = playerNeo->getLookAt();
+	Vector lookAtN = playerNeo->getLookAtN();
+
+	switch (0) {
+	case 0:
+		setGluLookAt(sightPoint, lookAt);
+		break;
+	case 1:
+		setGluLookAt(sightPointN, lookAtN);
+		break;
+	case 2:
+		setGluLookAt(Vector(-12, 8, 15), Vector(1, -0.2, -0.2));
+		break;
+	}
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (short i = 0  ;  i < object_p->length()  ;  i++) {
-		paintObject((*object_p)[i]);
+	Field* field = Field::getInstance();
+	int objectNum = field->getObjectNum();
+
+	for (int i = 0; i < objectNum; i++) {
+		paintObject(field->getObject(i));
 	}
-	paintCrashSpot();
+//	paintCrashSpot();
 
 	glBegin(GL_LINES);
+/*
 	glColor3d(0.8, 0, 0);
 	glVertex3d(X + lookAt.getX() + (lookAtN.getX() / 10), Y + lookAt.getY() + (lookAtN.getY() / 10), Z + lookAt.getZ() + (lookAtN.getZ() / 10));
 	glVertex3d(X + lookAt.getX() + (lookAtN.getX() / 50), Y + lookAt.getY() + (lookAtN.getY() / 50), Z + lookAt.getZ() + (lookAtN.getZ() / 50));
 	glVertex3d(X + lookAt.getX() - (lookAtN.getX() / 10), Y + lookAt.getY() - (lookAtN.getY() / 10), Z + lookAt.getZ() - (lookAtN.getZ() / 10));
 	glVertex3d(X + lookAt.getX() - (lookAtN.getX() / 50), Y + lookAt.getY() - (lookAtN.getY() / 50), Z + lookAt.getZ() - (lookAtN.getZ() / 50));
-
+*/
 	glColor3d(0, 0, 0);
 	glVertex3d( BAR_POS,  0,  BAR_POS);
 	glVertex3d( BAR_POS, 2 * BAR_POS,  BAR_POS);
@@ -192,6 +129,15 @@ void Sight::paintGL(void)
 	glVertex3d(-BAR_POS, 2 * BAR_POS, -BAR_POS);
 	glEnd();
 
+}
+
+void Sight::setGluLookAt(const Vector& sightPoint, const Vector& direction)
+{
+	float X = sightPoint.getX();
+	float Y = sightPoint.getY();
+	float Z = sightPoint.getZ();
+
+	gluLookAt(X, Y, Z, X + direction.getX(), Y + direction.getY(), Z + direction.getZ(), 0, 1, 0);
 }
 
 void Sight::paintObject(Object* modelObject)
@@ -225,7 +171,7 @@ void Sight::paintObject(Object* modelObject)
 	glEnd();
 */
 }
-
+/*
 void Sight::paintCrashSpot(void)
 {
 	glPointSize(5.0);
@@ -239,7 +185,7 @@ void Sight::paintCrashSpot(void)
 
 	glEnd();
 }
-
+*/
 void Sight::keyPressEvent(QKeyEvent* keyboard)
 {
 	int ch;
@@ -253,132 +199,67 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 
 	switch (ch) {
 		case 16777234 : {//turn left
-			omegaYaw = OMEGA;
+			torque->setVector(0, TORQUE, 0);
+//			should rotate the direction of accel?
+//			omegaYaw = OMEGA;
 			break;
 		}
 		case 16777236 : {//turn right
-			omegaYaw = -OMEGA;
+			torque->setVector(0, -TORQUE, 0);
+//			omegaYaw = -OMEGA;
 			break;
 		}
+/*
 		case 16777235 : {//look up
-			omegaPitch = OMEGA;
+//			omegaPitch = OMEGA;
 			break;
 		}
 		case 16777237 : {//look down
-			omegaPitch = -OMEGA;
+//			omegaPitch = -OMEGA;
 			break;
 		}
+
 		case ' ' : {
-			if (possessFlag == 2  &&  (*object_p)[dominatorIndex]->whichClass() == 'G') {
+			if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
 				Gunner* gunner = dynamic_cast<Gunner*>((*object_p)[dominatorIndex]);
 				gunner->trigger(lookAt);
 			}
 			break;
 		}
+*/
 
 		case 'W' : {//go
-			velocity = lookAt * SPEED;
-			gbFlag = 1;
+			accel->setVector(this->playerNeo->getLookAt() * ACCEL);
 			break;
 		}
 		case 'S' : {//back
-			velocity = lookAt * -SPEED;
-			gbFlag = -1;
+			accel->setVector(this->playerNeo->getLookAt() * -ACCEL);
 			break;
 		}
 
 
 		case 'I' : {//up
-			velocity.setVector(0, SPEED, 0);
+			playerNeo->moveShoulder(SHOULDER_SPEED);
 			break;
 		}
 		case 'K' : {
-			velocity.setVector(0, -SPEED, 0);
+			playerNeo->moveShoulder(-SHOULDER_SPEED);
 			break;
 		}
-
+		case 'J' : {//hand close
+			playerNeo->hold(HAND_SPEED);
+			break;
+		}
+		case 'L' : {//hand open
+			playerNeo->hold(-HAND_SPEED);
+			break;
+		}
 
 		case 16777220 : {
 			timeCall();
 			break;
 		}
 
-
-		case '@' : {
-			possessFlag++;
-			switch (possessFlag) {
-				case 1 : {
-					Vector temp = (*object_p)[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
-
-					X = temp.getX();
-					Y = temp.getY();
-					Z = temp.getZ();
-
-					std::cerr << "prepare possess\n";
-					break;
-				}
-				case 2 : {
-//					Vector temp(dominatorSightPoint[dominatorIndex]);
-					(*object_p)[dominatorIndex]->setDomination(true);
-					std::cerr << "possessing\n";
-//					std::cerr << "x : " << temp.getX() << ", y : " << temp.getY() << ", z : " << temp.getZ() << '\n';
-					break;
-				}
-				case 3 : {
-					(*object_p)[dominatorIndex]->setDomination(false);
-					possessFlag = 0;
-					std::cerr << "release possess\n";
-					break;
-				}
-			}
-			break;
-		}
-		case '[' : {
-			if (possessFlag == 1) {
-				Vector temp;
-
-//				(*object_p)[dominatorIndex]->setDomination(false);
-
-				dominatorIndex++;
-				if (dominatorIndex >= object_p->length())
-					dominatorIndex = 0;
-
-//				(*object_p)[dominatorIndex]->setDomination(true);
-
-				temp = (*object_p)[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
-
-				X = temp.getX();
-				Y = temp.getY();
-				Z = temp.getZ();
-			}
-			break;
-		}
-		case ']' : {
-			if (possessFlag == 1) {
-				Vector temp;
-
-//				(*object_p)[dominatorIndex]->setDomination(false);
-
-				dominatorIndex--;
-				if (dominatorIndex < 0)
-					dominatorIndex = object_p->length() - 1;
-
-//				(*object_p)[dominatorIndex]->setDomination(true);
-
-				temp = (*object_p)[dominatorIndex]->getGravityCenter() + dominatorSightPoint[dominatorIndex];
-
-				X = temp.getX();
-				Y = temp.getY();
-				Z = temp.getZ();
-			}
-			break;
-		}
-
-/*
-		case 16777220 : {//enter
-			break;
-		}
-*/
 	}
 }
 
@@ -394,28 +275,42 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 	switch (ch) {
 		case 16777234 ://turn left
 		case 16777236 : {//turn right
-			omegaYaw = 0;
+			torque->setVector(0, 0, 0);
+			this->playerNeo->stop();
+//			omegaYaw = 0;
 			break;
 		}
+/*
 		case 16777235 ://look up
 		case 16777237 : {//look down
-			omegaPitch = 0;
+			torque->setVector(0, 0, 0);
+			this->playerNeo->stop();
+//			omegaPitch = 0;
+			break;
+		}
+*/
+		case 'I'://up
+		case 'K': {//down
+			playerNeo->moveShoulder(0);
 			break;
 		}
 
-		case 'I' ://up
-		case 'K' ://down
+		case 'J':
+		case 'L': {
+			playerNeo->hold(0);
+			break;
+		}
 
 		case 'W' ://go
 		case 'S' : {//back
-			velocity.setVector(0, 0, 0);
-			gbFlag = 0;
+			accel->setVector(0, 0, 0);
+			this->playerNeo->stop();
 			break;
 		}
 
 	}
 }
-
+/*
 void Sight::rotateSelf(Vector* vertex_p, Vector basePoint, float degYaw, float degPitch)
 {
 	Vector shaft(0, 1, 0);
@@ -423,3 +318,4 @@ void Sight::rotateSelf(Vector* vertex_p, Vector basePoint, float degYaw, float d
 	Calculater::rotateRad(vertex_p, basePoint, shaft, degYaw);
 	Calculater::rotateRad(vertex_p, basePoint, lookAtN, degPitch);
 }
+*/

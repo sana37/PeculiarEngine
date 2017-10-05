@@ -2,16 +2,21 @@
 #define DEFINE_H
 
 /*Field*/
-//#define OBJECT_NUM	7
 #define TIME_UNIT	10	//depended on by GRAVITY
 
 /*Sight*/
-#define SPEED		0.15
+//#define SPEED		0.15
+#define ACCEL		0.5
+#define SPEED_MAX	0.15
+//#define OMEGA		0.02
+#define TORQUE		0.1
+#define OMEGA_MAX	0.02
+#define SHOULDER_SPEED	0.05
+#define HAND_SPEED		0.05
 #define DOMAIN_MAX	45//29.85
 #define CEILING		60
 #define FLOOR		-5//0.15
 #define BAR_POS		29.85
-#define OMEGA		0.02
 
 /*CrashKeeper*/
 #define ATTACH_PAIR_MAX		100

@@ -15,7 +15,7 @@ public:
 	virtual ~Object(void);
 
 	void composeObject(Object*);
-
+	void reloadRadius(void);
 
 	short getVertexNum(void) const;
 	short getPolygonNum(void) const;
@@ -36,9 +36,9 @@ public:
 	Vector getPlgnBasedOnG(short);
 	Vector getLineBasedOnG(short);
 
-	Vector getDeltaVertex(short);
-	Vector getDeltaPolygon(short);
-	Vector getDeltaLine(short);
+	virtual Vector getDeltaVertex(short);
+	virtual Vector getDeltaPolygon(short);
+	virtual Vector getDeltaLine(short);
 
 	Vector getPlgnInside(short);
 
@@ -81,7 +81,7 @@ public:
 	void setDomination(bool);
 	void fix(void);
 	void release(void);
-	bool update(void);
+	virtual void update(void);
 
 	void run(void);
 	void back(void);
