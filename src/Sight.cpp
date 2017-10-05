@@ -11,14 +11,25 @@
 #include <iostream>
 
 
-Sight::Sight(PlayerNeo* playerNeo, UniversalForce* accel, UniversalTorque* torque)
+Sight::Sight(PlayerNeo* playerNeo, UniversalForce* accel, UniversalTorque* torque) :
+	lookAtF( 0, 0, -1),
+	lookAtB( 0, 0,  1),
+	lookAtL(-1, 0,  0),
+	lookAtR( 1, 0,  0),
+	lookAtD( 0, -1, -0.1),
+	sightPointF(  0, 7,  29),
+	sightPointB(  0, 7, -29),
+	sightPointL( 29, 7, 0),
+	sightPointR(-29, 7, 0),
+	sightPointD(0, 25, 5)
 {
-	omegaYaw = 0;
-	omegaPitch = 0;
-
 	this->playerNeo = playerNeo;
 	this->accel = accel;
 	this->torque = torque;
+
+	this->channel = 8;
+	this->speedHorizontal = 0;
+	this->speedVertical = 0;
 
 	updateGL();
 }
@@ -87,16 +98,38 @@ void Sight::paintGL(void)
 	Vector lookAt = playerNeo->getLookAt();
 	Vector lookAtN = playerNeo->getLookAtN();
 
-	switch (0) {
+	switch (channel) {
 	case 0:
 		setGluLookAt(sightPoint, lookAt);
 		break;
 	case 1:
 		setGluLookAt(sightPointN, lookAtN);
 		break;
-	case 2:
+	case 3:
 		setGluLookAt(Vector(-12, 8, 15), Vector(1, -0.2, -0.2));
 		break;
+
+	case 2:
+		sightPointB += (lookAtB * speedVertical) + (lookAtL * speedHorizontal);
+		setGluLookAt(sightPointB, lookAtB);
+		break;
+	case 4:
+		sightPointL += (lookAtL * speedVertical) + (lookAtF * speedHorizontal);
+		setGluLookAt(sightPointL, lookAtL);
+		break;
+	case 5:
+		sightPointD += (lookAtF * speedVertical) + (lookAtR * speedHorizontal);
+		setGluLookAt(sightPointD, lookAtD);
+		break;
+	case 6:
+		sightPointR += (lookAtR * speedVertical) + (lookAtB * speedHorizontal);
+		setGluLookAt(sightPointR, lookAtR);
+		break;
+	case 8:
+		sightPointF += (lookAtF * speedVertical) + (lookAtR * speedHorizontal);
+		setGluLookAt(sightPointF, lookAtF);
+		break;
+
 	}
 
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -198,67 +231,61 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 	ch = keyboard->key();
 
 	switch (ch) {
-		case 16777234 : {//turn left
-			torque->setVector(0, TORQUE, 0);
-//			should rotate the direction of accel?
-//			omegaYaw = OMEGA;
-			break;
-		}
-		case 16777236 : {//turn right
-			torque->setVector(0, -TORQUE, 0);
-//			omegaYaw = -OMEGA;
-			break;
-		}
+	case 16777234://left
+		speedHorizontal = -SPEED_MAX;
+		break;
+	case 16777236://right
+		speedHorizontal = SPEED_MAX;
+		break;
+	case 16777235://front
+		speedVertical = SPEED_MAX;
+		break;
+	case 16777237://back
+		speedVertical = -SPEED_MAX;
+		break;
 /*
-		case 16777235 : {//look up
-//			omegaPitch = OMEGA;
-			break;
+	case ' ':
+		if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
+			Gunner* gunner = dynamic_cast<Gunner*>((*object_p)[dominatorIndex]);
+			gunner->trigger(lookAt);
 		}
-		case 16777237 : {//look down
-//			omegaPitch = -OMEGA;
-			break;
-		}
-
-		case ' ' : {
-			if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
-				Gunner* gunner = dynamic_cast<Gunner*>((*object_p)[dominatorIndex]);
-				gunner->trigger(lookAt);
-			}
-			break;
-		}
+		break;
 */
 
-		case 'W' : {//go
-			accel->setVector(this->playerNeo->getLookAt() * ACCEL);
-			break;
-		}
-		case 'S' : {//back
-			accel->setVector(this->playerNeo->getLookAt() * -ACCEL);
-			break;
-		}
+	case 'W'://go
+		accel->setVector(this->playerNeo->getLookAt() * ACCEL);
+		break;
+	case 'S'://back
+		accel->setVector(this->playerNeo->getLookAt() * -ACCEL);
+		break;
+	case 'A'://turn left
+		torque->setVector(0, TORQUE, 0);
+//			should rotate the direction of accel?
+		break;
+	case 'D'://turn right
+		torque->setVector(0, -TORQUE, 0);
+		break;
 
+	case 'I'://shoulder up
+		playerNeo->moveShoulder(SHOULDER_SPEED);
+		break;
+	case 'K'://shoulder down
+		playerNeo->moveShoulder(-SHOULDER_SPEED);
+		break;
+	case 'J'://hand close
+		playerNeo->hold(HAND_SPEED);
+		break;
+	case 'L'://hand open
+		playerNeo->hold(-HAND_SPEED);
+		break;
 
-		case 'I' : {//up
-			playerNeo->moveShoulder(SHOULDER_SPEED);
-			break;
-		}
-		case 'K' : {
-			playerNeo->moveShoulder(-SHOULDER_SPEED);
-			break;
-		}
-		case 'J' : {//hand close
-			playerNeo->hold(HAND_SPEED);
-			break;
-		}
-		case 'L' : {//hand open
-			playerNeo->hold(-HAND_SPEED);
-			break;
-		}
+	case '0':  case '1':  case '2':  case '3':  case '4':  case '5':  case '6':  case '7':  case '8':  case '9':
+		channel = ch - '0';
+		break;
 
-		case 16777220 : {
-			timeCall();
-			break;
-		}
+	case 16777220:
+		timeCall();
+		break;
 
 	}
 }
@@ -273,41 +300,30 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 	}
 
 	switch (ch) {
-		case 16777234 ://turn left
-		case 16777236 : {//turn right
-			torque->setVector(0, 0, 0);
-			this->playerNeo->stop();
-//			omegaYaw = 0;
-			break;
-		}
-/*
-		case 16777235 ://look up
-		case 16777237 : {//look down
-			torque->setVector(0, 0, 0);
-			this->playerNeo->stop();
-//			omegaPitch = 0;
-			break;
-		}
-*/
-		case 'I'://up
-		case 'K': {//down
-			playerNeo->moveShoulder(0);
-			break;
-		}
+	case 16777234://left
+	case 16777236://right
+		speedHorizontal = 0;
+		break;
+	case 16777235://front
+	case 16777237://back
+		speedVertical = 0;
+		break;
 
-		case 'J':
-		case 'L': {
-			playerNeo->hold(0);
-			break;
-		}
+	case 'I':  case 'K':
+		playerNeo->moveShoulder(0);
+		break;
+	case 'J':  case 'L':
+		playerNeo->hold(0);
+		break;
 
-		case 'W' ://go
-		case 'S' : {//back
-			accel->setVector(0, 0, 0);
-			this->playerNeo->stop();
-			break;
-		}
-
+	case 'W':  case 'S':
+		accel->setVector(0, 0, 0);
+		this->playerNeo->stop();
+		break;
+	case 'A':  case 'D':
+		torque->setVector(0, 0, 0);
+		this->playerNeo->stop();
+		break;
 	}
 }
 /*

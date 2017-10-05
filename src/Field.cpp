@@ -39,9 +39,9 @@ Field::Field(void)
 
 	object.add(playerNeo);
 
-	object.add(new Object("res/object2"));
+	object.add(new Object("res/object2_light"));
 	object.add(new Object("res/object1"));
-	object.add(new Object("res/object2"));
+	object.add(new Object("res/object2_light"));
 //	object.add(new Object("res/object0"));
 
 	std::cerr << "object creation have done.\n";

@@ -32,8 +32,20 @@ private:
 	void keyReleaseEvent(QKeyEvent*);
 //	void rotateSelf(Vector*, Vector, float, float);
 
-	float omegaYaw;
-	float omegaPitch;
+	Vector lookAtF;
+	Vector lookAtB;
+	Vector lookAtL;
+	Vector lookAtR;
+	Vector lookAtD;
+	Vector sightPointF;
+	Vector sightPointB;
+	Vector sightPointL;
+	Vector sightPointR;
+	Vector sightPointD;
+	short channel;
+	float speedHorizontal;
+	float speedVertical;
+
 	PlayerNeo* playerNeo;
 	UniversalForce* accel;
 	UniversalTorque* torque;

@@ -60,6 +60,8 @@ void Field::CrashEvent::execFirstCrash(void)
 		}
 	}
 
+	int count = 0;
+
 	while (1) {
 		for (short i = 0; i < crashedObjects.length(); i++) {
 			Object* obj1 = crashedObjects[i];
@@ -97,6 +99,11 @@ void Field::CrashEvent::execFirstCrash(void)
 			break;
 		else
 			std::cerr << ".";
+
+		if (count >= 10) {
+			std::cerr << "\nabort recrash...\n";
+			break;
+		}
 	}
 
 }
