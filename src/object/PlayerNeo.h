@@ -32,6 +32,8 @@ public:
 	bool isRightHand(short);
 	bool isLeftHandL(short);
 	bool isRightHandL(short);
+	bool isLeftHandV(short);
+	bool isRightHandV(short);
 
 	void initializeTouchState(void);
 	void addLeftObject(Object*);

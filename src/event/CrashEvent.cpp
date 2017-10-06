@@ -412,6 +412,12 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 								} else if (playerNeo->isRightHand(i)) {
 									playerNeo->addRightObject(objVrtx);
 								}
+							} else if (objVrtx->whichClass() == 'Q') {
+								if (playerNeo->isLeftHandV(j)) {
+									playerNeo->addLeftObject(objPlgn);
+								} else if (playerNeo->isRightHandV(j)) {
+									playerNeo->addRightObject(objPlgn);
+								}
 							}
 						}
 						result->addTangency();

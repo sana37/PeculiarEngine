@@ -222,6 +222,22 @@ bool PlayerNeo::isRightHandL(short lineIdx)
 		return false;
 }
 
+bool PlayerNeo::isLeftHandV(short vrtxIdx)
+{
+	if (((int) leftStartIdx.getX()) <= vrtxIdx  &&  vrtxIdx < ((int) rightStartIdx.getX()))
+		return true;
+	else
+		return false;
+}
+
+bool PlayerNeo::isRightHandV(short vrtxIdx)
+{
+	if (((int) rightStartIdx.getX()) <= vrtxIdx  &&  vrtxIdx < ((int) shoulderStartIdx.getX()))
+		return true;
+	else
+		return false;
+}
+
 void PlayerNeo::initializeTouchState(void)
 {
 	leftTouchObjects.removeAll();
@@ -241,7 +257,7 @@ void PlayerNeo::addRightObject(Object* obj)
 Object* PlayerNeo::getHoldableObject(void)
 {
 	for (int i = 0; i < leftTouchObjects.length(); i++) {
-		if (rightTouchObjects.has(leftTouchObjects[i]))
+		if (rightTouchObjects.has(leftTouchObjects[i])  &&  leftTouchObjects[i]->isFixed() == false)
 			return leftTouchObjects[i];
 	}
 
