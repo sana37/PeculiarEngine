@@ -364,6 +364,7 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 Object* Object::decomposeObject(int vertexId, int polygonId, int lineId, const char* name)
 {
 	Object* obj = new Object(name);
+	obj->velocity.setVector(0, 0, 0);
 
 	Vector* tempVertex = new Vector[vertexId];
 	short* tempLineLVertexIndex = new short[lineId];
@@ -454,6 +455,8 @@ Object* Object::decomposeObject(int vertexId, int polygonId, int lineId, const c
 	polygonEmbodyFlag = tempPolygonEmbodyFlag;
 	polygonInsideFlag = tempPolygonInsideFlag;
 	polygonNum = polygonId;
+
+	return obj;
 }
 
 void Object::reloadRadius(void)

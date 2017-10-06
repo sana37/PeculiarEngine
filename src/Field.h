@@ -44,7 +44,7 @@ public slots:
 	void addObject(Object*);
 	void deleteObject(Object*);
 	void addForce(Force*);
-//	void finishForce(short);
+	void deleteForce(Object*);
 
 private:
 	Sight* sight;

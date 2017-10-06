@@ -31,6 +31,7 @@ void Field::CrashEvent::exec(void)
 		playerNeo->composeObject(caughtObj);
 		playerNeo->setHold(caughtObj->getName());
 
+		field->deleteForce(caughtObj);
 		field->deleteObject(caughtObj);
 	}
 
@@ -404,6 +405,14 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 							result->setDist(solution.getZ());
 							result->setCrashSpot(objVrtx->getVertex(j));
 							result->setResult(CrashResult::POLYGON_AND_VERTEX);
+
+							if (objPlgn->whichClass() == 'Q') {
+								if (playerNeo->isLeftHand(i)) {
+									playerNeo->addLeftObject(objVrtx);
+								} else if (playerNeo->isRightHand(i)) {
+									playerNeo->addRightObject(objVrtx);
+								}
+							}
 						}
 						result->addTangency();
 					}
@@ -442,6 +451,20 @@ void Field::CrashEvent::judgeLineAndLine(Object* obj1, Object* obj2, CrashResult
 							result->setDist(solution.getX());
 							result->setCrashSpot(crashSpot);
 							result->setResult(CrashResult::LINE_AND_LINE);
+
+							if (obj1->whichClass() == 'Q') {
+								if (playerNeo->isLeftHandL(i)) {
+									playerNeo->addLeftObject(obj2);
+								} else if (playerNeo->isRightHandL(i)) {
+									playerNeo->addRightObject(obj2);
+								}
+							} else if (obj2->whichClass() == 'Q') {
+								if (playerNeo->isLeftHandL(j)) {
+									playerNeo->addLeftObject(obj1);
+								} else if (playerNeo->isRightHandL(j)) {
+									playerNeo->addRightObject(obj1);
+								}
+							}
 						}
 						result->addTangency();
 					}

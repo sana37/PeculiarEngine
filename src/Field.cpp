@@ -303,11 +303,19 @@ void Field::addForce(Force* force)
 {
 	this->force.add(force);
 }
-/*
-void Field::finishForce(short idx)
+
+void Field::deleteForce(Object* obj)
 {
-	delete force[idx];
-	force.remove(idx);
+	for (short i = 0; i < force.length(); i++) {
+		Gravity* gravity = dynamic_cast<Gravity*>(force[i]);
+		if (gravity != NULL) {
+			if (gravity->getObject() == obj) {
+				force.remove(i);
+				delete gravity;
+				return;
+			}
+		}
+	}
 }
-*/
+
 Field* Field::field = NULL;

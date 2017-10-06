@@ -1,6 +1,7 @@
 #include "PlayerNeo.h"
 #include "Calculater.h"
 #include "Field.h"
+#include "Gravity.h"
 
 PlayerNeo::PlayerNeo(const char* fileName) :
 	Object::Object(fileName),
@@ -109,7 +110,10 @@ void PlayerNeo::update(void)
 		int objLineIdx = (int) caughtObjStartIdx.getZ();
 
 		Object* obj = this->decomposeObject(objVertexIdx, objPolygonIdx, objLineIdx, caughtObjName);
+		Gravity* gravity = new Gravity(obj);
+
 		Field::getInstance()->addObject(obj);
+		Field::getInstance()->addForce(gravity);
 
 		holdFlag = false;
 		caughtObjName = NULL;
@@ -197,6 +201,22 @@ bool PlayerNeo::isLeftHand(short plgnIdx)
 bool PlayerNeo::isRightHand(short plgnIdx)
 {
 	if (((int) rightStartIdx.getY()) <= plgnIdx  &&  plgnIdx < ((int) shoulderStartIdx.getY()))
+		return true;
+	else
+		return false;
+}
+
+bool PlayerNeo::isLeftHandL(short lineIdx)
+{
+	if (((int) leftStartIdx.getZ()) <= lineIdx  &&  lineIdx < ((int) rightStartIdx.getZ()))
+		return true;
+	else
+		return false;
+}
+
+bool PlayerNeo::isRightHandL(short lineIdx)
+{
+	if (((int) rightStartIdx.getZ()) <= lineIdx  &&  lineIdx < ((int) shoulderStartIdx.getZ()))
 		return true;
 	else
 		return false;

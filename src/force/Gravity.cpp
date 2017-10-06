@@ -32,3 +32,8 @@ Vector Gravity::getForcePoint(void)
 {
 	return Vector(0, 0, 0);//anything ok. this is not used
 }
+
+Object* Gravity::getObject(void)
+{
+	return obj;
+}
