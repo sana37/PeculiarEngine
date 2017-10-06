@@ -2,6 +2,7 @@
 #define PLAYERNEO_H
 
 #include "Object.h"
+#include "Array.h"
 
 class Vector;
 
@@ -27,6 +28,17 @@ public:
 	Vector getDeltaPolygon(short);
 	Vector getDeltaLine(short);
 
+	bool isLeftHand(short);
+	bool isRightHand(short);
+
+	void initializeTouchState(void);
+	void addLeftObject(Object*);
+	void addRightObject(Object*);
+	Object* getHoldableObject(void);
+
+	void setHold(void);
+	bool holds(void);
+
 private:
 	Vector leftStartIdx;
 	Vector rightStartIdx;
@@ -42,6 +54,10 @@ private:
 	Vector sightPointN;
 	Vector lookAt;
 	Vector lookAtN;
+
+	bool holdFlag;
+	Array<Object*> leftTouchObjects;
+	Array<Object*> rightTouchObjects;
 };
 
 #endif

@@ -62,7 +62,7 @@ Field::Field(void)
 	CrashKeeper::getInstance(&object);
 
 	forceEvent = new ForceEvent();
-	crashEvent = new CrashEvent();
+	crashEvent = new CrashEvent(playerNeo);
 	moveEvent = new MoveEvent();
 
 
@@ -105,6 +105,8 @@ Field::Field(void)
 
 	deadObjectNum = 0;
 	autoGenerationIndex = 0;
+
+	std::cerr << "start!\n";
 }
 /*
 Field::Field(const Field& _field) : QObject::QObject()

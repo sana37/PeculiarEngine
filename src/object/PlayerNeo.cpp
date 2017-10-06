@@ -10,7 +10,8 @@ PlayerNeo::PlayerNeo(const char* fileName) :
 	sightPoint(0, 6, 12),
 	sightPointN(-12, 6, -3),
 	lookAt(0, 0, -1),
-	lookAtN(1, 0, 0)
+	lookAtN(1, 0, 0),
+	holdFlag(false)
 {
 	Object* leftHand = new Object("res/hand");
 	Object* rightHand = new Object("res/hand");
@@ -83,12 +84,14 @@ void PlayerNeo::update(void)
 		Vector vertex = this->getVertex(i);
 		this->setVertex(i, vertex + deltaShoulderVertex);
 	}
-
 }
 
 char PlayerNeo::whichClass(void)
 {
-	return 'Q';
+	if (holds() == false)
+		return 'Q';
+	else
+		return 'H';
 }
 
 void PlayerNeo::moveShoulder(float speed)
@@ -149,4 +152,56 @@ Vector PlayerNeo::getDeltaLine(short idx)
 		return Object::getDeltaLine(idx) - (leftHandDirection * leftHandVelocity);
 	else
 		return Object::getDeltaLine(idx);
+}
+
+bool PlayerNeo::isLeftHand(short plgnIdx)
+{
+	if (((int) leftStartIdx.getY()) <= plgnIdx  &&  plgnIdx < ((int) rightStartIdx.getY()))
+		return true;
+	else
+		return false;
+}
+
+bool PlayerNeo::isRightHand(short plgnIdx)
+{
+	if (((int) rightStartIdx.getY()) <= plgnIdx  &&  plgnIdx < ((int) shoulderStartIdx.getY()))
+		return true;
+	else
+		return false;
+}
+
+void PlayerNeo::initializeTouchState(void)
+{
+	leftTouchObjects.removeAll();
+	rightTouchObjects.removeAll();
+}
+
+void PlayerNeo::addLeftObject(Object* obj)
+{
+	leftTouchObjects.add(obj);
+}
+
+void PlayerNeo::addRightObject(Object* obj)
+{
+	rightTouchObjects.add(obj);
+}
+
+Object* PlayerNeo::getHoldableObject(void)
+{
+	for (int i = 0; i < leftTouchObjects.length(); i++) {
+		if (rightTouchObjects.has(leftTouchObjects[i]))
+			return leftTouchObjects[i];
+	}
+
+	return NULL;
+}
+
+void PlayerNeo::setHold(void)
+{
+	holdFlag = true;
+}
+
+bool PlayerNeo::holds(void)
+{
+	return holdFlag;
 }

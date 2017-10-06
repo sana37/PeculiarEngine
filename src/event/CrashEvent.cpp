@@ -1,5 +1,6 @@
 #include "CrashEvent.h"
 #include "Object.h"
+#include "PlayerNeo.h"
 #include "Force.h"
 #include "Impulse.h"
 #include "StickForce.h"
@@ -11,15 +12,32 @@
 #include <iostream>
 #include <math.h>
 
-Field::CrashEvent::CrashEvent(void) : Field::Event::Event()
+Field::CrashEvent::CrashEvent(PlayerNeo* playerNeo) : Field::Event::Event()
 {
+	std::cerr << "crash event construct\n";
+
 	crashKeeper = CrashKeeper::getInstance(&(field->object));
+
+	this->playerNeo = playerNeo;
+
+	std::cerr << "crash event constructed\n";
 }
 
 void Field::CrashEvent::exec(void)
 {
+	playerNeo->initializeTouchState();
+
 	execSecondCrash();
 	execFirstCrash();
+
+	Object* caughtObj = playerNeo->getHoldableObject();
+	if (caughtObj != NULL) {
+		playerNeo->composeObject(caughtObj);
+		playerNeo->setHold();
+
+		field->deleteObject(caughtObj);
+	}
+
 }
 
 void Field::CrashEvent::execFirstCrash(void)
@@ -57,6 +75,7 @@ void Field::CrashEvent::execFirstCrash(void)
 				if (obj2->isFixed() == false  &&  crashedObjects.has(obj2) == false)
 					crashedObjects.add(obj2);
 			}
+
 		}
 	}
 
@@ -261,7 +280,7 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 		case 0:
 			break;
 		case 1:
-			dist = getLineToPolygonPenetration1(objPlgn, lr, plgnIdList[0], distList[0]);
+			dist = getLineToPolygonPenetration1(objPlgn, objLine, lr, plgnIdList[0], distList[0]);
 			if (maxDist.getMagnitude() < dist.getMagnitude())
 				maxDist = dist;
 			break;
@@ -273,13 +292,22 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 		default:
 			break;
 		}
+
 	}
 
 	return maxDist;
 }
 
-Vector Field::CrashEvent::getLineToPolygonPenetration1(Object* objPlgn, const Vector& lineLR, short plgnId, float lineParam)
+Vector Field::CrashEvent::getLineToPolygonPenetration1(Object* objPlgn, Object* objLine, const Vector& lineLR, short plgnId, float lineParam)
 {
+	if (objPlgn->whichClass() == 'Q') {
+		if (playerNeo->isLeftHand(plgnId)) {
+			playerNeo->addLeftObject(objLine);
+		} else if (playerNeo->isRightHand(plgnId)) {
+			playerNeo->addRightObject(objLine);
+		}
+	}
+
 	Vector inside = objPlgn->getPlgnInside(plgnId);
 
 	// () ? inside is R : inside is L;
@@ -289,6 +317,14 @@ Vector Field::CrashEvent::getLineToPolygonPenetration1(Object* objPlgn, const Ve
 
 Vector Field::CrashEvent::getLineToPolygonPenetration2(Object* objPlgn, Object* objLine, short plgnId1, short plgnId2, short lineId)
 {
+	if (objPlgn->whichClass() == 'Q') {
+		if (playerNeo->isLeftHand(plgnId1)  ||  playerNeo->isLeftHand(plgnId2)) {
+			playerNeo->addLeftObject(objLine);
+		} else if (playerNeo->isRightHand(plgnId1)  ||  playerNeo->isRightHand(plgnId2)) {
+			playerNeo->addRightObject(objLine);
+		}
+	}
+
 	Array< Pair<int> > vrtxPairList = objPlgn->getCommonVertexIdxInPolygons(plgnId1, plgnId2);
 	switch (vrtxPairList.length()) {
 	case 2: {

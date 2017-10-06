@@ -5,6 +5,7 @@
 
 class Vector;
 class Object;
+class PlayerNeo;
 class CrashKeeper;
 
 class Field::CrashEvent : public Field::Event
@@ -13,7 +14,7 @@ public:
 	class CrashResult;
 
 public:
-	CrashEvent(void);
+	CrashEvent(PlayerNeo*);
 
 	void exec(void);
 
@@ -25,7 +26,7 @@ private:
 	int reflectIfCrash(Object*, Object*);
 	bool resolveCaught(Object*, Object*);
 	Vector calcCaughtDist(Object*, Object*);
-	Vector getLineToPolygonPenetration1(Object*, const Vector&, short, float);
+	Vector getLineToPolygonPenetration1(Object*, Object*, const Vector&, short, float);
 	Vector getLineToPolygonPenetration2(Object*, Object*, short, short, short);
 	void judgePlgnAndVrtx(Object*, Object*, CrashResult*);
 	void judgeLineAndLine(Object*, Object*, CrashResult*);
@@ -34,6 +35,7 @@ private:
 	void calcRepulsion(Object*, Object*, const Vector&, const Vector&, CrashResult*);
 
 	CrashKeeper* crashKeeper;
+	PlayerNeo* playerNeo;
 };
 
 #endif
