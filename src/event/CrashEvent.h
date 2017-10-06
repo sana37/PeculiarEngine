@@ -14,7 +14,7 @@ public:
 	class CrashResult;
 
 public:
-	CrashEvent(PlayerNeo*);
+	explicit CrashEvent(PlayerNeo*);
 
 	void exec(void);
 

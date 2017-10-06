@@ -50,6 +50,10 @@ private:
 	float leftHandVelocity;
 	float shoulderVelocity;
 
+	float leftPos;
+	float rightPos;
+	float shoulderPos;
+
 	Vector sightPoint;
 	Vector sightPointN;
 	Vector lookAt;
