@@ -36,13 +36,14 @@ public:
 	void addRightObject(Object*);
 	Object* getHoldableObject(void);
 
-	void setHold(void);
+	void setHold(const char*);
 	bool holds(void);
 
 private:
 	Vector leftStartIdx;
 	Vector rightStartIdx;
 	Vector shoulderStartIdx;
+	Vector caughtObjStartIdx;
 
 	Vector leftHandDirection;
 	Vector shoulderDirection;
@@ -60,6 +61,7 @@ private:
 	Vector lookAtN;
 
 	bool holdFlag;
+	const char* caughtObjName;
 	Array<Object*> leftTouchObjects;
 	Array<Object*> rightTouchObjects;
 };

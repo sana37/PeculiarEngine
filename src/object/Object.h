@@ -15,6 +15,8 @@ public:
 	virtual ~Object(void);
 
 	void composeObject(Object*);
+	Object* decomposeObject(int, int, int, const char*);
+
 	void reloadRadius(void);
 
 	short getVertexNum(void) const;

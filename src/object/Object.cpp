@@ -361,6 +361,101 @@ void Object::composeObject(Object* material)	//atode nakusu.  vertex nadoga doku
 //	radius change??
 }
 
+Object* Object::decomposeObject(int vertexId, int polygonId, int lineId, const char* name)
+{
+	Object* obj = new Object(name);
+
+	Vector* tempVertex = new Vector[vertexId];
+	short* tempLineLVertexIndex = new short[lineId];
+	short* tempLineRVertexIndex = new short[lineId];
+	short* tempPolygon1VertexIndex = new short[polygonId];
+	short* tempPolygon2VertexIndex = new short[polygonId];
+	short* tempPolygon3VertexIndex = new short[polygonId];
+	short* tempPolygonR = new short[polygonId];
+	short* tempPolygonG = new short[polygonId];
+	short* tempPolygonB = new short[polygonId];
+	bool* tempVertexEmbodyFlag = new bool[vertexId];
+	bool* tempPolygonEmbodyFlag = new bool[polygonId];
+	bool* tempPolygonInsideFlag = new bool[polygonId];
+
+	Vector newGravityCenter;
+	int embodyVertexNum = 0;
+	for (int i = 0; i < vertexNum; i++) {
+		if (i < vertexId) {
+			tempVertex[i] = vertex[i];
+			tempVertexEmbodyFlag[i] = vertexEmbodyFlag[i];
+		} else {
+			obj->vertex[i - vertexId] = vertex[i];//?? feiaj->fjeawo[i]
+			obj->vertexEmbodyFlag[i - vertexId] = vertexEmbodyFlag[i];
+			if (vertexEmbodyFlag[i]) {
+				newGravityCenter += vertex[i];
+				embodyVertexNum++;
+			}
+		}
+	}
+	obj->gravityCenter = newGravityCenter / embodyVertexNum;
+
+	delete[] vertex;
+	delete[] vertexEmbodyFlag;
+	vertex = tempVertex;
+	vertexEmbodyFlag = tempVertexEmbodyFlag;
+	vertexNum = vertexId;
+
+	for (int i = 0; i < lineNum; i++) {
+		if (i < lineId) {
+			tempLineLVertexIndex[i] = lineLVertexIndex[i];
+			tempLineRVertexIndex[i] = lineRVertexIndex[i];
+		} else {
+			obj->lineLVertexIndex[i - lineId] = lineLVertexIndex[i] - vertexId;
+			obj->lineRVertexIndex[i - lineId] = lineRVertexIndex[i] - vertexId;
+		}
+	}
+	delete[] lineLVertexIndex;
+	delete[] lineRVertexIndex;
+	lineLVertexIndex = tempLineLVertexIndex;
+	lineRVertexIndex = tempLineRVertexIndex;
+	lineNum = lineId;
+
+	for (short i = 0; i < polygonNum; i++) {
+		if (i < polygonId) {
+			tempPolygon1VertexIndex[i] = polygon1VertexIndex[i];
+			tempPolygon2VertexIndex[i] = polygon2VertexIndex[i];
+			tempPolygon3VertexIndex[i] = polygon3VertexIndex[i];
+			tempPolygonR[i] = polygonR[i];
+			tempPolygonG[i] = polygonG[i];
+			tempPolygonB[i] = polygonB[i];
+			tempPolygonEmbodyFlag[i] = polygonEmbodyFlag[i];
+			tempPolygonInsideFlag[i] = polygonInsideFlag[i];
+		} else {
+			obj->polygon1VertexIndex[i - polygonId] = polygon1VertexIndex[i] - vertexId;
+			obj->polygon2VertexIndex[i - polygonId] = polygon2VertexIndex[i] - vertexId;
+			obj->polygon3VertexIndex[i - polygonId] = polygon3VertexIndex[i] - vertexId;
+			obj->polygonR[i - polygonId] = polygonR[i];
+			obj->polygonG[i - polygonId] = polygonG[i];
+			obj->polygonB[i - polygonId] = polygonB[i];
+			obj->polygonEmbodyFlag[i - polygonId] = polygonEmbodyFlag[i];
+			obj->polygonInsideFlag[i - polygonId] = polygonInsideFlag[i];
+		}
+	}
+	delete[] polygon1VertexIndex;
+	delete[] polygon2VertexIndex;
+	delete[] polygon3VertexIndex;
+	delete[] polygonR;
+	delete[] polygonG;
+	delete[] polygonB;
+	delete[] polygonEmbodyFlag;
+	delete[] polygonInsideFlag;
+	polygon1VertexIndex = tempPolygon1VertexIndex;
+	polygon2VertexIndex = tempPolygon2VertexIndex;
+	polygon3VertexIndex = tempPolygon3VertexIndex;
+	polygonR = tempPolygonR;
+	polygonG = tempPolygonG;
+	polygonB = tempPolygonB;
+	polygonEmbodyFlag = tempPolygonEmbodyFlag;
+	polygonInsideFlag = tempPolygonInsideFlag;
+	polygonNum = polygonId;
+}
+
 void Object::reloadRadius(void)
 {
 	for (short i = 0; i < vertexNum; i++) {

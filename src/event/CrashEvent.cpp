@@ -14,13 +14,9 @@
 
 Field::CrashEvent::CrashEvent(PlayerNeo* playerNeo) : Field::Event::Event()
 {
-	std::cerr << "crash event construct\n";
-
 	crashKeeper = CrashKeeper::getInstance(&(field->object));
 
 	this->playerNeo = playerNeo;
-
-	std::cerr << "crash event constructed\n";
 }
 
 void Field::CrashEvent::exec(void)
@@ -33,7 +29,7 @@ void Field::CrashEvent::exec(void)
 	Object* caughtObj = playerNeo->getHoldableObject();
 	if (caughtObj != NULL) {
 		playerNeo->composeObject(caughtObj);
-		playerNeo->setHold();
+		playerNeo->setHold(caughtObj->getName());
 
 		field->deleteObject(caughtObj);
 	}
@@ -357,7 +353,7 @@ Vector Field::CrashEvent::getLineToPolygonPenetration2(Object* objPlgn, Object* 
 			b1 - a1,
 			&solution
 		)) {
-			std::cerr << "common polygon: execute\n";
+//			std::cerr << "common polygon: execute\n";
 			return dist * solution.getZ();
 		}
 		break;

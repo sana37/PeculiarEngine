@@ -1,5 +1,6 @@
 #include "PlayerNeo.h"
 #include "Calculater.h"
+#include "Field.h"
 
 PlayerNeo::PlayerNeo(const char* fileName) :
 	Object::Object(fileName),
@@ -11,7 +12,8 @@ PlayerNeo::PlayerNeo(const char* fileName) :
 	sightPointN(-12, 6, -3),
 	lookAt(0, 0, -1),
 	lookAtN(1, 0, 0),
-	holdFlag(false)
+	holdFlag(false),
+	caughtObjName(NULL)
 {
 	Object* leftHand = new Object("res/hand");
 	Object* rightHand = new Object("res/hand");
@@ -30,6 +32,7 @@ PlayerNeo::PlayerNeo(const char* fileName) :
 	this->composeObject(rightHand);
 	this->shoulderStartIdx = Vector(getVertexNum() + 0.1, getPolygonNum() + 0.1, getLineNum() + 0.1);
 	this->composeObject(shoulder);
+	this->caughtObjStartIdx = Vector(getVertexNum() + 0.1, getPolygonNum() + 0.1, getLineNum() + 0.1);
 
 	reloadRadius();
 
@@ -98,6 +101,20 @@ void PlayerNeo::update(void)
 	for (int i = shoulderVertexIdx; i < lastIdx; i++) {
 		Vector vertex = this->getVertex(i);
 		this->setVertex(i, vertex + deltaShoulderVertex);
+	}
+
+	if (holdFlag  &&  leftHandVelocity < 0) {
+		int objVertexIdx = (int) caughtObjStartIdx.getX();
+		int objPolygonIdx = (int) caughtObjStartIdx.getY();
+		int objLineIdx = (int) caughtObjStartIdx.getZ();
+
+		Object* obj = this->decomposeObject(objVertexIdx, objPolygonIdx, objLineIdx, caughtObjName);
+		Field::getInstance()->addObject(obj);
+
+		holdFlag = false;
+		caughtObjName = NULL;
+
+		std::cerr << "\nrelease!!\n";
 	}
 }
 
@@ -211,9 +228,10 @@ Object* PlayerNeo::getHoldableObject(void)
 	return NULL;
 }
 
-void PlayerNeo::setHold(void)
+void PlayerNeo::setHold(const char* name)
 {
 	holdFlag = true;
+	caughtObjName = name;
 }
 
 bool PlayerNeo::holds(void)
