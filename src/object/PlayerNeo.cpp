@@ -35,9 +35,11 @@ PlayerNeo::PlayerNeo(const char* fileName) :
 	this->composeObject(shoulder);
 	this->caughtObjStartIdx = Vector(getVertexNum() + 0.1, getPolygonNum() + 0.1, getLineNum() + 0.1);
 
+
+	setGravityCenter(0, 1.5, 0);
 	reloadRadius();
 
-	moveAbsolute(Vector(0, 1.5, -2.0));
+	moveAbsolute(Vector(0, 1.5, 10.0));
 	stop();
 
 	delete leftHand;
@@ -79,7 +81,7 @@ void PlayerNeo::update(void)
 	if ((leftPos <= -3.0  &&  leftHandVelocity < 0)  ||  (-0.5 <= leftPos  &&  leftHandVelocity > 0)  ||  (holdFlag  &&  leftHandVelocity > 0)) {
 		leftHandVelocity = 0;
 	}
-	if ((shoulderPos <= 0.0  &&  shoulderVelocity < 0)  ||  (3.5 <= shoulderPos  &&  shoulderVelocity > 0)) {
+	if ((shoulderPos <= 0.0  &&  shoulderVelocity < 0)  ||  (8.0 <= shoulderPos  &&  shoulderVelocity > 0)) {
 		shoulderVelocity = 0;
 	}
 

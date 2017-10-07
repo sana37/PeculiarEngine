@@ -33,7 +33,19 @@ Field::Field(void)
 
 	object.add(new Object("res/ground0"));
 	object.add(new Object("res/sky1"));
+	object.add(new Object("res/dai"));
+	object.add(new Object("res/hasira"));
+	object.add(new Object("res/hasira"));
+	object.add(new Object("res/hasira"));
+	object.add(new Object("res/hasira"));
 //	object.add(new Gunner("res/player", "res/bullet"));
+
+	object[3]->moveRelative(4.5, 0, 4.5);
+	object[4]->moveRelative(-4.5, 0, 4.5);
+	object[5]->moveRelative(4.5, 0, -4.5);
+	object[6]->moveRelative(-4.5, 0, -4.5);
+
+	short fixedNum = object.length();
 
 	PlayerNeo* playerNeo = new PlayerNeo("res/playerneo");
 
@@ -46,12 +58,15 @@ Field::Field(void)
 
 	std::cerr << "object creation have done.\n";
 
-///
-	for (short i = 2; i < object.length(); i++) {
-		Force* gravity = new Gravity(object[i]);
-		addForce(gravity);
+	for (short i = 0; i < object.length(); i++) {
+		if (i < fixedNum) {
+			object[i]->fix();
+		} else {
+			Force* gravity = new Gravity(object[i]);
+			addForce(gravity);
+		}
 	}
-///
+
 	UniversalForce* accel = new UniversalForce(playerNeo);
 	UniversalTorque* torque = new UniversalTorque(playerNeo);
 	addForce(accel);
@@ -65,24 +80,20 @@ Field::Field(void)
 	crashEvent = new CrashEvent(playerNeo);
 	moveEvent = new MoveEvent();
 
-
-	object[0]->fix();
-	object[1]->fix();
-
-	object[3]->moveAbsolute(8, 25, 0);
-//	object[3]->setVelocity(0.03, 0.05, 0);
-	object[3]->setVelocity(0, 0, 0);
-	object[3]->setOmega(1, 1, 0);
+	object[fixedNum + 1]->moveAbsolute(8, 25, 0);
+//	object[fixedNum + 1]->setVelocity(0.03, 0.05, 0);
+	object[fixedNum + 1]->setVelocity(0, 0, 0);
+	object[fixedNum + 1]->setOmega(1, 1, 0);
 	for (short i = 0; i < 10; i++)
-		object[3]->rotate();
-	object[3]->setOmega(0, 0, 0);
+		object[fixedNum + 1]->rotate();
+	object[fixedNum + 1]->setOmega(0, 0, 0);
 
-	object[4]->moveAbsolute(8, 10, 0);
-	object[4]->setVelocity(0, 0, 0);
-	object[4]->setOmega(0.1, 0.1, 0);
+	object[fixedNum + 2]->moveAbsolute(8, 10, 0);
+	object[fixedNum + 2]->setVelocity(0, 0, 0);
+	object[fixedNum + 2]->setOmega(0.1, 0.1, 0);
 	for (short i = 0; i < 1; i++)
-		object[4]->rotate();
-	object[4]->setOmega(0, 0, 0);
+		object[fixedNum + 2]->rotate();
+	object[fixedNum + 2]->setOmega(0, 0, 0);
 
 /*
 	object[5]->moveAbsolute(3, 13, 3);
