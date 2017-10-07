@@ -170,7 +170,7 @@ void Sight::setGluLookAt(const Vector& sightPoint, const Vector& direction)
 	float Y = sightPoint.getY();
 	float Z = sightPoint.getZ();
 
-	gluLookAt(X, Y, Z, X + direction.getX(), Y + direction.getY(), Z + direction.getZ(), 0, 1, 0);
+	gluLookAt(X, Y, Z, X + direction.getX(), Y + direction.getY() -0.3, Z + direction.getZ(), 0, 1, 0);
 }
 
 void Sight::paintObject(Object* modelObject)
@@ -232,16 +232,17 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 
 	switch (ch) {
 	case 16777234://left
-		speedHorizontal = -SPEED_MAX;
+		torque->setVector(0, TORQUE, 0);
+//			should rotate the direction of accel?
 		break;
 	case 16777236://right
-		speedHorizontal = SPEED_MAX;
+		torque->setVector(0, -TORQUE, 0);
 		break;
 	case 16777235://front
-		speedVertical = SPEED_MAX;
+		accel->setVector(this->playerNeo->getLookAt() * ACCEL);
 		break;
 	case 16777237://back
-		speedVertical = -SPEED_MAX;
+		accel->setVector(this->playerNeo->getLookAt() * -ACCEL);
 		break;
 /*
 	case ' ':
@@ -253,35 +254,46 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 */
 
 	case 'W'://go
-		accel->setVector(this->playerNeo->getLookAt() * ACCEL);
+		speedVertical = SPEED_MAX;
 		break;
 	case 'S'://back
-		accel->setVector(this->playerNeo->getLookAt() * -ACCEL);
+		speedVertical = -SPEED_MAX;
 		break;
 	case 'A'://turn left
-		torque->setVector(0, TORQUE, 0);
-//			should rotate the direction of accel?
+		speedHorizontal = -SPEED_MAX;
 		break;
 	case 'D'://turn right
-		torque->setVector(0, -TORQUE, 0);
+		speedHorizontal = SPEED_MAX;
 		break;
 
-	case 'I'://shoulder up
+	case '8'://shoulder up
 		playerNeo->moveShoulder(SHOULDER_SPEED);
 		break;
-	case 'K'://shoulder down
+	case '2'://shoulder down
 		playerNeo->moveShoulder(-SHOULDER_SPEED);
 		break;
-	case 'J'://hand close
+	case '+'://hand close
 		playerNeo->hold(HAND_SPEED);
 		break;
-	case 'L'://hand open
+	case '-'://hand open
 		playerNeo->hold(-HAND_SPEED);
 		break;
 
-	case '0':  case '1':  case '2':  case '3':  case '4':  case '5':  case '6':  case '7':  case '8':  case '9':
-		channel = ch - '0';
+//	case '0':  case '1':  case '2':  case '3':  case '4':  case '5':  case '6':  case '7':  case '8':  case '9':
+	case 'J':
+		channel = 4;
 		break;
+	case 'L':
+		channel = 6;
+		break;
+	case 'I':
+		channel = 8;
+		break;
+	case 'K':
+		channel = 2;
+		break;
+//		channel = ch - '0';
+//		break;
 
 	case 16777220:
 		timeCall();
@@ -302,27 +314,27 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 	switch (ch) {
 	case 16777234://left
 	case 16777236://right
-		speedHorizontal = 0;
+		torque->setVector(0, 0, 0);
+		this->playerNeo->stop();
 		break;
 	case 16777235://front
 	case 16777237://back
-		speedVertical = 0;
+		accel->setVector(0, 0, 0);
+		this->playerNeo->stop();
 		break;
 
-	case 'I':  case 'K':
+	case '2':  case '8':
 		playerNeo->moveShoulder(0);
 		break;
-	case 'J':  case 'L':
+	case '+':  case '-':
 		playerNeo->hold(0);
 		break;
 
 	case 'W':  case 'S':
-		accel->setVector(0, 0, 0);
-		this->playerNeo->stop();
+		speedVertical = 0;
 		break;
 	case 'A':  case 'D':
-		torque->setVector(0, 0, 0);
-		this->playerNeo->stop();
+		speedHorizontal = 0;
 		break;
 	}
 }
