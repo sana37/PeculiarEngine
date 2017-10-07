@@ -6,10 +6,10 @@
 
 /*Sight*/
 //#define SPEED		0.15
-#define ACCEL		0.5
+#define ACCEL		0.8
 #define SPEED_MAX	0.15
 //#define OMEGA		0.02
-#define TORQUE		0.1
+#define TORQUE		0.5
 #define OMEGA_MAX	0.02
 #define SHOULDER_SPEED	0.05
 #define HAND_SPEED		0.05
@@ -30,7 +30,7 @@
 
 
 /*Gravity*/
-#define GRAVITY		0.004
+#define GRAVITY		0.01//0.004
 //#define GRAVITY		0.098//9.8 * TIMEUNIT * 1000
 
 

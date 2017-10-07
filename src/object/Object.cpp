@@ -779,6 +779,8 @@ void Object::release(void)
 
 void Object::update(void)
 {
+	velocity *= 0.95;
+	omega *= 0.95;
 	this->run();
 	this->rotate();
 }
