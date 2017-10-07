@@ -38,12 +38,15 @@ Field::Field(void)
 	object.add(new Object("res/hasira"));
 	object.add(new Object("res/hasira"));
 	object.add(new Object("res/hasira"));
+	object.add(new Object("res/rail"));
+	object.add(new Object("res/case"));
 //	object.add(new Gunner("res/player", "res/bullet"));
 
-	object[3]->moveRelative(4.5, 0, 4.5);
-	object[4]->moveRelative(-4.5, 0, 4.5);
-	object[5]->moveRelative(4.5, 0, -4.5);
-	object[6]->moveRelative(-4.5, 0, -4.5);
+	object[3]->moveRelative(1.19, 0, 1.19);
+	object[4]->moveRelative(-1.19, 0, 1.19);
+	object[5]->moveRelative(1.19, 0, -1.19);
+	object[6]->moveRelative(-1.19, 0, -1.19);
+	object[8]->moveRelative(-7.5, 0, 16.50);
 
 	short fixedNum = object.length();
 
@@ -51,9 +54,14 @@ Field::Field(void)
 
 	object.add(playerNeo);
 
-	object.add(new Object("res/object2_light"));
-	object.add(new Object("res/object1"));
-	object.add(new Object("res/object2_light"));
+	object.add(new Object("res/tank"));
+	object.add(new Object("res/pinpon"));
+	object.add(new Object("res/pinpon"));
+	object.add(new Object("res/pinpon"));
+	object.add(new Object("res/pinpon"));
+	object.add(new Object("res/pinpon"));
+//	object.add(new Object("res/object1"));
+//	object.add(new Object("res/object2_light"));
 //	object.add(new Object("res/object0"));
 
 	std::cerr << "object creation have done.\n";
@@ -80,6 +88,12 @@ Field::Field(void)
 	crashEvent = new CrashEvent(playerNeo);
 	moveEvent = new MoveEvent();
 
+	object[fixedNum + 1]->moveAbsolute(-7.5, 1, 13.5);
+
+	for (short i = 0; i < 5; i++) {
+		object[fixedNum + 2 + i]->moveAbsolute(-6 + 3 * i, 1, 3);
+	}
+/*
 	object[fixedNum + 1]->moveAbsolute(8, 25, 0);
 //	object[fixedNum + 1]->setVelocity(0.03, 0.05, 0);
 	object[fixedNum + 1]->setVelocity(0, 0, 0);
@@ -94,20 +108,7 @@ Field::Field(void)
 	for (short i = 0; i < 1; i++)
 		object[fixedNum + 2]->rotate();
 	object[fixedNum + 2]->setOmega(0, 0, 0);
-
-/*
-	object[5]->moveAbsolute(3, 13, 3);
-//	object[5]->setVelocity(0, -0.05, 0.03);
-	object[5]->setVelocity(0, 0, 0);
-	object[5]->setOmega(0.1, 0.1, 0);
-	object[5]->rotate();
-	object[5]->setOmega(0, 0, 0);
-
-	object[6]->moveAbsolute(0, 15, 0);
-//	object[6]->setVelocity(0.04, 0.1, 0);
-	object[6]->setVelocity(0, 0, 0);
 */
-
 	time->start(TIME_UNIT);
 	autoGeneration->start(5000);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));

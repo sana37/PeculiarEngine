@@ -20,12 +20,12 @@ PlayerNeo::PlayerNeo(const char* fileName) :
 	Object* rightHand = new Object("res/hand");
 	Object* shoulder = new Object("res/shoulder");
 
-	leftHand->moveRelative(-3, 0, 0);
-	rightHand->moveRelative(3, 0, 0);
+	leftHand->moveRelative(-1.5, 0, 0);
+	rightHand->moveRelative(1.5, 0, 0);
 
-	leftPos = -3;
-	rightPos = 3;
-	shoulderPos = 3.5;
+	leftPos = -1.5;
+	rightPos = 1.5;
+	shoulderPos = 4.0;
 
 	this->leftStartIdx = Vector(getVertexNum() + 0.1, getPolygonNum() + 0.1, getLineNum() + 0.1);
 	this->composeObject(leftHand);
@@ -78,10 +78,10 @@ void PlayerNeo::update(void)
 	int shoulderVertexIdx = (int) shoulderStartIdx.getX();
 	int lastIdx = this->getVertexNum();
 
-	if ((leftPos <= -3.0  &&  leftHandVelocity < 0)  ||  (-0.5 <= leftPos  &&  leftHandVelocity > 0)  ||  (holdFlag  &&  leftHandVelocity > 0)) {
+	if ((leftPos <= -1.5  &&  leftHandVelocity < 0)  ||  (-0.1 <= leftPos  &&  leftHandVelocity > 0)  ||  (holdFlag  &&  leftHandVelocity > 0)) {
 		leftHandVelocity = 0;
 	}
-	if ((shoulderPos <= 0.0  &&  shoulderVelocity < 0)  ||  (8.0 <= shoulderPos  &&  shoulderVelocity > 0)) {
+	if ((shoulderPos <= 0.0  &&  shoulderVelocity < 0)  ||  (4.0 <= shoulderPos  &&  shoulderVelocity > 0)) {
 		shoulderVelocity = 0;
 	}
 
