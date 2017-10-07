@@ -239,7 +239,8 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 	short lineNum = objLine->getLineNum();
 
 	Vector solution;
-	Vector maxDist;
+	Vector minDist;
+	bool distFirstFlag = true;
 
 	for (short j = 0; j < lineNum; j++) {
 		const Vector vr = objLine->getLineRVertex(j);
@@ -278,13 +279,17 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 			break;
 		case 1:
 			dist = getLineToPolygonPenetration1(objPlgn, objLine, lr, plgnIdList[0], distList[0]);
-			if (maxDist.getMagnitude() < dist.getMagnitude())
-				maxDist = dist;
+			if (minDist.getMagnitude() > dist.getMagnitude()  ||  distFirstFlag) {
+				minDist = dist;
+				distFirstFlag = false;
+			}
 			break;
 		case 2:
 			dist = getLineToPolygonPenetration2(objPlgn, objLine, plgnIdList[0], plgnIdList[1], j);
-			if (maxDist.getMagnitude() < dist.getMagnitude())
-				maxDist = dist;
+			if (minDist.getMagnitude() > dist.getMagnitude()  ||  distFirstFlag) {
+				minDist = dist;
+				distFirstFlag = false;
+			}
 			break;
 		default:
 			break;
@@ -292,7 +297,7 @@ Vector Field::CrashEvent::calcCaughtDist(Object* objPlgn, Object* objLine)
 
 	}
 
-	return maxDist;
+	return minDist;
 }
 
 Vector Field::CrashEvent::getLineToPolygonPenetration1(Object* objPlgn, Object* objLine, const Vector& lineLR, short plgnId, float lineParam)
