@@ -272,11 +272,11 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 	case '2'://shoulder down
 		playerNeo->moveShoulder(-SHOULDER_SPEED);
 		break;
-	case '+'://hand close
-		playerNeo->hold(HAND_SPEED);
+	case '4'://hand close
+		playerNeo->hold(HAND_SPEED * 0.7);
 		break;
-	case '-'://hand open
-		playerNeo->hold(-HAND_SPEED);
+	case '6'://hand open
+		playerNeo->hold(-HAND_SPEED * 0.7);
 		break;
 
 //	case '0':  case '1':  case '2':  case '3':  case '4':  case '5':  case '6':  case '7':  case '8':  case '9':
@@ -326,7 +326,7 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 	case '2':  case '8':
 		playerNeo->moveShoulder(0);
 		break;
-	case '+':  case '-':
+	case '4':  case '6':
 		playerNeo->hold(0);
 		break;
 

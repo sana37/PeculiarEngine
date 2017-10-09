@@ -81,7 +81,7 @@ void PlayerNeo::update(void)
 	if ((leftPos <= -1.5  &&  leftHandVelocity < 0)  ||  (-0.1 <= leftPos  &&  leftHandVelocity > 0)  ||  (holdFlag  &&  leftHandVelocity > 0)) {
 		leftHandVelocity = 0;
 	}
-	if ((shoulderPos <= 0.0  &&  shoulderVelocity < 0)  ||  (4.0 <= shoulderPos  &&  shoulderVelocity > 0)) {
+	if ((shoulderPos <= 0.5  &&  shoulderVelocity < 0)  ||  (4.0 <= shoulderPos  &&  shoulderVelocity > 0)) {
 		shoulderVelocity = 0;
 	}
 
