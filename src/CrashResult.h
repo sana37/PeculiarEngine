@@ -23,6 +23,8 @@ public:
 	void setCrashSpot(const Vector&);
 //	void setRelativeVelocity(const Vector&);
 	void addTangency(void);
+	void addHandVelocityToPlayerNeo(void);
+	void restorePlayerNeo(void);
 
 	Object* getObjPlgn(void);
 	Object* getObjVrtx(void);

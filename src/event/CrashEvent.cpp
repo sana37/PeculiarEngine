@@ -30,6 +30,7 @@ void Field::CrashEvent::exec(void)
 	if (caughtObj != NULL) {
 		playerNeo->composeObject(caughtObj);
 		playerNeo->setHold(caughtObj->getName());
+		playerNeo->stop();
 
 		field->deleteForce(caughtObj);
 		field->deleteObject(caughtObj);
@@ -110,6 +111,8 @@ void Field::CrashEvent::execFirstCrash(void)
 				i--;
 			}
 		}
+
+		count++;
 
 		if (crashedObjects.length() == 0)
 			break;
@@ -365,7 +368,7 @@ Vector Field::CrashEvent::getLineToPolygonPenetration2(Object* objPlgn, Object* 
 		break;
 	}
 	default:
-//				std::cerr << "common polygon: undefined error\n";
+//		std::cerr << "common polygon undefined error: " << vrtxPairList.length() << "\n";
 		break;
 	}
 
@@ -550,8 +553,10 @@ void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& 
 		}
 	} else {
 //		std::cerr << "repulsion\n";
+		result->addHandVelocityToPlayerNeo();
 		Impulse impulse(base, result->getCrashSpot(), obj1, obj2);
 		impulse.exec();
+		result->restorePlayerNeo();
 	}
 //	field->timeControl();
 

@@ -23,6 +23,8 @@ public:
 	Vector getSightPointN(void);
 	const Vector& getLookAt(void);
 	const Vector& getLookAtN(void);
+	Vector getLeftHandRelativeVelocity(void);
+	Vector getRightHandRelativeVelocity(void);
 
 	Vector getDeltaVertex(short);
 	Vector getDeltaPolygon(short);

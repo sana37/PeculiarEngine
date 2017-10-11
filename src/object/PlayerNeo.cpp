@@ -162,12 +162,22 @@ const Vector& PlayerNeo::getLookAtN(void)
 	return lookAtN;
 }
 
+Vector PlayerNeo::getLeftHandRelativeVelocity(void)
+{
+	return (shoulderDirection * shoulderVelocity) + (leftHandDirection * leftHandVelocity);
+}
+
+Vector PlayerNeo::getRightHandRelativeVelocity(void)
+{
+	return (shoulderDirection * shoulderVelocity) - (leftHandDirection * leftHandVelocity);
+}
+
 Vector PlayerNeo::getDeltaVertex(short idx)
 {
 	if (((int) leftStartIdx.getX()) <= idx  &&  idx < ((int) rightStartIdx.getX()))
-		return Object::getDeltaVertex(idx) + (leftHandDirection * leftHandVelocity);
+		return Object::getDeltaVertex(idx) + (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else if (((int) rightStartIdx.getX()) <= idx  &&  idx < ((int) shoulderStartIdx.getX()))
-		return Object::getDeltaVertex(idx) - (leftHandDirection * leftHandVelocity);
+		return Object::getDeltaVertex(idx) - (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else
 		return Object::getDeltaVertex(idx);
 }
@@ -175,9 +185,9 @@ Vector PlayerNeo::getDeltaVertex(short idx)
 Vector PlayerNeo::getDeltaPolygon(short idx)
 {
 	if (((int) leftStartIdx.getY()) <= idx  &&  idx < ((int) rightStartIdx.getY()))
-		return Object::getDeltaPolygon(idx) + (leftHandDirection * leftHandVelocity);
+		return Object::getDeltaPolygon(idx) + (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else if (((int) rightStartIdx.getY()) <= idx  &&  idx < ((int) shoulderStartIdx.getY()))
-		return Object::getDeltaPolygon(idx) - (leftHandDirection * leftHandVelocity);
+		return Object::getDeltaPolygon(idx) - (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else
 		return Object::getDeltaPolygon(idx);
 }
@@ -185,9 +195,9 @@ Vector PlayerNeo::getDeltaPolygon(short idx)
 Vector PlayerNeo::getDeltaLine(short idx)
 {
 	if (((int) leftStartIdx.getZ()) <= idx  &&  idx < ((int) rightStartIdx.getZ()))
-		return Object::getDeltaLine(idx) + (leftHandDirection * leftHandVelocity);
+		return Object::getDeltaLine(idx) + (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else if (((int) rightStartIdx.getZ()) <= idx  &&  idx < ((int) shoulderStartIdx.getZ()))
-		return Object::getDeltaLine(idx) - (leftHandDirection * leftHandVelocity);
+		return Object::getDeltaLine(idx) - (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else
 		return Object::getDeltaLine(idx);
 }
