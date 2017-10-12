@@ -148,7 +148,7 @@ void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
 {
 	Vector tempDeltaVelocity;
 
-	if (objPlgnOrLine1->whichClass() == 'Q') {
+	if (objPlgnOrLine1->whichClass() == 'Q'  ||  objPlgnOrLine1->whichClass() == 'H') {
 		PlayerNeo* playerNeo = dynamic_cast<PlayerNeo*>(objPlgnOrLine1);
 		switch (result) {
 		case POLYGON_AND_VERTEX:
@@ -168,7 +168,7 @@ void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
 		}
 
 		playerNeo->setVelocity(playerNeo->getVelocity() - tempDeltaVelocity);
-	} else if (objVrtxOrLine2->whichClass() == 'Q') {
+	} else if (objVrtxOrLine2->whichClass() == 'Q'  ||  objPlgnOrLine1->whichClass() == 'H') {
 		PlayerNeo* playerNeo = dynamic_cast<PlayerNeo*>(objVrtxOrLine2);
 		switch (result) {
 		case POLYGON_AND_VERTEX:
