@@ -108,7 +108,8 @@ void Field::CrashEvent::CrashResult::addHandVelocityToPlayerNeo(void)
 				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
 			} else if (playerNeo->isRightHand(plgnIdx)) {
 				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
-//			} else if (playerNeo->isHeldObject(plgnIdx)) {
+			} else if (playerNeo->isShoulderOrHeldObject(plgnIdx)) {
+				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
 			}
 			break;
 		case LINE_AND_LINE:
@@ -116,6 +117,8 @@ void Field::CrashEvent::CrashResult::addHandVelocityToPlayerNeo(void)
 				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
 			} else if (playerNeo->isRightHandL(line1Idx)) {
 				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
+			} else if (playerNeo->isShoulderOrHeldObjectL(line1Idx)) {
+				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
 			}
 			break;
 		}
@@ -129,6 +132,8 @@ void Field::CrashEvent::CrashResult::addHandVelocityToPlayerNeo(void)
 				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
 			} else if (playerNeo->isRightHandV(vrtxIdx)) {
 				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
+			} else if (playerNeo->isShoulderOrHeldObjectV(vrtxIdx)) {
+				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
 			}
 			break;
 		case LINE_AND_LINE:
@@ -136,6 +141,8 @@ void Field::CrashEvent::CrashResult::addHandVelocityToPlayerNeo(void)
 				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
 			} else if (playerNeo->isRightHandL(line2Idx)) {
 				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
+			} else if (playerNeo->isShoulderOrHeldObjectL(line2Idx)) {
+				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
 			}
 			break;
 		}
@@ -156,6 +163,8 @@ void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
 				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
 			} else if (playerNeo->isRightHand(plgnIdx)) {
 				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
+			} else if (playerNeo->isShoulderOrHeldObject(plgnIdx)) {
+				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
 			}
 			break;
 		case LINE_AND_LINE:
@@ -163,12 +172,14 @@ void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
 				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
 			} else if (playerNeo->isRightHandL(line1Idx)) {
 				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
+			} else if (playerNeo->isShoulderOrHeldObjectL(line1Idx)) {
+				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
 			}
 			break;
 		}
 
 		playerNeo->setVelocity(playerNeo->getVelocity() - tempDeltaVelocity);
-	} else if (objVrtxOrLine2->whichClass() == 'Q'  ||  objPlgnOrLine1->whichClass() == 'H') {
+	} else if (objVrtxOrLine2->whichClass() == 'Q'  ||  objVrtxOrLine2->whichClass() == 'H') {
 		PlayerNeo* playerNeo = dynamic_cast<PlayerNeo*>(objVrtxOrLine2);
 		switch (result) {
 		case POLYGON_AND_VERTEX:
@@ -176,6 +187,8 @@ void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
 				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
 			} else if (playerNeo->isRightHandV(vrtxIdx)) {
 				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
+			} else if (playerNeo->isShoulderOrHeldObjectV(vrtxIdx)) {
+				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
 			}
 			break;
 		case LINE_AND_LINE:
@@ -183,6 +196,8 @@ void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
 				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
 			} else if (playerNeo->isRightHandL(line2Idx)) {
 				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
+			} else if (playerNeo->isShoulderOrHeldObjectL(line2Idx)) {
+				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
 			}
 			break;
 		}

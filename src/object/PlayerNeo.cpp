@@ -172,12 +172,19 @@ Vector PlayerNeo::getRightHandRelativeVelocity(void)
 	return (shoulderDirection * shoulderVelocity) - (leftHandDirection * leftHandVelocity);
 }
 
+Vector PlayerNeo::getShoulderRelativeVelocity(void)
+{
+	return (shoulderDirection * shoulderVelocity);
+}
+
 Vector PlayerNeo::getDeltaVertex(short idx)
 {
 	if (((int) leftStartIdx.getX()) <= idx  &&  idx < ((int) rightStartIdx.getX()))
 		return Object::getDeltaVertex(idx) + (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else if (((int) rightStartIdx.getX()) <= idx  &&  idx < ((int) shoulderStartIdx.getX()))
 		return Object::getDeltaVertex(idx) - (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
+	else if (((int) shoulderStartIdx.getX()) <= idx)
+		return Object::getDeltaVertex(idx) + (shoulderDirection * shoulderVelocity);
 	else
 		return Object::getDeltaVertex(idx);
 }
@@ -188,6 +195,8 @@ Vector PlayerNeo::getDeltaPolygon(short idx)
 		return Object::getDeltaPolygon(idx) + (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else if (((int) rightStartIdx.getY()) <= idx  &&  idx < ((int) shoulderStartIdx.getY()))
 		return Object::getDeltaPolygon(idx) - (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
+	else if (((int) shoulderStartIdx.getY()) <= idx)
+		return Object::getDeltaPolygon(idx) + (shoulderDirection * shoulderVelocity);
 	else
 		return Object::getDeltaPolygon(idx);
 }
@@ -198,6 +207,8 @@ Vector PlayerNeo::getDeltaLine(short idx)
 		return Object::getDeltaLine(idx) + (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
 	else if (((int) rightStartIdx.getZ()) <= idx  &&  idx < ((int) shoulderStartIdx.getZ()))
 		return Object::getDeltaLine(idx) - (leftHandDirection * leftHandVelocity) + (shoulderDirection * shoulderVelocity);
+	else if (((int) shoulderStartIdx.getZ()) <= idx)
+		return Object::getDeltaLine(idx) + (shoulderDirection * shoulderVelocity);
 	else
 		return Object::getDeltaLine(idx);
 }
@@ -213,6 +224,14 @@ bool PlayerNeo::isLeftHand(short plgnIdx)
 bool PlayerNeo::isRightHand(short plgnIdx)
 {
 	if (((int) rightStartIdx.getY()) <= plgnIdx  &&  plgnIdx < ((int) shoulderStartIdx.getY()))
+		return true;
+	else
+		return false;
+}
+
+bool PlayerNeo::isShoulderOrHeldObject(short plgnIdx)
+{
+	if (((int) shoulderStartIdx.getY()) <= plgnIdx)
 		return true;
 	else
 		return false;
@@ -234,6 +253,14 @@ bool PlayerNeo::isRightHandL(short lineIdx)
 		return false;
 }
 
+bool PlayerNeo::isShoulderOrHeldObjectL(short lineIdx)
+{
+	if (((int) shoulderStartIdx.getZ()) <= lineIdx)
+		return true;
+	else
+		return false;
+}
+
 bool PlayerNeo::isLeftHandV(short vrtxIdx)
 {
 	if (((int) leftStartIdx.getX()) <= vrtxIdx  &&  vrtxIdx < ((int) rightStartIdx.getX()))
@@ -245,6 +272,14 @@ bool PlayerNeo::isLeftHandV(short vrtxIdx)
 bool PlayerNeo::isRightHandV(short vrtxIdx)
 {
 	if (((int) rightStartIdx.getX()) <= vrtxIdx  &&  vrtxIdx < ((int) shoulderStartIdx.getX()))
+		return true;
+	else
+		return false;
+}
+
+bool PlayerNeo::isShoulderOrHeldObjectV(short vrtxIdx)
+{
+	if (((int) shoulderStartIdx.getX()) <= vrtxIdx)
 		return true;
 	else
 		return false;

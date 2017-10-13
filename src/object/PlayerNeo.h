@@ -25,6 +25,7 @@ public:
 	const Vector& getLookAtN(void);
 	Vector getLeftHandRelativeVelocity(void);
 	Vector getRightHandRelativeVelocity(void);
+	Vector getShoulderRelativeVelocity(void);
 
 	Vector getDeltaVertex(short);
 	Vector getDeltaPolygon(short);
@@ -32,10 +33,13 @@ public:
 
 	bool isLeftHand(short);
 	bool isRightHand(short);
+	bool isShoulderOrHeldObject(short);
 	bool isLeftHandL(short);
 	bool isRightHandL(short);
+	bool isShoulderOrHeldObjectL(short);
 	bool isLeftHandV(short);
 	bool isRightHandV(short);
+	bool isShoulderOrHeldObjectV(short);
 
 	void initializeTouchState(void);
 	void addLeftObject(Object*);
