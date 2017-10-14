@@ -3,7 +3,6 @@
 #include "PlayerNeo.h"
 #include "Force.h"
 #include "Impulse.h"
-#include "StickForce.h"
 #include "NumberBox.h"
 #include "Calculater.h"
 #include "CrashResult.h"
@@ -183,13 +182,6 @@ bool Field::CrashEvent::resolveCaught(Object* obj1, Object* obj2)
 	float absV21 = v21.getMagnitude();
 
 	if (absV12 == 0  &&  absV21 == 0) {
-/*		if (obj1->isFixed() == false)
-			obj1->back();
-		if (obj2->isFixed() == false)
-			obj2->back();
-*/
-//		std::cerr << "zero back\n";
-//		field->timeControl();//
 		return false;
 	}
 
@@ -295,7 +287,9 @@ Vector Field::CrashEvent::getLineToPolygonPenetration1(Object* objPlgn, Object* 
 
 	Vector inside = objPlgn->getPlgnInside(plgnId);
 
-	// () ? inside is R : inside is L;
+	/**
+	 * () ? inside is R : inside is L;
+	 */
 	Vector insideOfLine = (inside * lineLR >= 0) ? (lineLR * (-1.0 * lineParam)) : (lineLR * (1 - lineParam));
 	return inside * (insideOfLine * inside);
 }
@@ -363,12 +357,7 @@ void Field::CrashEvent::judgePlgnAndVrtx(Object* objPlgn, Object* objVrtx, Crash
 	for (short j = 0; j < vrtxNum; j++) {
 
 		if (objVrtx->isVertexEmbody(j) == false) continue;
-		if (canCrashObjSphereAndVrtx(objPlgn, objVrtx->getVertex(j)) == false) {
-//			std::cerr << '.';
-			continue;
-		} else {
-//			std::cerr << '_';
-		}
+		if (canCrashObjSphereAndVrtx(objPlgn, objVrtx->getVertex(j)) == false) continue;
 
 		Vector deltaVertex = objVrtx->getDeltaVertex(j);
 
@@ -503,82 +492,11 @@ void Field::CrashEvent::reflectLineAndLine(CrashResult* result)
 
 void Field::CrashEvent::calcRepulsion(Object* obj1, Object* obj2, const Vector& p, const Vector& q, CrashResult* result)
 {
-	Vector omega = field->object[3]->getOmega();
-
 	Vector base = p % q;
 	base /= base.getMagnitude();
 
-//	float relativeVelocity = result->getRelativeVelocity() * base;
-
-	if (result->getRelativeSpeed() < ZERO_VELOCITY) {//relative vellocity should be calculated more exactly
-		std::cerr << "stick\n";
-		Force* stickForce;
-		switch (result->getTangencyNum()) {
-		case 2 :
-//			std::cerr << "undefined\n";
-		case 1 :
-//			std::cerr << "stick\n";
-			stickForce = new StickForce(base, obj1, obj2, *result);
-			stickForce->exec();
-			delete stickForce;
-			break;
-		case 0 :
-//			std::cerr << "undefined more\n";
-			break;
-		default :
-			std::cerr << "coming!!!!!!!!!!!!!!!!!!!!!!!\n";
-			obj1->stop();
-			obj2->stop();
-			break;
-		}
-	} else {
-//		std::cerr << "repulsion\n";
-		result->addHandVelocityToPlayerNeo();
-		Impulse impulse(base, result->getCrashSpot(), obj1, obj2);
-		impulse.exec();
-		result->restorePlayerNeo();
-	}
-//	field->timeControl();
-
-/*		migitekei or hidaritekei ??  you must confirm it
-	Vector degVelocity1 = obj1->getOmega() % (result->getCrashSpot() - obj1->getGravityCenter());
-	Vector degVelocity2 = obj2->getOmega() % (result->getCrashSpot() - obj2->getGravityCenter());
-*/
-/*
-	Vector radiusVector1 = obj1->getGravityCenter() - result->getCrashSpot();
-	Vector omega1 = obj1->getOmega();
-	float radius1 = radiusVector1.getMagnitude();
-	Calculater::rotate(&omega1, Vector(0, 0, 0), radiusVector1 / radius1, 90.0);
-	omega1 *= radius1;
-
-	Vector radiusVector2 = obj2->getGravityCenter() - result->getCrashSpot();
-	Vector omega2 = obj2->getOmega();
-	float radius2 = radiusVector2.getMagnitude();
-	Calculater::rotate(&omega2, Vector(0, 0, 0), radiusVector2 / radius2, 90.0);
-	omega2 *= radius2;
-*/
-
-//	float radius2 = (result->getCrashSpot() - obj2->getGravityCenter()).getMagnitude();
-//	Vector v = (obj1->getVelocity() + omega1) - (obj2->getVelocity() + omega2);
-
-/*
-	Vector v = obj1->getVelocity() - obj2->getVelocity();
-	Vector solution;
-
-	if (Calculater::solveCubicEquation(p, q, n, v, &solution)) {
-//		Vector vector = n * solution.getZ() * (1 + e) * (m1 * m2 / (m1 + m2));
-		Vector rv = n * solution.getZ();
-
-			float m1 = obj1->getMass();
-			float m2 = obj2->getMass();
-			float e = 0.7;
-
-//			vector *= (1 + e) * (m1 * m2 / (m1 + m2));
-			rv *= -(1 + e) * (m1 * m2 / (m1 + m2));
-			Force* impulse = new Impulse(rv, result->getCrashSpot(), obj1, obj2);
-			field->addForce(impulse);
-	} else {
-		std::cerr << "through?\n";
-	}
-*/
+	result->addHandVelocityToPlayerNeo();
+	Impulse impulse(base, result->getCrashSpot(), obj1, obj2);
+	impulse.exec();
+	result->restorePlayerNeo();
 }

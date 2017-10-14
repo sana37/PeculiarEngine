@@ -34,10 +34,6 @@
 //#define GRAVITY		0.098//9.8 * TIMEUNIT * 1000
 
 
-/*CrashEvent*/
-#define ZERO_VELOCITY		0//0.05//too big
-#define ZERO_ACCELERATION	0.0001
-
 /*MoveEvent*/
 #define WORLD		80
 

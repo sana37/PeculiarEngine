@@ -22,7 +22,6 @@ HEADERS += src/CrashResult.h \
            src/force/Force.h \
            src/force/Gravity.h \
            src/force/Impulse.h \
-           src/force/StickForce.h \
            src/force/UniversalForce.h \
            src/force/UniversalTorque.h \
            src/object/Gunner.h \
@@ -47,7 +46,6 @@ SOURCES += src/CrashResult.cpp \
            src/force/Force.cpp \
            src/force/Gravity.cpp \
            src/force/Impulse.cpp \
-           src/force/StickForce.cpp \
            src/force/UniversalForce.cpp \
            src/force/UniversalTorque.cpp \
            src/object/Gunner.cpp \
