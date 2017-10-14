@@ -17,15 +17,6 @@ void Field::MoveEvent::exec(void)
 
 		field->object[i]->update();
 
-		if (i >= 2) {
-			if ((field->object[i]->getGravityCenter()).getMagnitude() > WORLD) {
-//				std::cerr << "deleted\n";
-				if (field->deadObjectNum < 100) {
-					field->deadObjectIndex[field->deadObjectNum] = i;
-					field->deadObjectNum++;
-				}
-			}
-		}
 	}
 
 }

@@ -28,22 +28,19 @@ private:
 public:
 	static Field* getInstance(void);
 	static void deleteInstance(void);
+
 	void open(void);
+
 	Object* getObject(int);
 	int getObjectNum(void);
-
-signals:
-//	void syncObject(void);
-	void reportScore(short);
-
-public slots:
-	void execTimeEvent(void);
-	void timeControl(void);
-
 	void addObject(Object*);
 	void deleteObject(Object*);
 	void addForce(Force*);
 	void deleteForce(Object*);
+
+public slots:
+	void execTimeEvent(void);
+	void timeControl(void);
 
 private:
 	Sight* sight;
@@ -54,9 +51,6 @@ private:
 	Event* crashEvent;
 	Event* moveEvent;
 
-
-	short deadObjectIndex[100];
-	short deadObjectNum;
 };
 
 #endif

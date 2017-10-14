@@ -2,7 +2,6 @@
 
 #include "Sight.h"
 #include "Force.h"
-#include "Impulse.h"
 #include "Gravity.h"
 #include "UniversalForce.h"
 #include "UniversalTorque.h"
@@ -23,9 +22,6 @@
 Field::Field(void)
 {
 	std::cerr << "Hello world\n";
-
-	time = new QTimer;
-
 	std::cerr << "now, make objects\n";
 
 	object.add(new Object("res/ground0"));
@@ -77,12 +73,6 @@ Field::Field(void)
 	addForce(accel);
 	addForce(torque);
 
-	sight = new Sight(playerNeo, accel, torque);
-
-	forceEvent = new ForceEvent();
-	crashEvent = new CrashEvent(playerNeo);
-	moveEvent = new MoveEvent();
-
 	object[fixedNum + 1]->moveAbsolute(-7.5, 1, 13.5);
 
 	for (short i = 0; i < 5; i++) {
@@ -104,11 +94,16 @@ Field::Field(void)
 		object[fixedNum + 2]->rotate();
 	object[fixedNum + 2]->setOmega(0, 0, 0);
 */
+	sight = new Sight(playerNeo, accel, torque);
+
+	forceEvent = new ForceEvent();
+	crashEvent = new CrashEvent(playerNeo);
+	moveEvent = new MoveEvent();
+
+	time = new QTimer;
 	time->start(TIME_UNIT);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
 	QObject::connect(sight, SIGNAL(timeCall()), this, SLOT(timeControl()));
-
-	deadObjectNum = 0;
 
 	std::cerr << "start!\n";
 }
@@ -179,23 +174,7 @@ void Field::timeControl(void)
 
 void Field::addObject(Object* newObject)
 {
-/*
-	if (deadObjectNum > 0) {
-		deadObjectNum--;
-		delete object[deadObjectIndex[deadObjectNum]];
-//		object[deadObjectIndex[deadObjectNum]] = newObject;
-		switch (newObject->whichClass()) {
-			case 'O' : object[deadObjectIndex[deadObjectNum]] = new Object(*newObject);	break;
-			case 'P' : object[deadObjectIndex[deadObjectNum]] = new Player(*((Player*)newObject));	break;
-			case 'G' : object[deadObjectIndex[deadObjectNum]] = new Gunner(*((Gunner*)newObject));	break;
-			case 'N' : object[deadObjectIndex[deadObjectNum]] = new NumberBox(*((NumberBox*)newObject));	break;
-		}
-		std::cerr << "Object generation success??\n";
-		return;
-	}
-*/
 	object.add(newObject);
-//	syncObject();
 }
 
 void Field::deleteObject(Object* oldObject)
