@@ -25,6 +25,7 @@ public:
 	void addTangency(void);
 	void addHandVelocityToPlayerNeo(void);
 	void restorePlayerNeo(void);
+	void triggerHandVelocityOfPlayerNeo(bool);
 
 	Object* getObjPlgn(void);
 	Object* getObjVrtx(void);

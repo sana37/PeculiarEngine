@@ -98,60 +98,15 @@ void Field::CrashEvent::CrashResult::addTangency(void)
 
 void Field::CrashEvent::CrashResult::addHandVelocityToPlayerNeo(void)
 {
-	Vector tempDeltaVelocity;
-
-	if (objPlgnOrLine1->whichClass() == 'Q'  ||  objPlgnOrLine1->whichClass() == 'H') {
-		PlayerNeo* playerNeo = dynamic_cast<PlayerNeo*>(objPlgnOrLine1);
-		switch (result) {
-		case POLYGON_AND_VERTEX:
-			if (playerNeo->isLeftHand(plgnIdx)) {
-				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
-			} else if (playerNeo->isRightHand(plgnIdx)) {
-				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
-			} else if (playerNeo->isShoulderOrHeldObject(plgnIdx)) {
-				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
-			}
-			break;
-		case LINE_AND_LINE:
-			if (playerNeo->isLeftHandL(line1Idx)) {
-				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
-			} else if (playerNeo->isRightHandL(line1Idx)) {
-				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
-			} else if (playerNeo->isShoulderOrHeldObjectL(line1Idx)) {
-				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
-			}
-			break;
-		}
-
-		playerNeo->setVelocity(playerNeo->getVelocity() + tempDeltaVelocity);
-	} else if (objVrtxOrLine2->whichClass() == 'Q'  ||  objVrtxOrLine2->whichClass() == 'H') {
-		PlayerNeo* playerNeo = dynamic_cast<PlayerNeo*>(objVrtxOrLine2);
-		switch (result) {
-		case POLYGON_AND_VERTEX:
-			if (playerNeo->isLeftHandV(vrtxIdx)) {
-				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
-			} else if (playerNeo->isRightHandV(vrtxIdx)) {
-				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
-			} else if (playerNeo->isShoulderOrHeldObjectV(vrtxIdx)) {
-				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
-			}
-			break;
-		case LINE_AND_LINE:
-			if (playerNeo->isLeftHandL(line2Idx)) {
-				tempDeltaVelocity = playerNeo->getLeftHandRelativeVelocity();
-			} else if (playerNeo->isRightHandL(line2Idx)) {
-				tempDeltaVelocity = playerNeo->getRightHandRelativeVelocity();
-			} else if (playerNeo->isShoulderOrHeldObjectL(line2Idx)) {
-				tempDeltaVelocity = playerNeo->getShoulderRelativeVelocity();
-			}
-			break;
-		}
-
-		playerNeo->setVelocity(playerNeo->getVelocity() + tempDeltaVelocity);
-	}
+	triggerHandVelocityOfPlayerNeo(true);
 }
 
 void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
+{
+	triggerHandVelocityOfPlayerNeo(false);
+}
+
+void Field::CrashEvent::CrashResult::triggerHandVelocityOfPlayerNeo(bool plusORminus)
 {
 	Vector tempDeltaVelocity;
 
@@ -178,7 +133,10 @@ void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
 			break;
 		}
 
-		playerNeo->setVelocity(playerNeo->getVelocity() - tempDeltaVelocity);
+		if (plusORminus)
+			playerNeo->setVelocity(playerNeo->getVelocity() + tempDeltaVelocity);
+		else
+			playerNeo->setVelocity(playerNeo->getVelocity() - tempDeltaVelocity);
 	} else if (objVrtxOrLine2->whichClass() == 'Q'  ||  objVrtxOrLine2->whichClass() == 'H') {
 		PlayerNeo* playerNeo = dynamic_cast<PlayerNeo*>(objVrtxOrLine2);
 		switch (result) {
@@ -202,7 +160,10 @@ void Field::CrashEvent::CrashResult::restorePlayerNeo(void)
 			break;
 		}
 
-		playerNeo->setVelocity(playerNeo->getVelocity() - tempDeltaVelocity);
+		if (plusORminus)
+			playerNeo->setVelocity(playerNeo->getVelocity() + tempDeltaVelocity);
+		else
+			playerNeo->setVelocity(playerNeo->getVelocity() - tempDeltaVelocity);
 	}
 }
 
