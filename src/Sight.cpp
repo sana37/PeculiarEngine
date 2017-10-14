@@ -3,7 +3,6 @@
 #include "Object.h"
 #include "Gunner.h"
 #include "PlayerNeo.h"
-#include "Calculater.h"
 #include "UniversalForce.h"
 #include "UniversalTorque.h"
 #include "Define.h"
@@ -33,42 +32,7 @@ Sight::Sight(PlayerNeo* playerNeo, UniversalForce* accel, UniversalTorque* torqu
 
 	updateGL();
 }
-/*
-void Sight::update(void)
-{
-	Vector zero(0, 0, 0);
 
-	if ((-DOMAIN_MAX < X  &&  velocity.getX() < 0)  ||  (X < DOMAIN_MAX  &&  velocity.getX() > 0))
-		X += velocity.getX();
-	if ((FLOOR < Y  &&  velocity.getY() < 0)  ||  (Y < CEILING  &&  velocity.getY() > 0))
-		Y += velocity.getY();
-	if ((-DOMAIN_MAX < Z  &&  velocity.getZ() < 0)  ||  (Z < DOMAIN_MAX  &&  velocity.getZ() > 0))
-		Z += velocity.getZ();
-
-
-	if (lookAt.getY() > 0.97  &&  omegaPitch > 0)
-		omegaPitch = 0;
-	if (lookAt.getY() < -0.97  &&  omegaPitch < 0)
-		omegaPitch = 0;
-
-	rotateSelf(&lookAt, zero, omegaYaw, omegaPitch);
-	rotateSelf(&lookAtN, zero, omegaYaw, 0);
-
-	if (omegaYaw != 0  ||  omegaPitch != 0) {
-		if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
-			Gunner* gunner = (Gunner*) (*object_p)[dominatorIndex];
-
-			Vector omega(0, omegaYaw, 0);
-			gunner->rotateBullet(omega);
-			omega = lookAtN * omegaPitch;
-			gunner->rotateBullet(omega);
-		}
-
-		if (gbFlag != 0)
-			velocity = lookAt * SPEED * gbFlag;
-	}
-}
-*/
 void Sight::initializeGL(void)
 {
 	glClearColor(1, 1, 1, 1);
@@ -224,7 +188,6 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 	int ch;
 
 	if (keyboard->isAutoRepeat()) {
-//		std::cerr << "miss press\n";
 		return;
 	}
 
@@ -246,10 +209,7 @@ void Sight::keyPressEvent(QKeyEvent* keyboard)
 		break;
 /*
 	case ' ':
-		if ((*object_p)[dominatorIndex]->whichClass() == 'G') {
-			Gunner* gunner = dynamic_cast<Gunner*>((*object_p)[dominatorIndex]);
-			gunner->trigger(lookAt);
-		}
+		gunner->trigger(lookAt);
 		break;
 */
 
@@ -307,7 +267,6 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 	int ch = keyboard->key();
 
 	if (keyboard->isAutoRepeat()) {
-//		std::cerr << "miss release\n";
 		return;
 	}
 
@@ -338,12 +297,3 @@ void Sight::keyReleaseEvent(QKeyEvent* keyboard)
 		break;
 	}
 }
-/*
-void Sight::rotateSelf(Vector* vertex_p, Vector basePoint, float degYaw, float degPitch)
-{
-	Vector shaft(0, 1, 0);
-
-	Calculater::rotateRad(vertex_p, basePoint, shaft, degYaw);
-	Calculater::rotateRad(vertex_p, basePoint, lookAtN, degPitch);
-}
-*/
