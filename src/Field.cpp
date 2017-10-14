@@ -9,7 +9,6 @@
 
 #include "Object.h"
 #include "PlayerNeo.h"
-#include "NumberBox.h"
 #include "Gunner.h"
 
 #include "MoveEvent.h"
@@ -26,7 +25,6 @@ Field::Field(void)
 	std::cerr << "Hello world\n";
 
 	time = new QTimer;
-	autoGeneration = new QTimer;
 
 	std::cerr << "now, make objects\n";
 
@@ -107,13 +105,10 @@ Field::Field(void)
 	object[fixedNum + 2]->setOmega(0, 0, 0);
 */
 	time->start(TIME_UNIT);
-	autoGeneration->start(5000);
 	connect(time, SIGNAL(timeout()), this, SLOT(execTimeEvent()));
 	QObject::connect(sight, SIGNAL(timeCall()), this, SLOT(timeControl()));
-//	QObject::connect(autoGeneration, SIGNAL(timeout()), this, SLOT(autoGenerate()));
 
 	deadObjectNum = 0;
-	autoGenerationIndex = 0;
 
 	std::cerr << "start!\n";
 }
@@ -180,105 +175,6 @@ void Field::timeControl(void)
 		crashEvent->enable();
 		moveEvent->enable();
 	}
-}
-
-void Field::autoGenerate(void)
-{
-	Object* temp;
-	Vector vector;
-
-	switch (autoGenerationIndex) {//atode random ni suru
-		case 0 : {
-			temp = new NumberBox(94);
-			break;
-		}
-		case 1 : {
-			temp = new NumberBox(42);
-			break;
-		}
-		case 2 : {
-			temp = new NumberBox(66);
-			break;
-		}
-		case 3 : {
-			temp = new NumberBox(81);
-			break;
-		}
-		case 4 : {
-			temp = new NumberBox(12);
-			break;
-		}
-		case 5 : {
-			temp = new NumberBox(35);
-			break;
-		}
-		case 6 : {
-			temp = new NumberBox(48);
-			break;
-		}
-		case 7 : {
-			temp = new NumberBox(18);
-			break;
-		}
-		case 8 : {
-			temp = new NumberBox(99);
-			break;
-		}
-		case 9 : {
-			temp = new NumberBox(6);
-			break;
-		}
-		case 10 : {
-			temp = new NumberBox(68);
-			break;
-		}
-		case 11 : {
-			temp = new NumberBox(32);
-			break;
-		}
-		default : {
-			return;
-		}
-	}
-
-	switch (autoGenerationIndex % 4) {
-		case 0 : {
-			vector.setVector(25, 45, 25);
-			break;
-		}
-		case 1 : {
-			vector.setVector(25, 45, -25);
-			break;
-		}
-		case 2 : {
-			vector.setVector(-25, 45, -25);
-			break;
-		}
-		case 3 : {
-			vector.setVector(-25, 45, 25);
-			break;
-		}
-	}
-	temp->moveAbsolute(vector);
-
-	switch (autoGenerationIndex % 3) {
-		case 0 : {
-			vector.setVector(0.02, 0.04, 0);
-			break;
-		}
-		case 1 : {
-			vector.setVector(-0.01, 0.01, 0.04);
-			break;
-		}
-		case 2 : {
-			vector.setVector(0, -0.04, 0.02);
-			break;
-		}
-	}
-	temp->setVelocity(vector);
-
-	addObject(temp);
-	autoGenerationIndex++;
 }
 
 void Field::addObject(Object* newObject)

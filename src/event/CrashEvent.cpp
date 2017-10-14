@@ -3,7 +3,6 @@
 #include "PlayerNeo.h"
 #include "Force.h"
 #include "Impulse.h"
-#include "NumberBox.h"
 #include "Calculater.h"
 #include "CrashResult.h"
 #include "Define.h"

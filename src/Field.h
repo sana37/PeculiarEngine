@@ -39,7 +39,6 @@ signals:
 public slots:
 	void execTimeEvent(void);
 	void timeControl(void);
-	void autoGenerate(void);
 
 	void addObject(Object*);
 	void deleteObject(Object*);
@@ -49,7 +48,6 @@ public slots:
 private:
 	Sight* sight;
 	QTimer* time;
-	QTimer* autoGeneration;
 	Array<Object*> object;
 	Array<Force*> force;
 	Event* forceEvent;
@@ -59,7 +57,6 @@ private:
 
 	short deadObjectIndex[100];
 	short deadObjectNum;
-	short autoGenerationIndex;
 };
 
 #endif
