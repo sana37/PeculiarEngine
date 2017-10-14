@@ -12,8 +12,7 @@ QT += widgets opengl
 LIBS += -lGLU
 
 # Input
-HEADERS += src/CrashKeeper.h \
-           src/CrashResult.h \
+HEADERS += src/CrashResult.h \
            src/Field.h \
            src/Sight.h \
            src/event/CrashEvent.h \
@@ -37,8 +36,7 @@ HEADERS += src/CrashKeeper.h \
            src/util/Define.h \
            src/util/Pair.h \
            src/util/Vector.h
-SOURCES += src/CrashKeeper.cpp \
-           src/CrashResult.cpp \
+SOURCES += src/CrashResult.cpp \
            src/Field.cpp \
            src/main.cpp \
            src/Sight.cpp \

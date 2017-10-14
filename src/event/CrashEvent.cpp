@@ -7,15 +7,12 @@
 #include "NumberBox.h"
 #include "Calculater.h"
 #include "CrashResult.h"
-#include "CrashKeeper.h"
 #include "Define.h"
 #include <iostream>
 #include <math.h>
 
 Field::CrashEvent::CrashEvent(PlayerNeo* playerNeo) : Field::Event::Event()
 {
-	crashKeeper = CrashKeeper::getInstance(&(field->object));
-
 	this->playerNeo = playerNeo;
 }
 
@@ -40,15 +37,9 @@ void Field::CrashEvent::exec(void)
 
 void Field::CrashEvent::execFirstCrash(void)
 {
-//	const Array< Pair<Object*> >& pairs = crashKeeper->getDetachedObjectsPairs();
 	int objectNum = field->object.length();
 	Array<Object*> crashedObjects(objectNum);
 
-/*
-	for (short i = 0; i < pairs.length(); i++) {
-		Object* obj1 = pairs[i].getInstance1();
-		Object* obj2 = pairs[i].getInstance2();
-*/
 	for (short i = 0; i < (objectNum - 1); i++) {
 		Object* obj1 = field->object[i];
 
@@ -129,17 +120,6 @@ void Field::CrashEvent::execFirstCrash(void)
 
 void Field::CrashEvent::execSecondCrash(void)
 {
-/*
-	const Array< Pair<Object*> >& pairs = crashKeeper->getAttachedObjectsPairs();
-
-	for (short i = 0  ;  i < pairs.length()  ;  i++) {
-		Object* obj1 = pairs[i].getInstance1();
-		Object* obj2 = pairs[i].getInstance2();
-
-		if (reflectIfCrash(obj1, obj2)) {
-		}
-	}
-*/
 }
 
 bool Field::CrashEvent::canCrashObjSphere(Object* obj1, Object* obj2)

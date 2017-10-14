@@ -45,8 +45,7 @@ OBJECTS_DIR   = generated/
 
 ####### Files
 
-SOURCES       = src/CrashKeeper.cpp \
-		src/CrashResult.cpp \
+SOURCES       = src/CrashResult.cpp \
 		src/Field.cpp \
 		src/main.cpp \
 		src/Sight.cpp \
@@ -69,8 +68,7 @@ SOURCES       = src/CrashKeeper.cpp \
 		src/util/Calculater.cpp \
 		src/util/Vector.cpp generated/moc_Field.cpp \
 		generated/moc_Sight.cpp
-OBJECTS       = generated/CrashKeeper.o \
-		generated/CrashResult.o \
+OBJECTS       = generated/CrashResult.o \
 		generated/Field.o \
 		generated/main.o \
 		generated/Sight.o \
@@ -201,8 +199,7 @@ DIST          = /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/exceptions.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/features/lex.prf \
-		PrimeNumberGame.pro src/CrashKeeper.cpp \
-		src/CrashResult.cpp \
+		PrimeNumberGame.pro src/CrashResult.cpp \
 		src/Field.cpp \
 		src/main.cpp \
 		src/Sight.cpp \
@@ -489,7 +486,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d generated/PrimeNumberGame1.0.0 || mkdir -p generated/PrimeNumberGame1.0.0
-	$(COPY_FILE) --parents $(DIST) generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.h src/CrashResult.h src/Field.h src/Sight.h src/event/CrashEvent.h src/event/Event.h src/event/ForceEvent.h src/event/MoveEvent.h src/force/Force.h src/force/Gravity.h src/force/Impulse.h src/force/StickForce.h src/force/UniversalForce.h src/force/UniversalTorque.h src/object/Gunner.h src/object/NumberBox.h src/object/Object.h src/object/ObjectStatus.h src/object/Player.h src/object/PlayerNeo.h src/util/Array.h src/util/Calculater.h src/util/Define.h src/util/Pair.h src/util/Vector.h generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashKeeper.cpp src/CrashResult.cpp src/Field.cpp src/main.cpp src/Sight.cpp src/event/CrashEvent.cpp src/event/Event.cpp src/event/ForceEvent.cpp src/event/MoveEvent.cpp src/force/Force.cpp src/force/Gravity.cpp src/force/Impulse.cpp src/force/StickForce.cpp src/force/UniversalForce.cpp src/force/UniversalTorque.cpp src/object/Gunner.cpp src/object/NumberBox.cpp src/object/Object.cpp src/object/ObjectStatus.cpp src/object/Player.cpp src/object/PlayerNeo.cpp src/util/Calculater.cpp src/util/Vector.cpp generated/PrimeNumberGame1.0.0/ && (cd `dirname generated/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname generated/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r generated/PrimeNumberGame1.0.0
+	$(COPY_FILE) --parents $(DIST) generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashResult.h src/Field.h src/Sight.h src/event/CrashEvent.h src/event/Event.h src/event/ForceEvent.h src/event/MoveEvent.h src/force/Force.h src/force/Gravity.h src/force/Impulse.h src/force/StickForce.h src/force/UniversalForce.h src/force/UniversalTorque.h src/object/Gunner.h src/object/NumberBox.h src/object/Object.h src/object/ObjectStatus.h src/object/Player.h src/object/PlayerNeo.h src/util/Array.h src/util/Calculater.h src/util/Define.h src/util/Pair.h src/util/Vector.h generated/PrimeNumberGame1.0.0/ && $(COPY_FILE) --parents src/CrashResult.cpp src/Field.cpp src/main.cpp src/Sight.cpp src/event/CrashEvent.cpp src/event/Event.cpp src/event/ForceEvent.cpp src/event/MoveEvent.cpp src/force/Force.cpp src/force/Gravity.cpp src/force/Impulse.cpp src/force/StickForce.cpp src/force/UniversalForce.cpp src/force/UniversalTorque.cpp src/object/Gunner.cpp src/object/NumberBox.cpp src/object/Object.cpp src/object/ObjectStatus.cpp src/object/Player.cpp src/object/PlayerNeo.cpp src/util/Calculater.cpp src/util/Vector.cpp generated/PrimeNumberGame1.0.0/ && (cd `dirname generated/PrimeNumberGame1.0.0` && $(TAR) PrimeNumberGame1.0.0.tar PrimeNumberGame1.0.0 && $(COMPRESS) PrimeNumberGame1.0.0.tar) && $(MOVE) `dirname generated/PrimeNumberGame1.0.0`/PrimeNumberGame1.0.0.tar.gz . && $(DEL_FILE) -r generated/PrimeNumberGame1.0.0
 
 
 clean:compiler_clean 
@@ -700,15 +697,6 @@ compiler_clean: compiler_moc_header_clean
 
 ####### Compile
 
-generated/CrashKeeper.o: src/CrashKeeper.cpp src/CrashKeeper.h \
-		src/util/Array.h \
-		src/util/Define.h \
-		src/util/Pair.h \
-		src/object/Object.h \
-		src/util/Vector.h \
-		src/object/ObjectStatus.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/CrashKeeper.o src/CrashKeeper.cpp
-
 generated/CrashResult.o: src/CrashResult.cpp src/CrashResult.h \
 		src/event/CrashEvent.h \
 		src/event/Event.h \
@@ -766,7 +754,8 @@ generated/CrashResult.o: src/CrashResult.cpp src/CrashResult.h \
 		src/util/Define.h \
 		src/util/Vector.h \
 		src/object/Object.h \
-		src/util/Pair.h
+		src/util/Pair.h \
+		src/object/PlayerNeo.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/CrashResult.o src/CrashResult.cpp
 
 generated/Field.o: src/Field.cpp src/Field.h \
@@ -903,7 +892,6 @@ generated/Field.o: src/Field.cpp src/Field.h \
 		src/event/Event.h \
 		src/event/CrashEvent.h \
 		src/event/ForceEvent.h \
-		src/CrashKeeper.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/QTimer \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qtimer.h \
 		/opt/Qt/5.3/gcc_64/include/QtCore/qbasictimer.h
@@ -1209,13 +1197,13 @@ generated/CrashEvent.o: src/event/CrashEvent.cpp src/event/CrashEvent.h \
 		src/object/Object.h \
 		src/util/Vector.h \
 		src/util/Pair.h \
+		src/object/PlayerNeo.h \
 		src/force/Force.h \
 		src/force/Impulse.h \
 		src/force/StickForce.h \
 		src/CrashResult.h \
 		src/object/NumberBox.h \
-		src/util/Calculater.h \
-		src/CrashKeeper.h
+		src/util/Calculater.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/CrashEvent.o src/event/CrashEvent.cpp
 
 generated/Event.o: src/event/Event.cpp src/event/Event.h \
@@ -1597,7 +1585,59 @@ generated/PlayerNeo.o: src/object/PlayerNeo.cpp src/object/PlayerNeo.h \
 		src/util/Array.h \
 		src/util/Define.h \
 		src/util/Pair.h \
-		src/util/Calculater.h
+		src/util/Calculater.h \
+		src/Field.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qtypetraits.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv7.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv6.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_armv5.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_ia64.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_mips.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_x86.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_gcc.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qatomic_unix.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
+		/opt/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
+		src/force/Gravity.h \
+		src/force/Force.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o generated/PlayerNeo.o src/object/PlayerNeo.cpp
 
 generated/Calculater.o: src/util/Calculater.cpp src/util/Calculater.h \

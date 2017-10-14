@@ -6,7 +6,6 @@
 class Vector;
 class Object;
 class PlayerNeo;
-class CrashKeeper;
 
 class Field::CrashEvent : public Field::Event
 {
@@ -34,7 +33,6 @@ private:
 	void reflectLineAndLine(CrashResult*);
 	void calcRepulsion(Object*, Object*, const Vector&, const Vector&, CrashResult*);
 
-	CrashKeeper* crashKeeper;
 	PlayerNeo* playerNeo;
 };
 

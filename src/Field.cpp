@@ -16,7 +16,6 @@
 #include "CrashEvent.h"
 #include "ForceEvent.h"
 
-#include "CrashKeeper.h"////
 #include "Define.h"
 
 #include <QTimer>
@@ -81,8 +80,6 @@ Field::Field(void)
 	addForce(torque);
 
 	sight = new Sight(playerNeo, accel, torque);
-
-	CrashKeeper::getInstance(&object);
 
 	forceEvent = new ForceEvent();
 	crashEvent = new CrashEvent(playerNeo);
