@@ -247,9 +247,12 @@ first: all
 
 all: Makefile $(TARGET)
 
-$(TARGET):  $(OBJECTS)  
+$(TARGET):  $(OBJECTS_DIR) $(OBJECTS)
 	@test -d target/ || mkdir -p target/
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
+
+$(OBJECTS_DIR):
+	@test -d $@ || mkdir -p $@
 
 Makefile: PrimeNumberGame.pro /opt/Qt/5.3/gcc_64/mkspecs/linux-g++/qmake.conf /opt/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.3/gcc_64/mkspecs/common/shell-unix.conf \
