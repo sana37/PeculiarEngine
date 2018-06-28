@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = PrimeNumberGame
+TARGET = PeculiarEngine
 INCLUDEPATH += . src src/util src/object src/event src/force
 DESTDIR = target
 OBJECTS_DIR = generated
