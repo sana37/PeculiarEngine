@@ -1,2 +1,4 @@
 /generated/
 /target/
+/Makefile
+/.qmake.stash
