@@ -10,12 +10,27 @@ Qt 5.11
 ### 使い方
 
 ```
+qmake
+```
+
+を実行します。続けて、
+
+```
+make
+```
+
+を実行すれば、`target/PeculiarEngine`が生成されるので、これを実行すると動きます。
+
+
+
+
+#### ソースコードが追加・削除されたとき
+
+```
 qmake -project
 ```
 
 を実行
-
-`INCLUDEPATH`に`src src/util src/object src/event src/force`を追加
 
 自動生成された`PeculiarEngine.pro`に次の内容を挿入
 
@@ -27,39 +42,4 @@ QT += widgets opengl
 LIBS += -lGLU
 ```
 
-続けて、
-
-```
-qmake
-```
-
-を実行
-
-自動生成された`Makefile`について
-
-```
-$(TARGET):  $(OBJECTS)
-```
-
-を
-
-```
-$(TARGET):  $(OBJECTS_DIR) $(OBJECTS)
-```
-
-に修正し、さらに、適当な位置に
-
-```
-$(OBJECTS_DIR):
-       @test -d $@ || mkdir -p $@
-```
-
-を挿入します。
-
-あとは、
-
-```
-make
-```
-
-を実行してコンパイルすれば、`target/PeculiarEngine`が生成されるので、これを実行すると動きます。
+また、`INCLUDEPATH`に`src src/util src/object src/event src/force`を追加
