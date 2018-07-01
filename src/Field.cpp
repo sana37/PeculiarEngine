@@ -24,16 +24,15 @@ Field::Field(void)
 	std::cerr << "Hello world\n";
 	std::cerr << "now, make objects\n";
 
-	object.add(new Object("res/ground0"));
-	object.add(new Object("res/sky1"));
-	object.add(new Object("res/dai"));
-	object.add(new Object("res/hasira"));
-	object.add(new Object("res/hasira"));
-	object.add(new Object("res/hasira"));
-	object.add(new Object("res/hasira"));
-	object.add(new Object("res/rail"));
-	object.add(new Object("res/case"));
-//	object.add(new Gunner("res/player", "res/bullet"));
+	object.add(new Object("res/ground0.json"));
+	object.add(new Object("res/sky1.json"));
+	object.add(new Object("res/dai.json"));
+	object.add(new Object("res/hasira.json"));
+	object.add(new Object("res/hasira.json"));
+	object.add(new Object("res/hasira.json"));
+	object.add(new Object("res/hasira.json"));
+	object.add(new Object("res/rail.json"));
+	object.add(new Object("res/case.json"));
 
 	object[3]->moveRelative(1.19, 0, 1.19);
 	object[4]->moveRelative(-1.19, 0, 1.19);
@@ -43,19 +42,16 @@ Field::Field(void)
 
 	short fixedNum = object.length();
 
-	PlayerNeo* playerNeo = new PlayerNeo("res/playerneo");
+	PlayerNeo* playerNeo = new PlayerNeo("res/playerneo.json");
 
 	object.add(playerNeo);
 
-	object.add(new Object("res/tank"));
-	object.add(new Object("res/pinpon"));
-	object.add(new Object("res/pinpon"));
-	object.add(new Object("res/pinpon"));
-	object.add(new Object("res/pinpon"));
-	object.add(new Object("res/pinpon"));
-//	object.add(new Object("res/object1"));
-//	object.add(new Object("res/object2_light"));
-//	object.add(new Object("res/object0"));
+	object.add(new Object("res/tank.json"));
+	object.add(new Object("res/pinpon.json"));
+	object.add(new Object("res/pinpon.json"));
+	object.add(new Object("res/pinpon.json"));
+	object.add(new Object("res/pinpon.json"));
+	object.add(new Object("res/pinpon.json"));
 
 	std::cerr << "object creation have done.\n";
 
@@ -78,22 +74,7 @@ Field::Field(void)
 	for (short i = 0; i < 5; i++) {
 		object[fixedNum + 2 + i]->moveAbsolute(-6 + 3 * i, 1, 3);
 	}
-/*
-	object[fixedNum + 1]->moveAbsolute(8, 25, 0);
-//	object[fixedNum + 1]->setVelocity(0.03, 0.05, 0);
-	object[fixedNum + 1]->setVelocity(0, 0, 0);
-	object[fixedNum + 1]->setOmega(1, 1, 0);
-	for (short i = 0; i < 10; i++)
-		object[fixedNum + 1]->rotate();
-	object[fixedNum + 1]->setOmega(0, 0, 0);
 
-	object[fixedNum + 2]->moveAbsolute(8, 10, 0);
-	object[fixedNum + 2]->setVelocity(0, 0, 0);
-	object[fixedNum + 2]->setOmega(0.1, 0.1, 0);
-	for (short i = 0; i < 1; i++)
-		object[fixedNum + 2]->rotate();
-	object[fixedNum + 2]->setOmega(0, 0, 0);
-*/
 	sight = new Sight(playerNeo, accel, torque);
 
 	forceEvent = new ForceEvent();

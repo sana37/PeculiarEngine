@@ -16,9 +16,9 @@ PlayerNeo::PlayerNeo(const char* fileName) :
 	holdFlag(false),
 	caughtObjName(NULL)
 {
-	Object* leftHand = new Object("res/hand");
-	Object* rightHand = new Object("res/hand");
-	Object* shoulder = new Object("res/shoulder");
+	Object* leftHand = new Object("res/hand.json");
+	Object* rightHand = new Object("res/hand.json");
+	Object* shoulder = new Object("res/shoulder.json");
 
 	leftHand->moveRelative(-1.5, 0, 0);
 	rightHand->moveRelative(1.5, 0, 0);
