@@ -52,8 +52,6 @@ Object::Object(const char* fileName) :
 	file.close();
 
 	reloadRadius();
-
-  std::cout << "reading object complete.\n" << std::endl;
 }
 
 void Object::exitWithError(const char *str)
