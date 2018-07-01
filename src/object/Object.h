@@ -6,6 +6,8 @@
 #include "Pair.h"
 
 class ObjectStatus;
+class QJsonValue;
+class QJsonObject;
 
 class Object
 {
@@ -17,8 +19,19 @@ public:
 	void composeObject(Object*);
 	Object* decomposeObject(int, int, int, const char*);
 
+private:
+	void parseVertexs(const QJsonValue &);
+	void parseLines(const QJsonValue &);
+	void parsePolygons(const QJsonValue &);
+	void parseMass(const QJsonValue &);
+	void parseVelocity(const QJsonValue &);
+	virtual void parseSubParams(const QJsonObject &);
+	void exitWithError(const char *);
+
+protected:
 	void reloadRadius(void);
 
+public:
 	short getVertexNum(void) const;
 	short getPolygonNum(void) const;
 	short getLineNum(void) const;

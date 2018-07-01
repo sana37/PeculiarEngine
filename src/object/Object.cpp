@@ -2,8 +2,14 @@
 #include "ObjectStatus.h"
 #include "Calculater.h"
 #include "Define.h"
-#include <stdio.h>
 #include <math.h>
+#include <QFile>
+#include <QIODevice>
+#include <QByteArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
 
 Object::Object(const char* fileName) :
 	velocity(Vector()),
@@ -17,187 +23,196 @@ Object::Object(const char* fileName) :
 	isDominated = false;
 	status = new ObjectStatus();
 
-	FILE* fp = fopen(fileName, "r");
+	QFile file(fileName);
 
-	if (fp != NULL) {
-		while (fgetc(fp) != ':') ;
-		if (fscanf(fp, "%hd", &vertexNum) == EOF)
-			printf("ERROR\n");
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		this->exitWithError("cannot open file.\n");
 
-		while (fgetc(fp) != '+') ;
-		vertex = new Vector[vertexNum];
-		vertexEmbodyFlag = new bool[vertexNum];
-		short realVertexNum = 0;
-		for (short i = 0  ;  i < vertexNum  ;  i++) {
-			float temp[3];
+	QByteArray bytes("");
 
-			if (fscanf(fp, "%f%f%f", &temp[0], &temp[1], &temp[2]) == EOF) {
-				printf("ERROR\n");
-				break;
-			}
+	while (!file.atEnd()) {
+		bytes += file.readLine();
+	}
 
-			vertex[i].setVector(temp);
+	QJsonDocument doc = QJsonDocument::fromJson(bytes);
 
-			vertexEmbodyFlag[i] = true;
+	if (doc.isNull())
+		this->exitWithError("reading json failed...\n");
 
-			while (fgetc(fp) != '/') ;
-			while (1) {
-				char ch = fgetc(fp);
-				if (ch == '/')
-					break;
-				if (ch == '|')
-					vertexEmbodyFlag[i] = false;
-			}
+	QJsonObject obj = doc.object();
 
-			if (vertexEmbodyFlag[i] == true) {
-				gravityCenter += Vector(temp);
-				realVertexNum++;
-			}
-		}
-		gravityCenter /= realVertexNum;
+	this->parseVertexs(obj["vertexs"]);
+	this->parseLines(obj["lines"]);
+	this->parsePolygons(obj["polygons"]);
+	this->parseMass(obj["mass"]);
+	this->parseVelocity(obj["velocity"]);
 
+	this->parseSubParams(obj);
 
+	file.close();
 
-		while (fgetc(fp) != '*') ;
+	reloadRadius();
 
+  std::cout << "reading object complete.\n" << std::endl;
+}
 
-		while (fgetc(fp) != ':') ;
-		if (fscanf(fp, "%hd", &lineNum) == EOF)
-			printf("ERROR\n");
+void Object::exitWithError(const char *str)
+{
+	std::cerr << str << std::endl;
+	exit(1);
+}
 
-		lineLVertexIndex = new short[lineNum];
-		lineRVertexIndex = new short[lineNum];
+void Object::parseVertexs(const QJsonValue &val)
+{
+	if (!val.isArray())
+		this->exitWithError("incorrect vertex\n");
 
-		while (fgetc(fp) != '+') ;
-		for (short i = 0  ;  i < lineNum  ;  i++) {
-			if (fscanf(fp, "%hd%hd", &lineLVertexIndex[i], &lineRVertexIndex[i]) == EOF) break;
-			lineLVertexIndex[i]--;
-			lineRVertexIndex[i]--;
+	QJsonArray jsonVertexs = val.toArray();
 
-			while (fgetc(fp) != '/') ;
-			while (fgetc(fp) != '/') ;
-		}
+	this->vertexNum = jsonVertexs.size();
+	this->vertex = new Vector[this->vertexNum];
+	this->vertexEmbodyFlag = new bool[this->vertexNum];
 
+	int count = 0;
 
-		while (fgetc(fp) != '*') ;
+	for (auto i = jsonVertexs.begin(); i != jsonVertexs.end(); i++) {
+		QJsonArray jsonVertex = (*i).toArray();
+		float x = jsonVertex.at(0).toDouble();
+		float y = jsonVertex.at(1).toDouble();
+		float z = jsonVertex.at(2).toDouble();
+		this->vertex[count].setVector(x, y, z);
+		this->vertexEmbodyFlag[count] = true;
+		this->gravityCenter += this->vertex[count];
+		count++;
+	}
 
+	this->gravityCenter /= count;
+}
 
-		while (fgetc(fp) != ':') ;
-		if (fscanf(fp, "%hd", &polygonNum) == EOF)
-			printf("ERROR\n");
+void Object::parseLines(const QJsonValue &val)
+{
+	if (!val.isArray())
+		this->exitWithError("incorrect lines\n");
 
-		polygon1VertexIndex = new short[polygonNum];
-		polygon2VertexIndex = new short[polygonNum];
-		polygon3VertexIndex = new short[polygonNum];
-		polygonR = new short[polygonNum];
-		polygonG = new short[polygonNum];
-		polygonB = new short[polygonNum];
-		polygonEmbodyFlag = new bool[polygonNum];
-		polygonInsideFlag = new bool[polygonNum];
+	QJsonArray jsonLines = val.toArray();
 
-		while (fgetc(fp) != '+') ;
-		for (short i = 0  ;  i < polygonNum  ;  i++) {
-			float colorR, colorG, colorB;
+	this->lineNum = jsonLines.size();
+	this->lineLVertexIndex = new short[this->lineNum];
+	this->lineRVertexIndex = new short[this->lineNum];
 
-			if (fscanf(fp, "%hd%hd%hd", &polygon1VertexIndex[i], &polygon2VertexIndex[i], &polygon3VertexIndex[i]) == EOF) break;
-			polygon1VertexIndex[i]--;
-			polygon2VertexIndex[i]--;
-			polygon3VertexIndex[i]--;
+	for (int i = 0; i < this->lineNum; i++) {
+		QJsonArray jsonLine = jsonLines.at(i).toArray();
+		this->lineLVertexIndex[i] = jsonLine.at(0).toInt() - 1;
+		this->lineRVertexIndex[i] = jsonLine.at(1).toInt() - 1;
+	}
+}
 
-			while (fgetc(fp) != '|') ;
+void Object::parsePolygons(const QJsonValue &val)
+{
+	if (!val.isArray())
+		this->exitWithError("incorrect polygons\n");
 
-			if (fscanf(fp, "%f%f%f", &colorR, &colorG, &colorB) == EOF) break;
-			polygonR[i] = 32767 * colorR;
-			polygonG[i] = 32767 * colorG;
-			polygonB[i] = 32767 * colorB;
+	QJsonArray jsonPolygons = val.toArray();
 
-			polygonEmbodyFlag[i] = true;
-			while (fgetc(fp) != '/') ;
-			while (1) {
-				char ch = fgetc(fp);
-				if (ch == '/')
-					break;
-				if (ch == '|')
-					polygonEmbodyFlag[i] = false;
-			}
-		}
+	this->polygonNum = jsonPolygons.size();
+	this->polygon1VertexIndex = new short[this->polygonNum];
+	this->polygon2VertexIndex = new short[this->polygonNum];
+	this->polygon3VertexIndex = new short[this->polygonNum];
+	this->polygonR = new short[this->polygonNum];
+	this->polygonG = new short[this->polygonNum];
+	this->polygonB = new short[this->polygonNum];
+	this->polygonEmbodyFlag = new bool[this->polygonNum];
+	this->polygonInsideFlag = new bool[this->polygonNum];
 
-		for (short i = 0; i < polygonNum; i++) {
-			short penetratedPlgnNum = 0;
-			const Vector a1 = getPolygon1Vertex(i);
-			const Vector a2 = getPolygon2Vertex(i);
-			const Vector a3 = getPolygon3Vertex(i);
-			Vector n = (a2 - a1) % (a3 - a1);
+	for (int i = 0; i < this->polygonNum; i++) {
+		QJsonObject jsonPolygon = jsonPolygons.at(i).toObject();
 
-			for (short j = 0; j < polygonNum; j++) {
-				if (i == j  ||  polygonEmbodyFlag[j] == false)
-					continue;
+		QJsonArray jsonVertexIndex = jsonPolygon["vertex_index"].toArray();
+		this->polygon1VertexIndex[i] = jsonVertexIndex.at(0).toInt() - 1;
+		this->polygon2VertexIndex[i] = jsonVertexIndex.at(1).toInt() - 1;
+		this->polygon3VertexIndex[i] = jsonVertexIndex.at(2).toInt() - 1;
 
-				const Vector b1 = getPolygon1Vertex(j);
-				const Vector b2 = getPolygon2Vertex(j);
-				const Vector b3 = getPolygon3Vertex(j);
-				Vector solution;
+		QJsonArray jsonColor = jsonPolygon["color"].toArray();
+		this->polygonR[i] = jsonColor.at(0).toDouble() * 32767;
+		this->polygonG[i] = jsonColor.at(1).toDouble() * 32767;
+		this->polygonB[i] = jsonColor.at(2).toDouble() * 32767;
 
-				if (Calculater::solveCubicEquation(
-					b2 - b1,
-					b3 - b1,
-					n * -1.0,
-					(a1 + (a2 * 2) + (a3 * 3)) / 6.0 - b1,
-					&solution
-				)) {
-					if (0 <= solution.getX()  &&
-						0 <= solution.getY()  &&
-						solution.getX() + solution.getY() <= 1  &&
-						0 < solution.getZ()
-					) {
-						penetratedPlgnNum++;
-					}
+		this->polygonEmbodyFlag[i] = true;
+	}
+
+	for (int i = 0; i < this->polygonNum; i++) {
+		short penetratedPlgnNum = 0;
+		const Vector a1 = getPolygon1Vertex(i);
+		const Vector a2 = getPolygon2Vertex(i);
+		const Vector a3 = getPolygon3Vertex(i);
+		Vector n = (a2 - a1) % (a3 - a1);
+
+		for (short j = 0; j < this->polygonNum; j++) {
+			if (i == j  ||  polygonEmbodyFlag[j] == false)
+				continue;
+
+			const Vector b1 = getPolygon1Vertex(j);
+			const Vector b2 = getPolygon2Vertex(j);
+			const Vector b3 = getPolygon3Vertex(j);
+			Vector solution;
+
+			if (Calculater::solveCubicEquation(
+				b2 - b1,
+				b3 - b1,
+				n * -1.0,
+				(a1 + (a2 * 2) + (a3 * 3)) / 6.0 - b1,
+				&solution
+			)) {
+				if (0 <= solution.getX()  &&
+					0 <= solution.getY()  &&
+					solution.getX() + solution.getY() <= 1  &&
+					0 < solution.getZ()
+				) {
+					penetratedPlgnNum++;
 				}
 			}
-
-			polygonInsideFlag[i] = penetratedPlgnNum % 2;
 		}
 
-
-
-		while (fgetc(fp) != '*') ;
-
-		char next = fgetc(fp);
-
-		if (next == 'm') {
-			while (fgetc(fp) != ':') ;
-			if (fscanf(fp, "%f", &mass) == EOF)
-				printf("ERROR\n");
-
-			while (fgetc(fp) != '*') ;
-			next = fgetc(fp);
-		} else {
-			mass = 1;
-		}
-
-		inertiaMoment = mass * MOMENT_PER_MASS;
-
-		if (next == 'v') {
-			float temp[3];
-			if (fscanf(fp, "%f%f%f", &temp[0], &temp[1], &temp[2]) == EOF) {
-				velocity.setVector(0, 0, 0);
-			} else {
-				velocity.setVector(temp);
-			}
-		}
-
-		fclose(fp);
-
-		reloadRadius();
-	} else {
-		printf("I cannot open such a file\n");
-		vertexNum = -1;
-		lineNum = -1;
-		polygonNum = -1;
-		//radius = 10000;
-		mass = 1;
-		inertiaMoment = mass * MOMENT_PER_MASS;
+		this->polygonInsideFlag[i] = penetratedPlgnNum % 2;
 	}
+}
+
+void Object::parseMass(const QJsonValue &val)
+{
+  if (val.isNull()) {
+    this->mass = 1;
+    return;
+  }
+
+	if (!val.isDouble())
+		this->exitWithError("incorrect mass\n");
+
+	this->mass = val.toDouble();
+	this->inertiaMoment = this->mass * MOMENT_PER_MASS;
+}
+
+void Object::parseVelocity(const QJsonValue &val)
+{
+	if (val.isNull()) {
+		this->velocity.setVector(0, 0, 0);
+		return;
+	}
+
+	if (!val.isArray())
+		this->exitWithError("incorrect velocity\n");
+
+	QJsonArray jsonVelocity = val.toArray();
+
+	float vx = jsonVelocity.at(0).toDouble();
+	float vy = jsonVelocity.at(1).toDouble();
+	float vz = jsonVelocity.at(2).toDouble();
+
+	this->velocity.setVector(vx, vy, vz);
+}
+
+void Object::parseSubParams(const QJsonObject &obj)
+{
+	//do nothing
 }
 
 Object::Object(const Object& object) : name(object.name)
