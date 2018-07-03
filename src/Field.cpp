@@ -115,7 +115,7 @@ void Field::deleteInstance(void)
 
 void Field::open(void)
 {
-	sight->resize(1000, 700);
+	sight->resize(700, 700);
 	sight->move(400, 0);
 //	sight->showMaximized();
 	sight->show();
