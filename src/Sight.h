@@ -2,7 +2,7 @@
 #define SIGHT_H
 
 #include <GL/glu.h>
-#include <QGLWidget>
+#include <QOpenGLWidget>
 #include "Vector.h"
 
 
@@ -13,7 +13,7 @@ class UniversalTorque;
 class QKeyEvent;
 
 
-class Sight : public QGLWidget
+class Sight : public QOpenGLWidget
 {
 	Q_OBJECT
 public:

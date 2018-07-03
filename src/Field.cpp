@@ -137,7 +137,7 @@ void Field::execTimeEvent(void)
 	crashEvent->execIfEnabled();
 	moveEvent->execIfEnabled();
 
-	sight->updateGL();
+	sight->update();
 }
 
 void Field::timeControl(void)

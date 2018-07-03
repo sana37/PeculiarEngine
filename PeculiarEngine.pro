@@ -8,7 +8,7 @@ INCLUDEPATH += . src src/util src/object src/event src/force
 DESTDIR = target
 OBJECTS_DIR = generated
 MOC_DIR = generated
-QT += widgets opengl
+QT += widgets
 LIBS += -lGLU
 
 # The following define makes your compiler warn you if you use any

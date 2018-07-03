@@ -30,7 +30,7 @@ Sight::Sight(PlayerNeo* playerNeo, UniversalForce* accel, UniversalTorque* torqu
 	this->speedHorizontal = 0;
 	this->speedVertical = 0;
 
-	updateGL();
+	update();
 }
 
 void Sight::initializeGL(void)

@@ -38,7 +38,7 @@ qmake -project
 DESTDIR = target
 OBJECTS_DIR = generated
 MOC_DIR = generated
-QT += widgets opengl
+QT += widgets
 LIBS += -lGLU
 ```
 
